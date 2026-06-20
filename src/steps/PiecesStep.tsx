@@ -19,23 +19,17 @@ export default function PiecesStep() {
 
   return (
     <div className="space-y-6">
-      {/* Catalog */}
-      <Section title="Add a piece" subtitle="Build up your space — add as many as you like.">
-        <div className="grid grid-cols-2 gap-2">
+      <Section title="Quick add" subtitle="Start with a real cabinet family. Refine dimensions after it appears in the room.">
+        <div className="grid grid-cols-2 gap-2.5">
           {CATALOG.map((c) => (
-            <button
-              key={c.type}
-              onClick={() => addUnit(c.type)}
-              className="rounded-2xl border border-ivory-200 bg-white p-3 text-left transition hover:border-clay-300 hover:shadow-soft active:scale-[0.98]"
-            >
-              <div className="text-sm font-semibold text-ink">{c.name}</div>
-              <div className="mt-0.5 text-[11px] leading-snug text-ink-muted">{c.blurb}</div>
+            <button key={c.type} onClick={() => addUnit(c.type)} className="rounded-2xl border border-champagne/30 bg-warmWhite p-4 text-left shadow-soft transition hover:border-brass/70 hover:shadow-card active:scale-[0.98]">
+              <div className="text-sm font-black tracking-tight text-ink">{c.name}</div>
+              <div className="mt-1 text-[11px] leading-snug text-ink-muted">{c.blurb}</div>
             </button>
           ))}
         </div>
       </Section>
 
-      {/* Your pieces */}
       {units.length > 0 && (
         <Section title={`Your pieces (${units.length})`}>
           <div className="flex flex-wrap gap-2">
@@ -44,8 +38,8 @@ export default function PiecesStep() {
                 key={u.id}
                 onClick={() => selectUnit(u.id)}
                 className={
-                  'rounded-full px-3 py-1.5 text-xs font-semibold transition ' +
-                  (u.id === selectedId ? 'bg-clay-600 text-white shadow-soft' : 'bg-white text-ink-soft ring-1 ring-ivory-200 hover:ring-clay-300')
+                  'rounded-full px-3 py-1.5 text-xs font-bold transition ' +
+                  (u.id === selectedId ? 'bg-obsidian text-porcelain shadow-soft' : 'bg-warmWhite text-ink-soft ring-1 ring-champagne/30 hover:ring-brass/70')
                 }
               >
                 {u.label}
@@ -55,11 +49,12 @@ export default function PiecesStep() {
         </Section>
       )}
 
-      {/* Editor for the selected unit */}
       {sel && <UnitEditor key={sel.id} room={room} onRemove={() => removeUnit(sel.id)} onDuplicate={() => duplicateUnit(sel.id)} />}
 
       {units.length === 0 && (
-        <p className="rounded-xl bg-ivory-50 p-4 text-sm text-ink-muted">Add your first piece above to start designing.</p>
+        <div className="rounded-3xl border border-dashed border-champagne/50 bg-warmWhite p-6 text-sm leading-6 text-ink-muted">
+          Add your first piece above. A base cabinet, upper, tall pantry, or floating shelf can all be adjusted after placement.
+        </div>
       )}
     </div>
   );
@@ -75,19 +70,29 @@ function UnitEditor({ room, onRemove, onDuplicate }: { room: ReturnType<typeof u
 
   const walls = useMemo(() => (room.enabled ? footprint(room).walls : []), [room]);
   const cabWall = walls[Math.min(sel.placement.wallIndex, walls.length - 1)];
-  const cabSlide = cabWall ? Math.round(cabWall.length / 2 - sel.overall.width / 2) : 0;
+  const cabSlide = cabWall ? Math.max(0, Math.round(cabWall.length / 2 - sel.overall.width / 2)) : 0;
+  const widerThanWall = Boolean(cabWall && sel.overall.width > cabWall.length);
   const isShelf = sel.type === 'shelf';
   const isUpper = sel.type === 'upper';
 
   return (
-    <div className="rounded-2xl border border-ivory-200 bg-white p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <h3 className="font-display text-lg font-semibold text-ink">{sel.label}</h3>
-        <div className="flex gap-3 text-xs font-medium">
-          <button onClick={onDuplicate} className="text-ink-muted hover:text-clay-700">Duplicate</button>
+    <div className="premium-card p-5">
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-brass">Selected piece</p>
+          <h3 className="mt-1 text-2xl font-black tracking-tight text-ink">{sel.label}</h3>
+        </div>
+        <div className="flex gap-3 text-xs font-bold">
+          <button onClick={onDuplicate} className="text-ink-muted hover:text-walnut">Duplicate</button>
           <button onClick={onRemove} className="text-ink-muted hover:text-red-600">Remove</button>
         </div>
       </div>
+
+      {widerThanWall && (
+        <div className="mb-5 rounded-2xl bg-[#fff4dd] p-3 text-xs leading-5 text-walnut ring-1 ring-brass/30">
+          This piece is wider than the selected wall. Reduce the width or choose a longer wall before quote review.
+        </div>
+      )}
 
       <div className="space-y-6">
         <Section title="Size">
@@ -101,7 +106,7 @@ function UnitEditor({ room, onRemove, onDuplicate }: { room: ReturnType<typeof u
 
         {!isShelf && (
           <>
-            <Section title="Layout">
+            <Section title="Interior layout">
               <Stepper label="Compartments" value={sel.sections} min={1} max={8} onChange={(v) => updateSel({ sections: v })} />
               <Stepper label="Shelves in each" value={sel.shelvesPerSection} min={0} max={12} onChange={(v) => updateSel({ shelvesPerSection: v })} />
             </Section>
@@ -111,7 +116,7 @@ function UnitEditor({ room, onRemove, onDuplicate }: { room: ReturnType<typeof u
             </Section>
 
             {sel.type !== 'upper' && (
-              <Section title="Base">
+              <Section title="Base detail">
                 <Toggle label="Recessed base (toe kick)" checked={sel.toeKick.enabled} onChange={(v) => setSelToeKick({ enabled: v })} />
                 {sel.toeKick.enabled && <DimensionSlider label="Base height" value={sel.toeKick.height} min={2} max={10} onChange={(v) => setSelToeKick({ height: v })} />}
               </Section>
@@ -119,15 +124,15 @@ function UnitEditor({ room, onRemove, onDuplicate }: { room: ReturnType<typeof u
           </>
         )}
 
-        <Section title="Finishes">
-          <MaterialSwatches label={isShelf ? 'Shelf' : 'Cabinet body'} value={sel.materials.carcass} onChange={(v) => setSelMaterials({ carcass: v })} />
-          {!isShelf && <MaterialSwatches label="Doors" value={sel.materials.doors} onChange={(v) => setSelMaterials({ doors: v })} />}
+        <Section title="Finishes" subtitle="Visible customer finishes only — internal backs stay hidden from this picker.">
+          <MaterialSwatches role={isShelf ? 'shelf' : 'carcass'} label={isShelf ? 'Shelf' : 'Cabinet body'} value={sel.materials.carcass} onChange={(v) => setSelMaterials({ carcass: v })} />
+          {!isShelf && <MaterialSwatches role="door" label="Doors" value={sel.materials.doors} onChange={(v) => setSelMaterials({ doors: v })} />}
         </Section>
 
         {room.enabled && walls.length > 0 && (
-          <Section title="Where it sits" subtitle="Drag the piece in the preview to move it — or pick a wall here.">
+          <Section title="Placement" subtitle="Drag the piece in the preview or choose a wall here.">
             <WallPicker count={walls.length} value={Math.min(sel.placement.wallIndex, walls.length - 1)} onChange={(i) => setSelPlacement({ wallIndex: i, offset: 0 })} />
-            <DimensionSlider label="Slide along wall" value={sel.placement.offset} min={-cabSlide} max={cabSlide} onChange={(v) => setSelPlacement({ offset: v })} />
+            <DimensionSlider label="Slide along wall" value={Math.max(-cabSlide, Math.min(cabSlide, sel.placement.offset))} min={-cabSlide} max={cabSlide} onChange={(v) => setSelPlacement({ offset: v })} />
           </Section>
         )}
       </div>
