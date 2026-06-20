@@ -95,7 +95,7 @@ export default function EntryChoice() {
 }
 
 function IconShell({ children }: { children: React.ReactNode }) {
-  return <div className="inline-flex h-13 w-13 items-center justify-center rounded-2xl bg-champagne/35 text-walnut ring-1 ring-brass/20">{children}</div>;
+  return <div className="inline-flex h-[52px] w-[52px] items-center justify-center rounded-2xl bg-champagne/35 text-walnut ring-1 ring-brass/20">{children}</div>;
 }
 
 function EntryCard({ icon, title, body, cta, onClick }: { icon: React.ReactNode; title: string; body: string; cta: string; onClick: () => void }) {
