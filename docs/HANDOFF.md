@@ -4,30 +4,34 @@
 `premium-ui-pass`
 
 ## What changed in this pass
-- Created a safer working branch instead of editing `main` directly.
-- Reworked the global design tokens toward a richer editorial/luxury palette: obsidian, warm white, porcelain, champagne, brass, walnut, deep green, plaster, and oak.
-- Rebuilt the landing page around a dark premium hero with an in-CSS configurator mock so the page no longer depends on missing imagery to feel high-end.
-- Carried the premium theme into the entry flow and wizard shell.
-- Improved the Pieces step with stronger cards, better selected-piece hierarchy, honest width-over-wall warning, and a fix for negative wall-slide bounds.
-- Upgraded the Quote step language from fake checkout/reservation to an honest initial estimate and local review request.
-- Added material role metadata and role-filtered finish pickers so internal back material is not offered as a visible customer finish.
-- Improved 3D scene separation: warmer plaster walls, darker oak floor, trim contrast, readable glass, stronger lighting, brass selected outline, door detail lines, and simple brass pulls.
+- Lightened the landing page from a heavy black hero to a warmer editorial design studio look.
+- Reoriented landing content around believable smaller projects: pantries, mudrooms, small kitchens, butler pantries, Montessori shelving, and laundry rooms.
+- Added wired landing image slots with graceful placeholders until real files are added under `public/images/`.
+- Made the entry flow more honest: photo upload is reference-first unless a backend analysis endpoint is connected.
+- Added blank-room start behavior through state so manual room building no longer depends on a fake preloaded example.
+- Added project autosave to localStorage and reset/start-over controls in state.
+- Added safer clamps for room dimensions, opening dimensions, opening offsets, and wall indexes.
+- Updated the openings step so windows and doors are clamped to walls and display clearer size/sill information.
+- Simplified the pieces step with practical quick-add presets and moved deeper cabinet settings behind an advanced toggle.
+- Added named paint finish options including Sherwin-Williams Accessible Beige, Alabaster, Pure White, Agreeable Gray, Evergreen Fog, and Iron Ore.
+- Added a main designer error boundary so a crash shows a recovery screen instead of a dead app.
 
 ## Still not done
-- I could not run `npm run build` from here. Basem needs to pull this branch locally and run the build.
-- Photo upload still needs a real backend vision endpoint before it can truly analyze a room. The frontend must remain honest when the endpoint is unavailable.
+- I could not run `npm run build` from here. Basem must pull the branch and run the build locally.
+- Actual photo-to-room AI analysis still requires a backend endpoint. The frontend is not enough by itself.
+- Real image files must still be committed to `public/images/`. The landing page is ready for them, but binary upload is not handled by the text-only GitHub connector.
+- RoomStep still needs a fuller visual room-type chooser and top-down minimap.
+- 3D walls/openings need another realism pass after build testing.
 - Cut-list grouping and multi-unit labor pricing are still correctness priorities.
-- Top-down minimap is still not implemented.
 - AI assistant/action schema is not implemented yet.
-- Real photographic assets still need to be generated and placed in `public/images/`.
 
 ## Next high-impact tasks
 1. Pull branch locally and run `npm run build`; fix any TypeScript/build errors.
-2. Add top-down mini-map for wall numbers and placement clarity.
-3. Fix cut-list aggregation so identical parts across different units group correctly.
-4. Refactor pricing so labor scales by unit count/type while sheets still aggregate across the whole project.
-5. Add real backend contract for `/api/analyze-room` or `VITE_ROOM_ANALYSIS_ENDPOINT`.
-6. Generate and add the image assets listed in `docs/ASSET-LIST.md`.
+2. Add the generated image files to `public/images/` using the names in `docs/ASSET-LIST.md`.
+3. Add a top-down minimap so wall numbers and room divisions are obvious.
+4. Improve 3D wall/opening geometry after seeing the local build.
+5. Fix cut-list aggregation so identical parts across units group correctly.
+6. Refactor pricing so labor scales by unit count/type.
 
 ## Design direction to preserve
-The site should feel like a refined interior-design studio crossed with an Apple-level product experience: dark architectural hero, restrained typography, warm ivory/editorial panels, walnut/brass/deep-green accents, large whitespace, and visual clarity in the 3D scene. Avoid orange/clay, generic SaaS gradients, playful/bubbly controls, or beige surfaces that make cabinets blend into walls.
+Warm editorial, not black-heavy. It should feel like a refined custom cabinetry portfolio for real attainable projects: pantry, mudroom, laundry, small kitchen, Montessori room, butler pantry. Avoid generic SaaS, repeated fantasy mansion visuals, cluttered technical controls, and any wording that implies photo analysis is operational without a backend.
