@@ -1,20 +1,16 @@
 # Asset List — Studio
 
-These assets should be placed in `public/images/`. The app currently has graceful placeholders, but real assets will make the brand feel much more elevated.
+Landing page image slots in `public/images/`:
 
-| File | Use | Size | Status | Direction |
-|---|---|---:|---|---|
-| `hero.jpg` | Optional landing hero fallback | 2400×1400 | Needed | Magazine-grade custom cabinetry room, warm plaster, walnut/white oak, architectural lighting. |
-| `space-pantry.jpg` | Space card | 1200×1500 | Needed | Narrow luxury pantry with tall cabinetry, warm white walls, brass detail, natural wood. |
-| `space-mudroom.jpg` | Space card | 1200×1500 | Needed | High-end mudroom bench, tall doors, hooks, shoe storage, warm editorial lighting. |
-| `space-kitchen.jpg` | Space card | 1200×1500 | Needed | Refined kitchen cabinetry wall, clean reveals, natural light, no clutter. |
-| `space-office.jpg` | Space card | 1200×1500 | Needed | Office built-ins with shelves and lower cabinetry, magazine styling. |
-| `project-natural.jpg` | Recent work tile | 1800×1200 | Needed | White oak / light painted cabinetry, built-in feel, premium interior. |
-| `project-modern.jpg` | Recent work tile | 1400×900 | Needed | Deep olive or charcoal built-ins with brass detail, refined not trendy. |
-| `project-wood.jpg` | Recent work tile | 1400×900 | Needed | Walnut storage wall, integrated cabinetry, architectural look. |
-| `hero-room-luxury.jpg` | Future hero image | 2400×1400 | Needed | Wide cinematic room/cabinetry view. |
-| `hero-cabinet-configurator.jpg` | Future product/preview image | 1800×1400 | Needed | Premium UI mock with cabinetry preview. |
-| `quote-preview-card.jpg` | Future quote/design preview | 1200×900 | Needed | Beautiful estimate/design packet visual. |
+- `project-pantry-hero.jpg` — compact pantry / coffee bar, rift white oak, painted uppers, brass hardware.
+- `project-mudroom-feature.jpg` — mudroom bench with tall storage, shoe cubbies, hooks, painted cabinets plus wood niche.
+- `project-playroom-feature.jpg` — Montessori shelving, low storage, books, baskets, wooden toys.
+- `space-pantry.jpg` — walk-in pantry with useful storage and counters.
+- `space-mudroom.jpg` — mudroom lockers, bench, cubbies.
+- `space-small-kitchen.jpg` — small kitchen cabinetry with warm beige paint and rift oak.
+- `space-butler-pantry.jpg` — walnut butler pantry or compact galley pantry.
+- `space-montessori.jpg` — kids playroom shelving / Montessori storage.
+- `space-laundry.jpg` — laundry room built-ins, folding counter, utility storage.
+- `project-kitchen-feature.jpg` — small kitchen wall, painted uppers and rift oak bases.
 
-## Image generation prompt style
-Use realistic interior photography, not render-looking stock. Warm natural light, architectural composition, high-end custom cabinetry, editorial magazine finish, subtle brass details, plaster/ivory walls, walnut or white oak, no people, no logos, no fake text unless intentionally blurred/unreadable.
+Direction: believable smaller projects first. Avoid repeating one room with different colors. Use realistic finished spaces with warm natural light, walnut, rift white oak, smooth painted cabinetry, and restrained brass hardware.
