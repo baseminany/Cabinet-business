@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
+import type React from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Grid, Environment, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
@@ -17,77 +18,30 @@ export default function Scene() {
   const selectUnit = useStore((s) => s.selectUnit);
   const setDragging = useStore((s) => s.setDragging);
   const controls = useRef<any>(null);
-
   const inRoom = room.enabled;
   const fp = useMemo(() => footprint(room), [room]);
   const built = useMemo(() => units.map((u) => buildParts(u)), [units]);
   const transforms = useMemo(() => unitTransforms(units, room), [units, room]);
   const focus = useMemo(() => projectFocus(units, transforms), [units, transforms]);
-
   const roomSpan = Math.max(room.width, room.length);
   const sceneSpan = Math.max(roomSpan, focus.topY * 1.5, 60);
   const camDist = inRoom ? Math.max(focus.topY * 2.0, roomSpan * 0.9, 120) : Math.max(focus.topY * 2.2, sceneSpan, 80);
-
   const target: [number, number, number] = [focus.cx, focus.topY * 0.45, focus.cz];
-  const camera = inRoom
-    ? { position: [focus.cx + camDist * 0.32, focus.topY * 0.7, focus.cz + camDist] as [number, number, number], fov: 38 }
-    : { position: [focus.cx + camDist * 0.45, focus.topY * 0.75, focus.cz + camDist] as [number, number, number], fov: 34 };
-
-  const startDrag = (id: string) => {
-    selectUnit(id);
-    if (inRoom) {
-      setDragging(id);
-      if (controls.current) controls.current.enabled = false;
-    }
-  };
-
+  const camera = inRoom ? { position: [focus.cx + camDist * 0.32, focus.topY * 0.7, focus.cz + camDist] as [number, number, number], fov: 38 } : { position: [focus.cx + camDist * 0.45, focus.topY * 0.75, focus.cz + camDist] as [number, number, number], fov: 34 };
+  const startDrag = (id: string) => { selectUnit(id); if (inRoom) { setDragging(id); if (controls.current) controls.current.enabled = false; } };
   return (
     <Canvas key={inRoom ? 'room' : 'studio'} shadows dpr={[1, 2]} camera={{ ...camera, near: 1, far: 9000 }} gl={{ antialias: true, alpha: true }} onCreated={({ gl }) => { gl.toneMapping = THREE.ACESFilmicToneMapping; gl.toneMappingExposure = 1.05; }}>
       <color attach="background" args={[inRoom ? '#f1ede5' : '#eee9df']} />
       <ambientLight intensity={inRoom ? 0.55 : 0.48} />
       <hemisphereLight intensity={0.44} color="#fffaf2" groundColor="#b98555" />
-      <directionalLight
-        position={[140, 260, 200]}
-        intensity={1.9}
-        color="#fff6ea"
-        castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
-        shadow-bias={-0.0004}
-        shadow-camera-left={-260}
-        shadow-camera-right={260}
-        shadow-camera-top={380}
-        shadow-camera-bottom={-120}
-      />
+      <directionalLight position={[140, 260, 200]} intensity={1.9} color="#fff6ea" castShadow shadow-mapSize-width={2048} shadow-mapSize-height={2048} shadow-bias={-0.0004} shadow-camera-left={-260} shadow-camera-right={260} shadow-camera-top={380} shadow-camera-bottom={-120} />
       <directionalLight position={[-160, 120, -100]} intensity={0.34} color="#e9f1ff" />
       <Environment preset="apartment" />
-
       {inRoom && <Room room={room} walls={fp.walls} points={fp.points} />}
-
-      {units.map((u, i) => {
-        const t = transforms[i];
-        return (
-          <group
-            key={u.id}
-            position={[t.x, t.y, t.z]}
-            rotation={[0, t.rotY, 0]}
-            onPointerDown={(e) => { e.stopPropagation(); startDrag(u.id); }}
-            onPointerOver={() => inRoom && (document.body.style.cursor = 'grab')}
-            onPointerOut={() => (document.body.style.cursor = 'auto')}
-          >
-            <CabinetMesh parts={built[i].parts} unitId={u.id} />
-          </group>
-        );
-      })}
-
+      {units.map((u, i) => { const t = transforms[i]; return <group key={u.id} position={[t.x, t.y, t.z]} rotation={[0, t.rotY, 0]} onPointerDown={(e) => { e.stopPropagation(); startDrag(u.id); }} onPointerOver={() => inRoom && (document.body.style.cursor = 'grab')} onPointerOut={() => (document.body.style.cursor = 'auto')}><CabinetMesh parts={built[i].parts} unitId={u.id} /></group>; })}
       {inRoom && <Dragger walls={fp.walls} controls={controls} />}
-
       <ContactShadows position={[focus.cx, 0.025, focus.cz]} scale={sceneSpan * 2.4} far={sceneSpan} blur={2.4} opacity={inRoom ? 0.34 : 0.38} color="#2d2118" resolution={1024} />
-
-      {view === 'maker' && !inRoom && (
-        <Grid args={[480, 480]} cellSize={12} cellThickness={0.55} cellColor="#cdbfa9" sectionSize={48} sectionThickness={1} sectionColor="#b88a44" fadeDistance={900} infiniteGrid />
-      )}
-
+      {view === 'maker' && !inRoom && <Grid args={[480, 480]} cellSize={12} cellThickness={0.55} cellColor="#cdbfa9" sectionSize={48} sectionThickness={1} sectionColor="#b88a44" fadeDistance={900} infiniteGrid />}
       <OrbitControls ref={controls} makeDefault enabled={!draggingId} target={target} enableDamping minPolarAngle={0.15} maxPolarAngle={Math.PI / 2 + 0.05} />
     </Canvas>
   );
@@ -97,18 +51,15 @@ function Dragger({ walls, controls }: { walls: WallSeg[]; controls: React.Mutabl
   const { gl, camera } = useThree();
   const setDragging = useStore((s) => s.setDragging);
   const updateUnit = useStore((s) => s.updateUnit);
-
   const ref = useRef({ walls, units: useStore.getState().units, dragging: useStore.getState().draggingId });
   useEffect(() => useStore.subscribe((s) => (ref.current = { ...ref.current, units: s.units, dragging: s.draggingId })), []);
   ref.current.walls = walls;
-
   useEffect(() => {
     const el = gl.domElement;
     const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
     const ray = new THREE.Raycaster();
     const ndc = new THREE.Vector2();
     const hit = new THREE.Vector3();
-
     const onMove = (e: PointerEvent) => {
       const { dragging, units, walls } = ref.current;
       if (!dragging || walls.length === 0) return;
@@ -119,40 +70,17 @@ function Dragger({ walls, controls }: { walls: WallSeg[]; controls: React.Mutabl
       ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
       ray.setFromCamera(ndc, camera);
       if (!ray.ray.intersectPlane(plane, hit)) return;
-
-      let best = -1;
-      let bestD = Infinity;
-      let bestOff = 0;
-      for (const w of walls) {
-        const t = (hit.x - w.mid[0]) * w.dir[0] + (hit.z - w.mid[1]) * w.dir[1];
-        const tc = Math.max(-w.length / 2, Math.min(w.length / 2, t));
-        const px = w.mid[0] + w.dir[0] * tc;
-        const pz = w.mid[1] + w.dir[1] * tc;
-        const d = Math.hypot(hit.x - px, hit.z - pz);
-        if (d < bestD) { bestD = d; best = w.index; bestOff = tc; }
-      }
+      let best = -1; let bestD = Infinity; let bestOff = 0;
+      for (const w of walls) { const t = (hit.x - w.mid[0]) * w.dir[0] + (hit.z - w.mid[1]) * w.dir[1]; const tc = Math.max(-w.length / 2, Math.min(w.length / 2, t)); const px = w.mid[0] + w.dir[0] * tc; const pz = w.mid[1] + w.dir[1] * tc; const d = Math.hypot(hit.x - px, hit.z - pz); if (d < bestD) { bestD = d; best = w.index; bestOff = tc; } }
       if (best < 0) return;
       const w = walls[best];
       const maxOff = Math.max(0, w.length / 2 - u.overall.width / 2);
       const off = Math.max(-maxOff, Math.min(maxOff, bestOff));
       updateUnit(u.id, { placement: { wallIndex: best, offset: off } });
     };
-
-    const onUp = () => {
-      if (ref.current.dragging) {
-        setDragging(null);
-        if (controls.current) controls.current.enabled = true;
-        document.body.style.cursor = 'auto';
-      }
-    };
-
-    el.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
-    return () => {
-      el.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onUp);
-    };
+    const onUp = () => { if (ref.current.dragging) { setDragging(null); if (controls.current) controls.current.enabled = true; document.body.style.cursor = 'auto'; } };
+    el.addEventListener('pointermove', onMove); window.addEventListener('pointerup', onUp);
+    return () => { el.removeEventListener('pointermove', onMove); window.removeEventListener('pointerup', onUp); };
   }, [gl, camera, setDragging, updateUnit, controls]);
-
   return null;
 }
