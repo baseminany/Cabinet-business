@@ -9,9 +9,6 @@ import { unitTransforms, projectFocus } from './layout';
 import CabinetMesh from './CabinetMesh';
 import Room from './Room';
 
-// Studio / room viewport. 1 three.js unit = 1 inch. Renders every unit at its
-// placement. Click a piece to select it; drag a piece to move it (it snaps to
-// the nearest wall). Walls auto-hide so you can always see in.
 export default function Scene() {
   const units = useStore((s) => s.units);
   const room = useStore((s) => s.room);
@@ -40,17 +37,18 @@ export default function Scene() {
     selectUnit(id);
     if (inRoom) {
       setDragging(id);
-      if (controls.current) controls.current.enabled = false; // stop orbit immediately
+      if (controls.current) controls.current.enabled = false;
     }
   };
 
   return (
-    <Canvas key={inRoom ? 'room' : 'studio'} shadows dpr={[1, 2]} camera={{ ...camera, near: 1, far: 9000 }} gl={{ antialias: true, alpha: true }}>
-      <ambientLight intensity={inRoom ? 0.7 : 0.6} />
-      <hemisphereLight intensity={0.4} color="#fffaf2" groundColor="#cdbfa9" />
+    <Canvas key={inRoom ? 'room' : 'studio'} shadows dpr={[1, 2]} camera={{ ...camera, near: 1, far: 9000 }} gl={{ antialias: true, alpha: true }} onCreated={({ gl }) => { gl.toneMapping = THREE.ACESFilmicToneMapping; gl.toneMappingExposure = 1.05; }}>
+      <color attach="background" args={[inRoom ? '#f1ede5' : '#eee9df']} />
+      <ambientLight intensity={inRoom ? 0.55 : 0.48} />
+      <hemisphereLight intensity={0.44} color="#fffaf2" groundColor="#b98555" />
       <directionalLight
         position={[140, 260, 200]}
-        intensity={1.5}
+        intensity={1.9}
         color="#fff6ea"
         castShadow
         shadow-mapSize-width={2048}
@@ -61,7 +59,7 @@ export default function Scene() {
         shadow-camera-top={380}
         shadow-camera-bottom={-120}
       />
-      <directionalLight position={[-160, 100, -100]} intensity={0.45} color="#eaf0ff" />
+      <directionalLight position={[-160, 120, -100]} intensity={0.34} color="#e9f1ff" />
       <Environment preset="apartment" />
 
       {inRoom && <Room room={room} walls={fp.walls} points={fp.points} />}
@@ -84,10 +82,10 @@ export default function Scene() {
 
       {inRoom && <Dragger walls={fp.walls} controls={controls} />}
 
-      <ContactShadows position={[focus.cx, 0.02, focus.cz]} scale={sceneSpan * 2.4} far={sceneSpan} blur={2.6} opacity={inRoom ? 0.26 : 0.32} color="#3b2e22" resolution={1024} />
+      <ContactShadows position={[focus.cx, 0.025, focus.cz]} scale={sceneSpan * 2.4} far={sceneSpan} blur={2.4} opacity={inRoom ? 0.34 : 0.38} color="#2d2118" resolution={1024} />
 
       {view === 'maker' && !inRoom && (
-        <Grid args={[480, 480]} cellSize={12} cellThickness={0.6} cellColor="#cdbfa9" sectionSize={48} sectionThickness={1} sectionColor="#b6a489" fadeDistance={900} infiniteGrid />
+        <Grid args={[480, 480]} cellSize={12} cellThickness={0.55} cellColor="#cdbfa9" sectionSize={48} sectionThickness={1} sectionColor="#b88a44" fadeDistance={900} infiniteGrid />
       )}
 
       <OrbitControls ref={controls} makeDefault enabled={!draggingId} target={target} enableDamping minPolarAngle={0.15} maxPolarAngle={Math.PI / 2 + 0.05} />
@@ -95,14 +93,11 @@ export default function Scene() {
   );
 }
 
-// Handles dragging the active unit: raycasts the pointer onto the floor plane,
-// finds the nearest wall, and updates that unit's placement live.
 function Dragger({ walls, controls }: { walls: WallSeg[]; controls: React.MutableRefObject<any> }) {
   const { gl, camera } = useThree();
   const setDragging = useStore((s) => s.setDragging);
   const updateUnit = useStore((s) => s.updateUnit);
 
-  // Keep the latest data available inside the long-lived listeners.
   const ref = useRef({ walls, units: useStore.getState().units, dragging: useStore.getState().draggingId });
   useEffect(() => useStore.subscribe((s) => (ref.current = { ...ref.current, units: s.units, dragging: s.draggingId })), []);
   ref.current.walls = walls;
@@ -125,7 +120,6 @@ function Dragger({ walls, controls }: { walls: WallSeg[]; controls: React.Mutabl
       ray.setFromCamera(ndc, camera);
       if (!ray.ray.intersectPlane(plane, hit)) return;
 
-      // Nearest wall to the floor point, and the offset along it.
       let best = -1;
       let bestD = Infinity;
       let bestOff = 0;
