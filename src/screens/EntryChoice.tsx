@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useStore } from '../store';
 
 export default function EntryChoice() {
@@ -94,11 +94,11 @@ export default function EntryChoice() {
   );
 }
 
-function IconShell({ children }: { children: React.ReactNode }) {
+function IconShell({ children }: { children: ReactNode }) {
   return <div className="inline-flex h-[52px] w-[52px] items-center justify-center rounded-2xl bg-champagne/35 text-walnut ring-1 ring-brass/20">{children}</div>;
 }
 
-function EntryCard({ icon, title, body, cta, onClick }: { icon: React.ReactNode; title: string; body: string; cta: string; onClick: () => void }) {
+function EntryCard({ icon, title, body, cta, onClick }: { icon: ReactNode; title: string; body: string; cta: string; onClick: () => void }) {
   return (
     <div className="premium-card flex min-h-[22rem] flex-col p-6 text-ink">
       <IconShell>{icon}</IconShell>
