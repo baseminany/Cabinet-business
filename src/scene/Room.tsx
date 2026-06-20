@@ -58,13 +58,15 @@ function FloorPlanks({ points }: { points: Vec2[] }) {
     (b, p) => ({ minX: Math.min(b.minX, p[0]), maxX: Math.max(b.maxX, p[0]), minZ: Math.min(b.minZ, p[1]), maxZ: Math.max(b.maxZ, p[1]) }),
     { minX: Infinity, maxX: -Infinity, minZ: Infinity, maxZ: -Infinity }
   );
+  const depth = Math.max(24, bounds.maxZ - bounds.minZ);
+  const centerZ = -((bounds.minZ + bounds.maxZ) / 2);
   const lines: JSX.Element[] = [];
   for (let x = Math.floor(bounds.minX / 7) * 7; x <= bounds.maxX; x += 7) {
     lines.push(
-      <line key={x} position={[0, 0.015, 0]}>
-        <bufferGeometry attach="geometry" setFromPoints={[new THREE.Vector3(x, 0, -bounds.minZ), new THREE.Vector3(x, 0, -bounds.maxZ)]} />
-        <lineBasicMaterial attach="material" color={FLOOR_LINE} transparent opacity={0.18} />
-      </line>
+      <mesh key={x} position={[x, 0.02, centerZ]} receiveShadow>
+        <boxGeometry args={[0.08, 0.03, depth]} />
+        <meshStandardMaterial color={FLOOR_LINE} roughness={0.8} transparent opacity={0.16} />
+      </mesh>
     );
   }
   return <group>{lines}</group>;
@@ -117,7 +119,7 @@ function OpeningMesh({ opening, wall }: { opening: Opening; wall: WallSeg }) {
         <>
           <Box size={[w, h, 1.4]} position={[0, 0, 0]} color={TRIM_COLOR} roughness={0.62} />
           <Box size={[CW, h + CW, CW]} position={[-(w / 2 + CW / 2), 0, 0]} color={TRIM_COLOR} roughness={0.52} />
-          <Box size={[CW, h + CW, CW]} position={[w / 2 + CW / 2), 0, 0]} color={TRIM_COLOR} roughness={0.52} />
+          <Box size={[CW, h + CW, CW]} position={[w / 2 + CW / 2, 0, 0]} color={TRIM_COLOR} roughness={0.52} />
           <Box size={[w + 2 * CW, CW, CW]} position={[0, h / 2 + CW / 2, 0]} color={TRIM_COLOR} roughness={0.52} />
         </>
       )}
