@@ -12,7 +12,7 @@ body,
 body {
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   color: #14110e;
-  background: #ffffff;
+  background: #fffdf8;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -26,13 +26,16 @@ body {
   font-family: 'Fraunces', Georgia, serif;
 }
 
-/* Friendly, on-brand range sliders. */
+::selection {
+  background: rgba(184, 138, 68, 0.24);
+}
+
 input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
   height: 6px;
   border-radius: 9999px;
-  background: #e3d4bf;
+  background: linear-gradient(90deg, #d9c6a3, #ece1cf);
   outline: none;
 }
 input[type='range']::-webkit-slider-thumb {
@@ -41,67 +44,85 @@ input[type='range']::-webkit-slider-thumb {
   width: 22px;
   height: 22px;
   border-radius: 9999px;
-  background: #ffffff;
-  border: 2px solid #8f4824;
-  box-shadow: 0 1px 4px rgba(40, 28, 16, 0.3);
+  background: #fffdf8;
+  border: 2px solid #b88a44;
+  box-shadow: 0 4px 14px rgba(20, 14, 8, 0.24);
   cursor: pointer;
   transition: transform 0.08s ease;
 }
-input[type='range']::-webkit-slider-thumb:active {
-  transform: scale(1.12);
-}
+input[type='range']::-webkit-slider-thumb:active { transform: scale(1.12); }
 input[type='range']::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border-radius: 9999px;
-  background: #ffffff;
-  border: 2px solid #8f4824;
+  background: #fffdf8;
+  border: 2px solid #b88a44;
   cursor: pointer;
 }
 
-.nice-scroll::-webkit-scrollbar {
-  width: 10px;
-}
+.nice-scroll::-webkit-scrollbar { width: 10px; }
 .nice-scroll::-webkit-scrollbar-thumb {
-  background: #d3c2a8;
+  background: #d9c6a3;
   border-radius: 9999px;
   border: 3px solid transparent;
   background-clip: content-box;
 }
-.nice-scroll::-webkit-scrollbar-thumb:hover {
-  background: #bda988;
-  background-clip: content-box;
-}
+.nice-scroll::-webkit-scrollbar-thumb:hover { background: #b88a44; background-clip: content-box; }
 
-/* Gentle entrance for step content. */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.fade-up { animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.fade-up-2 { animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
-.fade-up-3 { animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both; }
+.fade-up { animation: fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.fade-up-2 { animation: fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+.fade-up-3 { animation: fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both; }
 
-/* ---- Luxury utility classes ---- */
 .eyebrow {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.32em;
   text-transform: uppercase;
 }
+
+.luxury-shell {
+  background:
+    radial-gradient(80rem 45rem at 12% -10%, rgba(217, 198, 163, 0.18), transparent 55%),
+    radial-gradient(50rem 32rem at 90% 0%, rgba(115, 128, 111, 0.12), transparent 55%),
+    #0b0b0a;
+}
+
+.editorial-surface {
+  background:
+    linear-gradient(180deg, rgba(255, 253, 248, 0.96), rgba(247, 243, 234, 0.94)),
+    #f7f3ea;
+}
+
 .premium-card {
-  background: #f7f3ea;
+  background: linear-gradient(180deg, #fffdf8, #f7f3ea);
   border-radius: 24px;
-  box-shadow: 0 1px 0 rgba(255, 253, 248, 0.6) inset, 0 4px 12px rgba(20, 14, 8, 0.06),
-    0 30px 60px -20px rgba(20, 14, 8, 0.2);
-  border: 1px solid rgba(217, 198, 163, 0.28);
+  box-shadow:
+    0 1px 0 rgba(255, 253, 248, 0.78) inset,
+    0 10px 24px rgba(20, 14, 8, 0.08),
+    0 42px 80px -32px rgba(20, 14, 8, 0.32);
+  border: 1px solid rgba(217, 198, 163, 0.32);
 }
+
+.premium-card-dark {
+  background:
+    linear-gradient(180deg, rgba(33, 24, 19, 0.92), rgba(11, 11, 10, 0.96)),
+    #171412;
+  border: 1px solid rgba(217, 198, 163, 0.22);
+  border-radius: 28px;
+  box-shadow: 0 34px 90px -35px rgba(0, 0, 0, 0.72);
+}
+
 .glass-panel {
-  background: rgba(23, 20, 18, 0.55);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(217, 198, 163, 0.18);
+  background: rgba(23, 20, 18, 0.62);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(217, 198, 163, 0.2);
   border-radius: 24px;
 }
+
 .premium-button {
   display: inline-flex;
   align-items: center;
@@ -109,28 +130,38 @@ input[type='range']::-moz-range-thumb {
   border-radius: 9999px;
   background: #211813;
   color: #f7f3ea;
-  font-weight: 600;
+  font-weight: 700;
   box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.6);
   transition: transform 0.12s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
-.premium-button:hover { background: #0b0b0a; box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.7); }
+.premium-button:hover { background: #0b0b0a; box-shadow: 0 16px 34px -12px rgba(0, 0, 0, 0.78); }
 .premium-button:active { transform: scale(0.98); }
+
 .premium-button-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  background: transparent;
+  background: rgba(255, 253, 248, 0.04);
   color: #f0e9da;
-  font-weight: 600;
-  border: 1px solid rgba(217, 198, 163, 0.4);
-  transition: border-color 0.2s ease, background 0.2s ease;
+  font-weight: 700;
+  border: 1px solid rgba(217, 198, 163, 0.42);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.12s ease;
 }
-.premium-button-secondary:hover { border-color: rgba(217, 198, 163, 0.85); background: rgba(217, 198, 163, 0.08); }
+.premium-button-secondary:hover { border-color: rgba(217, 198, 163, 0.9); background: rgba(217, 198, 163, 0.1); }
+.premium-button-secondary:active { transform: scale(0.98); }
+
 .soft-divider { height: 1px; background: rgba(217, 198, 163, 0.28); }
 .scene-vignette {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  box-shadow: inset 0 0 120px 40px rgba(20, 14, 8, 0.12);
+  box-shadow: inset 0 0 120px 40px rgba(20, 14, 8, 0.1);
+}
+
+.luxury-grid {
+  background-image:
+    linear-gradient(rgba(217, 198, 163, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(217, 198, 163, 0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
