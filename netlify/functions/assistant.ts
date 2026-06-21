@@ -1,22 +1,14 @@
-// =============================================================================
-// /api/assistant — action-based AI design assistant (server-side)
-// =============================================================================
-// Takes the project context + a user message and returns structured actions the
-// client applies to the design. Behaves like an interior designer + cabinetmaker
-// + installer, but respects manufacturing reality. Key stays server-side.
-// =============================================================================
-
 import Anthropic from '@anthropic-ai/sdk';
 
 export const config = { path: '/api/assistant' };
 
-const SYSTEM = `You are Studio's AI design assistant — an interior designer, frameless cabinetmaker, and installer in one. You help a homeowner design custom built-ins.
-You will receive the current project as JSON (room shape, walls, existing units, the selected unit id) plus a user request.
+const SYSTEM = `You are House of Nook's AI planner — a warm interior designer, practical cabinetmaker, and installer in one. The business is no longer positioned as full custom kitchens first. It focuses on shippable, garage-buildable modular nook systems for real family homes: mudroom benches, locker towers, coffee hutches, playroom/Montessori storage, reading benches, laundry utility nooks, and simple low storage beds.
+You will receive the current project as JSON (room shape, walls, existing units, selected unit id) plus a user request.
 Respond with ONLY a JSON object (no prose outside it, no markdown fences):
 {
- "message": string,            // short, friendly explanation of what you did / need
- "actions": DesignAction[],    // structured changes to apply
- "questions"?: string[],       // anything you must ask before ordering
+ "message": string,
+ "actions": DesignAction[],
+ "questions"?: string[],
  "warnings"?: string[]
 }
 DesignAction is one of:
@@ -28,7 +20,7 @@ DesignAction is one of:
  {"type":"SET_ROOM","patch":object}
  {"type":"SET_MATERIAL","unitId":string,"role":"carcass"|"doors"|"back","materialId":string}
  {"type":"EXPLAIN","message":string}
-Rules: all dimensions in INCHES. Base cabinets ~24" deep / 34.5" tall; uppers ~12" deep mounted ~54"; tall/pantry ~24" deep up to ~84"+; shelves are thin boards. Frameless construction, full-overlay slab doors. Material ids include: white-oak, white-oak-rift, walnut, walnut-deep, sw-alabaster, sw-pure-white, sw-agreeable-gray, sw-evergreen-fog, sw-iron-ore. Use wall indexes that exist (wallCount). Suggest good layouts but never invent impossible geometry. If a measurement is missing, ask in "questions" rather than guessing.`;
+Rules: all dimensions in INCHES. Keep designs modest and shippable: individual modules should usually be 24–72 inches wide, 10–24 inches deep, and not assume whole-room custom installs unless asked. Base/bench modules are usually 18–24 inches deep and 18–34.5 inches tall depending use. Uppers are ~12 inches deep mounted above. Tall locker/tower modules are usually 18–24 inches wide/deep and 72–84 inches tall. Shelves are thin boards. Favor warm painted finishes, rift white oak, white oak, walnut, and named SW paints. Material ids include: white-oak, white-oak-rift, walnut, walnut-deep, sw-alabaster, sw-pure-white, sw-accessible-beige, sw-agreeable-gray, sw-evergreen-fog, sw-iron-ore. Use existing wall indexes only. If a measurement or shipping/install constraint is missing, ask in questions instead of guessing. Never suggest bunk beds or safety-sensitive children products as production-ready without compliance review.`;
 
 export default async (req: Request): Promise<Response> => {
   if (req.method !== 'POST') return json({ error: 'POST only' }, 405);
@@ -51,9 +43,7 @@ export default async (req: Request): Promise<Response> => {
       model: 'claude-opus-4-8',
       max_tokens: 4096,
       system: SYSTEM,
-      messages: [
-        { role: 'user', content: `PROJECT CONTEXT:\n${JSON.stringify(context)}\n\nUSER REQUEST:\n${message}\n\nRespond with ONLY the JSON object.` },
-      ],
+      messages: [{ role: 'user', content: `PROJECT CONTEXT:\n${JSON.stringify(context)}\n\nUSER REQUEST:\n${message}\n\nRespond with ONLY the JSON object.` }],
     });
     const text = resp.content.filter((b) => b.type === 'text').map((b: any) => b.text).join('');
     const parsed = extractJson(text);
@@ -64,13 +54,5 @@ export default async (req: Request): Promise<Response> => {
   }
 };
 
-function extractJson(text: string): any {
-  const a = text.indexOf('{');
-  const b = text.lastIndexOf('}');
-  if (a < 0 || b < 0) return null;
-  try { return JSON.parse(text.slice(a, b + 1)); } catch { return null; }
-}
-
-function json(data: unknown, status: number): Response {
-  return new Response(JSON.stringify(data), { status, headers: { 'content-type': 'application/json' } });
-}
+function extractJson(text: string): any { const a = text.indexOf('{'); const b = text.lastIndexOf('}'); if (a < 0 || b < 0) return null; try { return JSON.parse(text.slice(a, b + 1)); } catch { return null; } }
+function json(data: unknown, status: number): Response { return new Response(JSON.stringify(data), { status, headers: { 'content-type': 'application/json' } }); }
