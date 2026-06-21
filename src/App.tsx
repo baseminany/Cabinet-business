@@ -15,12 +15,12 @@ function AppInner() {
   if (view === 'maker' && makerEnabled()) {
     return (
       <div className="flex h-full min-h-0 flex-col bg-ivory text-ink">
-        <header className="flex items-center justify-between border-b border-ivory-200 bg-white px-5 py-3">
-          <span className="font-display text-lg font-semibold text-ink">Studio · Maker</span>
-          <button onClick={() => setView('design')} className="rounded-full px-4 py-2 text-sm font-semibold text-ink-soft transition hover:bg-ivory-100">← Back to design</button>
+        <header className="flex items-center justify-between border-b border-champagne/30 bg-warmWhite px-5 py-3">
+          <span className="text-lg font-semibold text-ink">House of Nook · Maker</span>
+          <button onClick={() => setView('design')} className="rounded-full px-4 py-2 text-sm font-semibold text-ink-soft transition hover:bg-porcelain">← Back to planner</button>
         </header>
         <div className="flex min-h-0 flex-1 flex-col md:flex-row">
-          <main className="relative h-[40vh] min-w-0 flex-1 md:h-auto" style={{ background: 'radial-gradient(120% 90% at 50% 12%, #fbf7f0 0%, #efe3d2 60%, #e4d3b8 100%)' }}><Scene /></main>
+          <main className="relative h-[40vh] min-w-0 flex-1 md:h-auto" style={{ background: 'radial-gradient(120% 90% at 50% 12%, #fffdf8 0%, #f4eadb 60%, #e4d3b8 100%)' }}><Scene /></main>
           <RightPanel />
         </div>
       </div>
@@ -33,6 +33,4 @@ function AppInner() {
   return <Wizard />;
 }
 
-export default function App() {
-  return <ErrorBoundary><AppInner /></ErrorBoundary>;
-}
+export default function App() { return <ErrorBoundary><AppInner /></ErrorBoundary>; }
