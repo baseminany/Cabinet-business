@@ -1,7 +1,6 @@
 import type { Unit, UnitType, ConstructionStyle } from './types';
 
-let _seq = 0;
-const uid = () => `u${++_seq}`;
+const uid = () => `u${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`;
 
 const DEFAULT_CONSTRUCTION: ConstructionStyle = { carcass: 'frameless', doorStyle: 'slab', overlay: 'full-overlay' };
 

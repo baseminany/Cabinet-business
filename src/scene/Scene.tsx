@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef } from 'react';
 import type React from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Grid, Environment, ContactShadows } from '@react-three/drei';
+import { EffectComposer, SSAO, Bloom, Vignette } from '@react-three/postprocessing';
+import { BlendFunction } from 'postprocessing';
 import * as THREE from 'three';
 import { useStore } from '../store';
 import { buildParts } from '../model/buildParts';
@@ -49,6 +51,27 @@ export default function Scene() {
       <ContactShadows position={[focus.cx, 0.025, focus.cz]} scale={sceneSpan * 2.4} far={sceneSpan} blur={2.15} opacity={inRoom ? 0.38 : 0.44} color="#2b2016" resolution={1024} />
       {view === 'maker' && !inRoom && <Grid args={[480, 480]} cellSize={12} cellThickness={0.55} cellColor="#cdbfa9" sectionSize={48} sectionThickness={1} sectionColor="#b88a44" fadeDistance={900} infiniteGrid />}
       <OrbitControls ref={controls} makeDefault enabled={!draggingId} target={target} enableDamping minPolarAngle={0.08} maxPolarAngle={Math.PI / 2 + 0.05} enableRotate={cameraPreset !== 'top'} />
+      <EffectComposer multisampling={4}>
+        <SSAO
+          blendFunction={BlendFunction.MULTIPLY}
+          samples={24}
+          radius={6}
+          intensity={12}
+          luminanceInfluence={0.6}
+          color={new THREE.Color('#2b1a0a')}
+          worldDistanceThreshold={20}
+          worldDistanceFalloff={5}
+          worldProximityThreshold={0.4}
+          worldProximityFalloff={0.1}
+        />
+        <Bloom
+          intensity={0.18}
+          luminanceThreshold={0.72}
+          luminanceSmoothing={0.4}
+          blendFunction={BlendFunction.ADD}
+        />
+        <Vignette eskil={false} offset={0.28} darkness={0.52} blendFunction={BlendFunction.NORMAL} />
+      </EffectComposer>
     </Canvas>
   );
 }

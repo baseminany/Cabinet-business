@@ -1,16 +1,19 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { useStore } from '../store';
+import { useStore, type Step } from '../store';
 
 export default function EntryChoice() {
   const setStep = useStore((s) => s.setStep);
   const setRoom = useStore((s) => s.setRoom);
   const startBlankRoom = useStore((s) => s.startBlankRoom);
+  const resetProject = useStore((s) => s.resetProject);
   const analyze = useStore((s) => s.analyzeRoomPhoto);
   const applyRes = useStore((s) => s.applyRoomAnalysis);
   const status = useStore((s) => s.roomScanStatus);
   const error = useStore((s) => s.roomScanError);
   const result = useStore((s) => s.roomAnalysisResult);
   const roomPhoto = useStore((s) => s.roomPhoto);
+  const savedUnits = useStore((s) => s.units);
+  const savedStep = useStore((s) => s.step) as Step;
   const fileRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
@@ -23,12 +26,30 @@ export default function EntryChoice() {
 
   const handleFile = (file?: File | null) => file && analyze(file);
 
+  const hasSavedDesign = savedUnits.length > 0;
+  const resumeStep: Step = (['room', 'openings', 'pieces', 'quote'] as Step[]).includes(savedStep) ? savedStep : 'pieces';
+
   return (
     <div className="nice-scroll min-h-0 flex-1 overflow-y-auto bg-[linear-gradient(180deg,#fffdf8,#f4eadb)] px-6 py-8 text-ink sm:px-10">
       <div className="mx-auto flex max-w-6xl items-center justify-between">
         <button onClick={() => setStep('welcome')} className="text-[11px] font-bold uppercase tracking-[0.18em] text-ink-muted transition hover:text-brass">← House of Nook</button>
         <span className="rounded-full border border-champagne/40 bg-white/70 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-ink-muted">Planner</span>
       </div>
+
+      {hasSavedDesign && (
+        <div className="mx-auto mt-6 max-w-6xl">
+          <div className="flex items-center justify-between gap-4 rounded-2xl border border-brass/30 bg-[#fffbf0] px-5 py-4 shadow-soft">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-brass">Saved design</p>
+              <p className="mt-0.5 text-sm font-semibold text-ink">You have {savedUnits.length} module{savedUnits.length !== 1 ? 's' : ''} from a previous session.</p>
+            </div>
+            <div className="flex shrink-0 gap-3">
+              <button onClick={() => resetProject()} className="rounded-full border border-champagne/50 px-4 py-2 text-xs font-bold text-ink-muted transition hover:border-red-300 hover:text-red-500">Clear</button>
+              <button onClick={() => setStep(resumeStep)} className="rounded-full bg-walnut px-5 py-2 text-xs font-bold text-porcelain shadow-soft transition hover:bg-obsidian">Resume →</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="mx-auto grid max-w-6xl items-end gap-10 pb-12 pt-12 lg:grid-cols-[0.9fr_1.1fr] lg:pt-20">
         <div className="fade-up">
