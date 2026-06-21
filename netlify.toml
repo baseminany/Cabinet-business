@@ -1,0 +1,18 @@
+# Netlify config — static SPA + serverless functions.
+# Set ANTHROPIC_API_KEY in Netlify (Site settings → Environment variables) to
+# enable photo analysis and the AI design assistant. The key stays server-side.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# v2 functions declare their own path (export const config = { path }), so the
+# /api/* routes resolve before this SPA fallback.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

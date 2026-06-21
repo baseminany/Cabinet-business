@@ -3,7 +3,24 @@
 ## Current branch
 `premium-ui-pass`
 
-## Latest pass (Claude — 3D sharpening + finish wiring fixes)
+## Latest pass (Claude — AI backend: photo analysis + design assistant)
+- **Photo upload now works (when key is set).** `src/services/roomAnalysis.ts` posts the
+  photo as base64 JSON to **`/api/analyze-room`** (`netlify/functions/analyze-room.ts`), which
+  calls Claude vision (`claude-opus-4-8`) and returns a `RoomAnalysisResult` starting draft.
+  Honest fallback when no `ANTHROPIC_API_KEY`: returns 501 → UI says "not connected," continue
+  manually. Never fakes a result.
+- **AI design assistant (action-based, not chat-only).** "Ask Studio" panel
+  (`src/components/DesignAssistantPanel.tsx`) → `src/services/designAssistant.ts` →
+  **`/api/assistant`** (`netlify/functions/assistant.ts`). The LLM returns structured
+  `DesignAction[]` (`src/assistant/types.ts`); `src/assistant/actions.ts` validates + clamps
+  and applies them to the real store (add/move/update/delete units, materials, openings, room).
+- **Key stays server-side** via Netlify Functions (`netlify.toml`, `@anthropic-ai/sdk` dep).
+  **Setup + enable:** see `docs/AI-BACKEND.md` (set `ANTHROPIC_API_KEY` in Netlify env, redeploy).
+- Verified: `npm run build` passes; assistant panel renders and falls back honestly with no
+  backend. Live AI needs the key + a Netlify deploy (can't run functions in Vite dev — use
+  `netlify dev`).
+
+## Prior pass (Claude — 3D sharpening + finish wiring fixes)
 - **Fixed finish pricing mismatch:** new finishes GPT added (SW paints, `walnut-deep`,
   `white-oak-rift-warm`, `paint-custom`) had no `pricing.config` entries → every quote using
   them silently fell back to the $100 placeholder. Added correct entries (SW paints + custom →

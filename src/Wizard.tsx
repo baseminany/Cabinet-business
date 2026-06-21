@@ -4,6 +4,7 @@ import RoomStep from './steps/RoomStep';
 import OpeningsStep from './steps/OpeningsStep';
 import PiecesStep from './steps/PiecesStep';
 import QuoteStep from './steps/QuoteStep';
+import DesignAssistantPanel from './components/DesignAssistantPanel';
 
 type WStep = 'room' | 'openings' | 'pieces' | 'quote';
 
@@ -72,6 +73,8 @@ export default function Wizard() {
           <button onClick={() => setStep('welcome')} className="rounded-full px-4 py-2.5 text-sm font-bold text-ink-muted transition hover:bg-ivory-100 hover:text-ink">Start over</button>
         )}
       </nav>
+
+      <DesignAssistantPanel />
     </div>
   );
 }
