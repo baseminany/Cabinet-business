@@ -14,6 +14,7 @@ export default function Scene() {
   const units = useStore((s) => s.units);
   const room = useStore((s) => s.room);
   const view = useStore((s) => s.view);
+  const cameraPreset = useStore((s) => s.cameraPreset);
   const draggingId = useStore((s) => s.draggingId);
   const selectUnit = useStore((s) => s.selectUnit);
   const setDragging = useStore((s) => s.setDragging);
@@ -24,27 +25,34 @@ export default function Scene() {
   const transforms = useMemo(() => unitTransforms(units, room), [units, room]);
   const focus = useMemo(() => projectFocus(units, transforms), [units, transforms]);
   const roomSpan = Math.max(room.width, room.length);
-  const sceneSpan = Math.max(roomSpan, focus.topY * 1.5, 60);
-  const camDist = inRoom ? Math.max(focus.topY * 2.0, roomSpan * 0.9, 120) : Math.max(focus.topY * 2.2, sceneSpan, 80);
-  const target: [number, number, number] = [focus.cx, focus.topY * 0.45, focus.cz];
-  const camera = inRoom ? { position: [focus.cx + camDist * 0.32, focus.topY * 0.7, focus.cz + camDist] as [number, number, number], fov: 38 } : { position: [focus.cx + camDist * 0.45, focus.topY * 0.75, focus.cz + camDist] as [number, number, number], fov: 34 };
+  const sceneSpan = Math.max(roomSpan, focus.topY * 1.5, 72);
+  const camDist = inRoom ? Math.max(focus.topY * 2.0, roomSpan * 0.95, 128) : Math.max(focus.topY * 2.2, sceneSpan, 90);
+  const target: [number, number, number] = [focus.cx, Math.max(28, focus.topY * 0.45), focus.cz];
+  const camera = cameraFor(cameraPreset, focus.cx, focus.cz, focus.topY, camDist, sceneSpan);
   const startDrag = (id: string) => { selectUnit(id); if (inRoom) { setDragging(id); if (controls.current) controls.current.enabled = false; } };
+
   return (
-    <Canvas key={inRoom ? 'room' : 'studio'} shadows dpr={[1, 2]} camera={{ ...camera, near: 1, far: 9000 }} gl={{ antialias: true, alpha: true }} onCreated={({ gl }) => { gl.toneMapping = THREE.ACESFilmicToneMapping; gl.toneMappingExposure = 1.05; }}>
-      <color attach="background" args={[inRoom ? '#e9e5dc' : '#e5e2da']} />
-      <ambientLight intensity={inRoom ? 0.5 : 0.45} />
-      <hemisphereLight intensity={0.44} color="#fffaf2" groundColor="#b98555" />
-      <directionalLight position={[140, 260, 200]} intensity={1.9} color="#fff6ea" castShadow shadow-mapSize-width={2048} shadow-mapSize-height={2048} shadow-bias={-0.0004} shadow-camera-left={-260} shadow-camera-right={260} shadow-camera-top={380} shadow-camera-bottom={-120} />
-      <directionalLight position={[-160, 120, -100]} intensity={0.34} color="#e9f1ff" />
+    <Canvas key={`${inRoom ? 'room' : 'studio'}-${cameraPreset}`} shadows dpr={[1, 2]} camera={{ ...camera, near: 1, far: 9000 }} gl={{ antialias: true, alpha: true }} onCreated={({ gl }) => { gl.toneMapping = THREE.ACESFilmicToneMapping; gl.toneMappingExposure = 1.08; }}>
+      <color attach="background" args={[inRoom ? '#f2eadb' : '#f4eadb']} />
+      <ambientLight intensity={inRoom ? 0.58 : 0.5} />
+      <hemisphereLight intensity={0.48} color="#fff8ed" groundColor="#b98555" />
+      <directionalLight position={[140, 260, 200]} intensity={1.85} color="#fff4e5" castShadow shadow-mapSize-width={2048} shadow-mapSize-height={2048} shadow-bias={-0.0004} shadow-camera-left={-280} shadow-camera-right={280} shadow-camera-top={380} shadow-camera-bottom={-140} />
+      <directionalLight position={[-180, 130, -110]} intensity={0.32} color="#eaf1ff" />
       <Environment preset="apartment" />
       {inRoom && <Room room={room} walls={fp.walls} points={fp.points} />}
       {units.map((u, i) => { const t = transforms[i]; return <group key={u.id} position={[t.x, t.y, t.z]} rotation={[0, t.rotY, 0]} onPointerDown={(e) => { e.stopPropagation(); startDrag(u.id); }} onPointerOver={() => inRoom && (document.body.style.cursor = 'grab')} onPointerOut={() => (document.body.style.cursor = 'auto')}><CabinetMesh parts={built[i].parts} unitId={u.id} /></group>; })}
       {inRoom && <Dragger walls={fp.walls} controls={controls} />}
-      <ContactShadows position={[focus.cx, 0.025, focus.cz]} scale={sceneSpan * 2.4} far={sceneSpan} blur={2.0} opacity={inRoom ? 0.45 : 0.48} color="#211810" resolution={1024} />
+      <ContactShadows position={[focus.cx, 0.025, focus.cz]} scale={sceneSpan * 2.4} far={sceneSpan} blur={2.15} opacity={inRoom ? 0.38 : 0.44} color="#2b2016" resolution={1024} />
       {view === 'maker' && !inRoom && <Grid args={[480, 480]} cellSize={12} cellThickness={0.55} cellColor="#cdbfa9" sectionSize={48} sectionThickness={1} sectionColor="#b88a44" fadeDistance={900} infiniteGrid />}
-      <OrbitControls ref={controls} makeDefault enabled={!draggingId} target={target} enableDamping minPolarAngle={0.15} maxPolarAngle={Math.PI / 2 + 0.05} />
+      <OrbitControls ref={controls} makeDefault enabled={!draggingId} target={target} enableDamping minPolarAngle={0.08} maxPolarAngle={Math.PI / 2 + 0.05} enableRotate={cameraPreset !== 'top'} />
     </Canvas>
   );
+}
+
+function cameraFor(preset: string, cx: number, cz: number, topY: number, dist: number, span: number) {
+  if (preset === 'front') return { position: [cx, Math.max(46, topY * 0.52), cz + dist] as [number, number, number], fov: 32 };
+  if (preset === 'top') return { position: [cx, Math.max(190, span * 1.6), cz + 0.1] as [number, number, number], fov: 36 };
+  return { position: [cx + dist * 0.36, Math.max(60, topY * 0.75), cz + dist] as [number, number, number], fov: 38 };
 }
 
 function Dragger({ walls, controls }: { walls: WallSeg[]; controls: React.MutableRefObject<any> }) {
