@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useStore, makerEnabled, type Step, type CameraPreset } from './store';
 import Scene from './scene/Scene';
 import RoomStep from './steps/RoomStep';
@@ -23,6 +24,21 @@ export default function Wizard() {
   const resetProject = useStore((s) => s.resetProject);
   const cameraPreset = useStore((s) => s.cameraPreset);
   const setCameraPreset = useStore((s) => s.setCameraPreset);
+  const selectedId = useStore((s) => s.selectedId);
+  const removeUnit = useStore((s) => s.removeUnit);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Delete' && e.key !== 'Backspace') return;
+      const tag = (e.target as HTMLElement).tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (!selectedId) return;
+      e.preventDefault();
+      removeUnit(selectedId);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selectedId, removeUnit]);
   const order: WStep[] = roomEnabled ? ['room', 'openings', 'pieces', 'quote'] : ['pieces', 'quote'];
   const idx = Math.max(0, order.indexOf(step));
   const meta = META[step];

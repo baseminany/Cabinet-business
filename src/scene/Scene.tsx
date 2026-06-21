@@ -33,12 +33,16 @@ export default function Scene() {
 
   return (
     <Canvas key={`${inRoom ? 'room' : 'studio'}-${cameraPreset}`} shadows dpr={[1, 2]} camera={{ ...camera, near: 1, far: 9000 }} gl={{ antialias: true, alpha: true }} onCreated={({ gl }) => { gl.toneMapping = THREE.ACESFilmicToneMapping; gl.toneMappingExposure = 1.08; }}>
-      <color attach="background" args={[inRoom ? '#f2eadb' : '#f4eadb']} />
-      <ambientLight intensity={inRoom ? 0.58 : 0.5} />
-      <hemisphereLight intensity={0.48} color="#fff8ed" groundColor="#b98555" />
-      <directionalLight position={[140, 260, 200]} intensity={1.85} color="#fff4e5" castShadow shadow-mapSize-width={2048} shadow-mapSize-height={2048} shadow-bias={-0.0004} shadow-camera-left={-280} shadow-camera-right={280} shadow-camera-top={380} shadow-camera-bottom={-140} />
-      <directionalLight position={[-180, 130, -110]} intensity={0.32} color="#eaf1ff" />
-      <Environment preset="apartment" />
+      <color attach="background" args={[inRoom ? '#ede5d5' : '#e8dece']} />
+      <ambientLight intensity={inRoom ? 0.44 : 0.38} />
+      <hemisphereLight intensity={0.52} color="#fff6e8" groundColor="#a07040" />
+      {/* Key light — warm afternoon sun from upper left */}
+      <directionalLight position={[160, 280, 180]} intensity={2.1} color="#fff2e0" castShadow shadow-mapSize-width={2048} shadow-mapSize-height={2048} shadow-bias={-0.0004} shadow-camera-left={-300} shadow-camera-right={300} shadow-camera-top={400} shadow-camera-bottom={-160} />
+      {/* Cool fill from right rear */}
+      <directionalLight position={[-200, 120, -130]} intensity={0.28} color="#ddeeff" />
+      {/* Warm rim from floor level to bring out depth */}
+      <pointLight position={[0, 12, 160]} intensity={0.45} color="#ffe8cc" distance={600} />
+      <Environment preset="apartment" environmentIntensity={0.55} />
       {inRoom && <Room room={room} walls={fp.walls} points={fp.points} />}
       {units.map((u, i) => { const t = transforms[i]; return <group key={u.id} position={[t.x, t.y, t.z]} rotation={[0, t.rotY, 0]} onPointerDown={(e) => { e.stopPropagation(); startDrag(u.id); }} onPointerOver={() => inRoom && (document.body.style.cursor = 'grab')} onPointerOut={() => (document.body.style.cursor = 'auto')}><CabinetMesh parts={built[i].parts} unitId={u.id} /></group>; })}
       {inRoom && <Dragger walls={fp.walls} controls={controls} />}
