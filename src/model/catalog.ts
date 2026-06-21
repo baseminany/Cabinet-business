@@ -45,7 +45,7 @@ export function makeUnit(type: UnitType): Unit {
     sections: 1,
     construction: { ...DEFAULT_CONSTRUCTION },
     placement: { wallIndex: 0, offset: 0 },
-    materials: { carcass: 'uv-ply-natural', doors: 'painted-white', back: 'ply-back' },
+    materials: { carcass: 'uv-ply-natural', doors: 'sw-alabaster', back: 'ply-back' },
   };
 
   switch (type) {

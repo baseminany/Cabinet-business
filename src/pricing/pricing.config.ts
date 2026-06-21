@@ -98,7 +98,18 @@ export const pricing: PricingConfig = {
     'painted-charcoal': { sheetWidth: 48, sheetHeight: 96, sheetCost: 60, yield: 0.85, note: '3/4" MDF (painted slab)' },
     'white-oak': { sheetWidth: 48, sheetHeight: 96, sheetCost: 220, yield: 0.85, note: 'White oak plain-sliced veneer ply' },
     'white-oak-rift': { sheetWidth: 48, sheetHeight: 96, sheetCost: 240, yield: 0.85, note: 'White oak rift-sliced veneer ply' },
+    'white-oak-rift-warm': { sheetWidth: 48, sheetHeight: 96, sheetCost: 240, yield: 0.85, note: 'White oak rift-sliced veneer ply (warm)' },
     'walnut': { sheetWidth: 48, sheetHeight: 96, sheetCost: 240, yield: 0.85, note: 'Walnut plain-sliced veneer ply' },
+    'walnut-deep': { sheetWidth: 48, sheetHeight: 96, sheetCost: 240, yield: 0.85, note: 'Walnut veneer ply (deep tone)' },
+
+    // Sherwin-Williams + custom paints — all painted MDF substrate ($60/sheet).
+    'sw-alabaster': { sheetWidth: 48, sheetHeight: 96, sheetCost: 60, yield: 0.85, note: '3/4" MDF — painted SW Alabaster' },
+    'sw-pure-white': { sheetWidth: 48, sheetHeight: 96, sheetCost: 60, yield: 0.85, note: '3/4" MDF — painted SW Pure White' },
+    'sw-accessible-beige': { sheetWidth: 48, sheetHeight: 96, sheetCost: 60, yield: 0.85, note: '3/4" MDF — painted SW Accessible Beige' },
+    'sw-agreeable-gray': { sheetWidth: 48, sheetHeight: 96, sheetCost: 60, yield: 0.85, note: '3/4" MDF — painted SW Agreeable Gray' },
+    'sw-evergreen-fog': { sheetWidth: 48, sheetHeight: 96, sheetCost: 60, yield: 0.85, note: '3/4" MDF — painted SW Evergreen Fog' },
+    'sw-iron-ore': { sheetWidth: 48, sheetHeight: 96, sheetCost: 60, yield: 0.85, note: '3/4" MDF — painted SW Iron Ore' },
+    'paint-custom': { sheetWidth: 48, sheetHeight: 96, sheetCost: 60, yield: 0.85, note: '3/4" MDF — custom paint match' },
 
     // Other substrates you stock (used by drawers/interiors later, costs ready):
     'uv-2s-drawer': { sheetWidth: 48, sheetHeight: 96, sheetCost: 120, yield: 0.85, note: '1/2" UV 2-sided (drawer boxes)' },
