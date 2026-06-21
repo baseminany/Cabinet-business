@@ -1,20 +1,20 @@
-# Drop your rich photos here
+# House of Nook — Product Images
 
-Generate or source rich, photographic interior images and save them in this folder
-with these exact filenames. The landing page will use them automatically; until a
-file exists you'll see a clean grey placeholder (never beige). JPG or WebP, sRGB.
+Drop photos here with these exact filenames. The landing page uses them automatically.
+Until a file exists you'll see a warm grey placeholder — never a broken image.
+JPG or WebP, sRGB. Keep lighting warm and consistent across photos.
 
-| Filename | Where it shows | Subject | Aspect (suggested) |
-|---|---|---|---|
-| `hero.jpg` | Big hero banner | A stunning custom kitchen / built-in, wide, magazine-lit | 16:7 (e.g. 2000×875) |
-| `space-kitchen.jpg` | "Choose your space" tile | Kitchen cabinetry | 4:5 (e.g. 800×1000) |
-| `space-pantry.jpg` | tile | Walk-in / cabinet pantry | 4:5 |
-| `space-vanity.jpg` | tile | Bathroom vanity | 4:5 |
-| `space-mudroom.jpg` | tile | Mudroom / entry built-in | 4:5 |
-| `project-natural.jpg` | "Recent work" large tile | Warm wood, "natural luxury" living/kitchen | 16:10 |
-| `project-modern.jpg` | "Recent work" tile | Dark, moody modern kitchen | 4:3 |
-| `project-wood.jpg` | "Recent work" tile | White-oak / walnut detail | 4:3 |
+| Filename | Where it shows | Subject |
+|---|---|---|
+| `hero-mudroom-nook.jpg` | Hero section (large) | Mudroom nook — sage/olive built-in, bench, hooks, cubbies |
+| `product-mudroom-nook.jpg` | Systems grid card | Same mudroom or alternate angle |
+| `product-coffee-nook.jpg` | Hero secondary + systems grid | Coffee hutch — dark olive, walnut counter, espresso station |
+| `product-playroom-storage.jpg` | Hero secondary + systems grid | Playroom — low cubbies, wicker baskets, colorful doors |
+| `product-reading-nook.jpg` | "Designed for real homes" large tile | Reading nook alcove — bench with drawers, wood shelves |
+| `product-laundry-nook.jpg` | "Designed for real homes" small tile | Laundry nook — upper cabinets, washer/dryer, folding counter |
+| `product-kids-bed-storage.jpg` | "Designed for real homes" small tile | Storage bed — low platform with drawers and cubbies |
 
-Tips: keep lighting and palette consistent across photos (warm, refined) so the
-page feels like one studio. Square-ish crops for tiles, wide crops for banners.
-Real photos of your own finished work are best — most authentic.
+## Quick tips
+- All 5 images shared in the June 2026 session map directly to the first 6 rows above.
+- The mudroom image doubles as both hero and product card (save it twice under both names).
+- `product-kids-bed-storage.jpg` has no image yet — placeholder shows until you add one.
