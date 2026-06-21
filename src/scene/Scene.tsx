@@ -31,8 +31,8 @@ export default function Scene() {
   const startDrag = (id: string) => { selectUnit(id); if (inRoom) { setDragging(id); if (controls.current) controls.current.enabled = false; } };
   return (
     <Canvas key={inRoom ? 'room' : 'studio'} shadows dpr={[1, 2]} camera={{ ...camera, near: 1, far: 9000 }} gl={{ antialias: true, alpha: true }} onCreated={({ gl }) => { gl.toneMapping = THREE.ACESFilmicToneMapping; gl.toneMappingExposure = 1.05; }}>
-      <color attach="background" args={[inRoom ? '#f1ede5' : '#eee9df']} />
-      <ambientLight intensity={inRoom ? 0.55 : 0.48} />
+      <color attach="background" args={[inRoom ? '#e9e5dc' : '#e5e2da']} />
+      <ambientLight intensity={inRoom ? 0.5 : 0.45} />
       <hemisphereLight intensity={0.44} color="#fffaf2" groundColor="#b98555" />
       <directionalLight position={[140, 260, 200]} intensity={1.9} color="#fff6ea" castShadow shadow-mapSize-width={2048} shadow-mapSize-height={2048} shadow-bias={-0.0004} shadow-camera-left={-260} shadow-camera-right={260} shadow-camera-top={380} shadow-camera-bottom={-120} />
       <directionalLight position={[-160, 120, -100]} intensity={0.34} color="#e9f1ff" />
@@ -40,7 +40,7 @@ export default function Scene() {
       {inRoom && <Room room={room} walls={fp.walls} points={fp.points} />}
       {units.map((u, i) => { const t = transforms[i]; return <group key={u.id} position={[t.x, t.y, t.z]} rotation={[0, t.rotY, 0]} onPointerDown={(e) => { e.stopPropagation(); startDrag(u.id); }} onPointerOver={() => inRoom && (document.body.style.cursor = 'grab')} onPointerOut={() => (document.body.style.cursor = 'auto')}><CabinetMesh parts={built[i].parts} unitId={u.id} /></group>; })}
       {inRoom && <Dragger walls={fp.walls} controls={controls} />}
-      <ContactShadows position={[focus.cx, 0.025, focus.cz]} scale={sceneSpan * 2.4} far={sceneSpan} blur={2.4} opacity={inRoom ? 0.34 : 0.38} color="#2d2118" resolution={1024} />
+      <ContactShadows position={[focus.cx, 0.025, focus.cz]} scale={sceneSpan * 2.4} far={sceneSpan} blur={2.0} opacity={inRoom ? 0.45 : 0.48} color="#211810" resolution={1024} />
       {view === 'maker' && !inRoom && <Grid args={[480, 480]} cellSize={12} cellThickness={0.55} cellColor="#cdbfa9" sectionSize={48} sectionThickness={1} sectionColor="#b88a44" fadeDistance={900} infiniteGrid />}
       <OrbitControls ref={controls} makeDefault enabled={!draggingId} target={target} enableDamping minPolarAngle={0.15} maxPolarAngle={Math.PI / 2 + 0.05} />
     </Canvas>

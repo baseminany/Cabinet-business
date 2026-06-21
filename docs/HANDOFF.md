@@ -3,7 +3,24 @@
 ## Current branch
 `premium-ui-pass`
 
-## What changed in this pass
+## Latest pass (Claude — 3D sharpening + finish wiring fixes)
+- **Fixed finish pricing mismatch:** new finishes GPT added (SW paints, `walnut-deep`,
+  `white-oak-rift-warm`, `paint-custom`) had no `pricing.config` entries → every quote using
+  them silently fell back to the $100 placeholder. Added correct entries (SW paints + custom →
+  $60 MDF; walnut-deep / rift-warm → $240).
+- **Fixed blank finish swatches:** `MaterialSwatches` chip had no background color; now renders
+  the real finish color (verified in the picker).
+- **Fixed default door finish:** catalog defaulted doors to `painted-white` (marked
+  not-customer-facing) → never showed selected. Now defaults to `sw-alabaster`.
+- **3D sharper + richer (user asked):** walls were `#eee7da`, nearly identical to painted-white
+  doors → beige-on-beige blend. Cooled/cleaned walls to `#e4ded2`; richer oak floor `#a5713c`
+  with satin sheen + stronger plank lines; cleaner neutral scene background; darker/crisper
+  contact shadows; satin sheen on cabinets (painted especially) + crisper door reveal seams and
+  edge lines. See DESIGN-SYSTEM.md 3D palette.
+- Verified: `npm run build` passes, no console errors, full flow runs (welcome → entry → blank
+  room → openings → pieces → estimate). Committed + pushed to `premium-ui-pass`.
+
+## What changed in this pass (prior — GPT)
 - Lightened the landing page from a heavy black hero to a warmer editorial design studio look.
 - Reoriented landing content around believable smaller projects: pantries, mudrooms, small kitchens, butler pantries, Montessori shelving, and laundry rooms.
 - Added wired landing image slots with graceful placeholders until real files are added under `public/images/`.

@@ -13,8 +13,10 @@ Studio should feel premium, architectural, and calm: an interior design studio w
 - Champagne `#d9c6a3` — hairlines, glow, luxury dividers.
 - Brass `#b88a44` — selected state, accents, progress, icon color.
 - Deep green `#173b33` — status badges and premium contrast.
-- Plaster `#eee7da` — 3D walls.
-- Oak floor `#b98555` — 3D floor.
+- Plaster `#e4ded2` — 3D walls (cooled/cleaned so warm cabinets separate; was `#eee7da`, which matched painted-white doors and caused beige-on-beige).
+- Oak floor `#a5713c` — 3D floor (richer/deeper, satin sheen roughness ~0.48 + faint metalness, stronger plank lines; was `#b98555`).
+- 3D scene background `#e9e5dc`/`#e5e2da` (cleaner neutral, not warm beige); contact shadows darker + crisper (`#211810`, opacity ~0.45).
+- 3D cabinets: satin sheen — painted fronts roughness ~0.40 metalness ~0.08; wood capped ~0.52; crisper door reveal seams + dark edge lines (`#241a12` doors, `#5a4a39` carcass).
 
 ## Typography
 - Use Inter for most UI, controls, labels, buttons, and numbers.

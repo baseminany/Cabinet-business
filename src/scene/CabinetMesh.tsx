@@ -20,13 +20,17 @@ function PartBox({ part, selected }: { part: Part; selected: boolean }) {
   const { x, y, z } = part.position;
   const isDoor = part.role === 'door';
   const isWood = def.kind === 'wood';
-  const edgeColor = selected ? '#b88a44' : isDoor ? '#2b2118' : '#6f604f';
+  const isPainted = def.kind === 'painted';
+  const edgeColor = selected ? '#b88a44' : isDoor ? '#241a12' : '#5a4a39';
+  // Satin sheen on painted fronts; softer matte on wood/utility — reads richer.
+  const roughness = isPainted ? 0.4 : isWood ? Math.min(def.roughness, 0.52) : def.roughness;
+  const metalness = isPainted ? 0.08 : 0.03;
 
   return (
     <group position={[x, y, z]}>
       <mesh castShadow receiveShadow>
         <boxGeometry args={[w, h, d]} />
-        <meshStandardMaterial color={def.color} roughness={def.roughness} metalness={0.015} />
+        <meshStandardMaterial color={def.color} roughness={roughness} metalness={metalness} />
         <Edges threshold={28} color={edgeColor} />
       </mesh>
 
@@ -53,11 +57,11 @@ function DoorDetails({ w, h, d, selected }: { w: number; h: number; d: number; s
     <group>
       <mesh position={[0, 0, z]}>
         <boxGeometry args={[Math.max(0.1, w - 0.7), 0.08, 0.04]} />
-        <meshStandardMaterial color={line} transparent opacity={0.22} />
+        <meshStandardMaterial color={line} transparent opacity={0.34} />
       </mesh>
       <mesh position={[0, h * 0.38, z]}>
         <boxGeometry args={[Math.max(0.1, w - 1.2), 0.07, 0.04]} />
-        <meshStandardMaterial color={line} transparent opacity={0.12} />
+        <meshStandardMaterial color={line} transparent opacity={0.2} />
       </mesh>
       <mesh position={[w * 0.34, 0, z + 0.07]} castShadow>
         <boxGeometry args={[0.55, Math.min(18, h * 0.28), 0.55]} />

@@ -9,9 +9,11 @@ import type { RoomModel, Opening } from '../model/room';
 import { WALL_THICKNESS as WT } from '../model/room';
 import type { Vec2, WallSeg } from '../model/roomShapes';
 
-const WALL_COLOR = '#eee7da';
-const FLOOR_COLOR = '#b98555';
-const FLOOR_LINE = '#9b6a43';
+// Cleaner, slightly cooler plaster so warm cabinetry separates from the wall
+// (was nearly identical to painted-white doors). Richer oak floor grounds it.
+const WALL_COLOR = '#e4ded2';
+const FLOOR_COLOR = '#a5713c';
+const FLOOR_LINE = '#79502d';
 const TRIM_COLOR = '#fffdf8';
 const GLASS_COLOR = '#8fb4c3';
 
@@ -42,7 +44,7 @@ export default function Room({ room, walls, points }: { room: RoomModel; walls: 
   return (
     <group>
       <mesh geometry={floorGeo} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, 0]} receiveShadow>
-        <meshStandardMaterial color={FLOOR_COLOR} roughness={0.62} side={THREE.DoubleSide} />
+        <meshStandardMaterial color={FLOOR_COLOR} roughness={0.48} metalness={0.06} side={THREE.DoubleSide} />
       </mesh>
       <FloorPlanks points={points} />
 
@@ -64,8 +66,8 @@ function FloorPlanks({ points }: { points: Vec2[] }) {
   for (let x = Math.floor(bounds.minX / 7) * 7; x <= bounds.maxX; x += 7) {
     lines.push(
       <mesh key={x} position={[x, 0.02, centerZ]} receiveShadow>
-        <boxGeometry args={[0.08, 0.03, depth]} />
-        <meshStandardMaterial color={FLOOR_LINE} roughness={0.8} transparent opacity={0.16} />
+        <boxGeometry args={[0.1, 0.03, depth]} />
+        <meshStandardMaterial color={FLOOR_LINE} roughness={0.75} transparent opacity={0.3} />
       </mesh>
     );
   }
