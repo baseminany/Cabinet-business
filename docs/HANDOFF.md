@@ -29,6 +29,7 @@ The north star is **garage-buildable, crateable, shippable modules**, not giant 
 - Reworked `PiecesStep` from generic cabinet quick-adds into shippable starter systems and single modules: Mudroom Nook, Coffee Nook, Playroom Nook, Laundry Nook, bench/base modules, locker towers, uppers, and shelves.
 - Reframed the Quote step as a **planning estimate** for modular nook systems before measurement, crate, and shipping review.
 - Updated the Netlify assistant system prompt so AI-generated actions respect the House of Nook product strategy and avoid unshippable full-room designs.
+- Renamed the package metadata to `house-of-nook-planner`. The package lock should be regenerated with `npm install` on the next local pass.
 
 ## Previous Claude pass — AI backend: photo analysis + design assistant
 - Photo upload posts to `/api/analyze-room` via `src/services/roomAnalysis.ts` and `netlify/functions/analyze-room.ts`.
@@ -39,13 +40,13 @@ The north star is **garage-buildable, crateable, shippable modules**, not giant 
 
 ## Operational status
 - `npm run build` was previously reported passing after Claude's AI backend pass.
-- GPT could not run a local build from this connector after the House of Nook pivot; Basem or Claude must run `npm run build` locally and fix any TypeScript/runtime issues.
+- GPT could not run a local build from this connector after the House of Nook pivot; Basem or Claude must run `npm install` if needed, then `npm run build`, and fix any TypeScript/runtime issues.
 - Photo upload is operational only when the Netlify function is deployed and `ANTHROPIC_API_KEY` is set. Otherwise it falls back honestly.
 - AI planner is operational only when the Netlify assistant function is deployed and `ANTHROPIC_API_KEY` is set. Otherwise it falls back honestly.
 - Real product images are not yet committed to `public/images/`; the landing is wired for them and placeholders still appear until binary assets are added.
 
 ## Known risks / things to test next
-1. Run `npm run build` immediately after pulling this branch.
+1. Run `npm install` to refresh `package-lock.json` if npm reports lock drift, then run `npm run build` immediately after pulling this branch.
 2. Manually test the customer flow: landing → entry → blank wall/room → openings → starter system → finish → estimate.
 3. Verify the Perspective / Front / Top camera buttons work as intended on desktop and mobile.
 4. Verify 3D wall visibility, corner markers, floor color, and opening placement feel natural rather than floating or muddy.
