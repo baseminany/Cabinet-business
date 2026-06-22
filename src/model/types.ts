@@ -64,8 +64,10 @@ export interface CabinetModel {
 // UNITS — a project is a Room + many Units (cabinets, shelves, …)
 // -----------------------------------------------------------------------------
 
-/** Product family. Drives default size, mounting height, and a little geometry. */
-export type UnitType = 'base' | 'upper' | 'tall' | 'shelf';
+/** Product family. Drives default size, mounting height, and a little geometry.
+ *  'bunk' is retained for legacy/dormant use but is no longer offered in the
+ *  catalog (too hard to ship + safety-regulated). */
+export type UnitType = 'base' | 'upper' | 'tall' | 'shelf' | 'montessori' | 'bunk' | 'learning-tower';
 
 export type CarcassStyle = 'frameless' | 'face-frame';
 export type DoorStyle = 'slab' | 'shaker';
@@ -105,6 +107,9 @@ export interface Unit {
   mountHeight: Inches;
   /** Where it sits in the room: which wall + slide offset along it. */
   placement: { wallIndex: number; offset: Inches };
+  /** Customer special requests for this piece (vent cutouts, wire holes, etc.).
+   *  Captured for the House of Nook team to review — not yet modeled in 3D. */
+  notes?: string;
 }
 
 // -----------------------------------------------------------------------------

@@ -56,6 +56,10 @@ export default function EntryChoice() {
           <p className="eyebrow text-brass">Start with the least friction</p>
           <h1 className="mt-5 text-5xl font-semibold leading-[0.94] tracking-[-0.05em] text-ink sm:text-7xl">What are we planning?</h1>
           <p className="mt-6 max-w-md text-base leading-8 text-ink-soft">Use a photo as reference, build a simple wall/room, or start with one shippable nook module. Nothing is locked in.</p>
+          <button onClick={() => setStep('shop')} className="mt-7 inline-flex items-center gap-2 rounded-full border border-walnut/30 bg-warmWhite px-5 py-3 text-sm font-bold text-walnut shadow-soft transition hover:bg-walnut hover:text-porcelain">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M6 2 3 6v14a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V6l-3-4z" /><path d="M3 6h18M16 10a4 4 0 0 1-8 0" /></svg>
+            Rather not design? Shop ready-made →
+          </button>
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">

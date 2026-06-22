@@ -68,22 +68,27 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
     );
   }
 
+  // Material is charged by the FRACTION of a sheet actually consumed (parts nest
+  // and share sheets across a batch, and offcuts get reused). We still report the
+  // whole-sheet count for the shop cut list, but the price reflects real usage —
+  // otherwise a small product unfairly carries a full sheet of every material.
+  let fractionalSheets = 0;
   for (const [materialId, areaSqIn] of areaByMaterial) {
     const cost: SheetMaterialCost =
       config.materials[materialId] ?? config.defaultMaterial;
     const usableArea = cost.sheetWidth * cost.sheetHeight * cost.yield;
-    const sheets = Math.max(1, Math.ceil(areaSqIn / usableArea));
-    const amount = sheets * cost.sheetCost;
+    const used = areaSqIn / usableArea; // fractional sheets consumed
+    const wholeSheets = Math.max(1, Math.ceil(used)); // for the shop cut list
+    const amount = used * cost.sheetCost; // price by material actually used
+    fractionalSheets += used;
     const label = getMaterial(materialId).label;
     const isPlaceholder = !!cost.placeholder || !config.materials[materialId];
 
-    sheetsByMaterial.push({ materialId, label, sheets });
+    sheetsByMaterial.push({ materialId, label, sheets: wholeSheets });
     lines.push({
       key: `mat-${materialId}`,
       label: `Sheet goods — ${label}`,
-      detail: `${sheets} sheet${sheets > 1 ? 's' : ''} × $${cost.sheetCost} · ${(
-        areaSqIn / SQIN_PER_SQFT
-      ).toFixed(1)} sqft used @ ${Math.round(cost.yield * 100)}% yield`,
+      detail: `${(areaSqIn / SQIN_PER_SQFT).toFixed(1)} sqft (${used.toFixed(2)} sheet) × $${cost.sheetCost}/sheet @ ${Math.round(cost.yield * 100)}% yield`,
       amount,
       placeholder: isPlaceholder,
     });
@@ -133,8 +138,8 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
     finishAmount = totalAreaSqFt * config.finish.ratePerSqft;
     finishDetail = `${totalAreaSqFt.toFixed(1)} sqft × $${config.finish.ratePerSqft}/sqft`;
   } else if (config.finish.mode === 'perSheet') {
-    finishAmount = totalSheets * config.finish.ratePerSheet;
-    finishDetail = `${totalSheets} sheets × $${config.finish.ratePerSheet}/sheet`;
+    finishAmount = fractionalSheets * config.finish.ratePerSheet;
+    finishDetail = `${fractionalSheets.toFixed(2)} sheet × $${config.finish.ratePerSheet}/sheet (materials)`;
   }
   lines.push({
     key: 'finish',
@@ -145,11 +150,15 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
   });
 
   // --- 5) LABOR --------------------------------------------------------------
-  const laborAmount = config.labor.ratePerHour * config.labor.hoursPerUnit;
+  // Hours scale with the real work: a base setup/pack time per order plus time
+  // per sheet of material (cut, band, sand, assemble, finish). This makes a
+  // 3-module project cost more labor than a single shelf, instead of a flat fee.
+  const laborHours = config.labor.baseHours + config.labor.hoursPerSheet * fractionalSheets;
+  const laborAmount = config.labor.ratePerHour * laborHours;
   lines.push({
     key: 'labor',
     label: 'Labor',
-    detail: `${config.labor.hoursPerUnit} hr × $${config.labor.ratePerHour}/hr`,
+    detail: `${laborHours.toFixed(1)} hr (${config.labor.baseHours} base + ${config.labor.hoursPerSheet}/sheet × ${fractionalSheets.toFixed(2)}) × $${config.labor.ratePerHour}/hr`,
     amount: laborAmount,
     placeholder: !!config.labor.placeholder,
   });

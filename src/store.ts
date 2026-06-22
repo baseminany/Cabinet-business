@@ -12,7 +12,10 @@ import { footprint } from './model/roomShapes';
 
 export type ViewMode = 'design' | 'maker';
 export type CameraPreset = 'perspective' | 'front' | 'top';
-export type Step = 'welcome' | 'entry' | 'photoReview' | 'room' | 'openings' | 'pieces' | 'quote';
+export type Step = 'welcome' | 'intake' | 'entry' | 'shop' | 'photoReview' | 'room' | 'openings' | 'pieces' | 'quote';
+
+/** Which shop category the shop screen opens on (set by the intake page). */
+export type ShopCategory = 'Kids' | 'Entry' | 'Coffee' | 'Storage' | 'All';
 
 export function makerEnabled(): boolean {
   try {
@@ -109,12 +112,17 @@ interface AppState {
   setCameraPreset: (v: CameraPreset) => void;
   step: Step;
   setStep: (s: Step) => void;
+  shopCategory: ShopCategory;
+  /** Open the ready-made shop on a given category (used by the intake page). */
+  openShop: (cat: ShopCategory) => void;
   setRoomPhoto: (dataUrl: string | null) => void;
   startBlankRoom: () => void;
   startDemoRoom: () => void;
   resetProject: () => void;
   addUnit: (type: UnitType) => void;
   addPresetUnit: (type: UnitType, width?: number) => void;
+  /** Load a fully-configured pre-built product (studio mode) and jump to a step. */
+  orderPreset: (newUnits: Unit[], goTo: Step) => void;
   removeUnit: (id: string) => void;
   duplicateUnit: (id: string) => void;
   selectUnit: (id: string) => void;
@@ -193,12 +201,22 @@ export const useStore = create<AppState>((set, get) => {
     setCameraPreset: (v) => set({ cameraPreset: v }),
     step: saved?.step ?? 'welcome',
     setStep: (s) => set({ step: s }),
+    shopCategory: 'Kids',
+    openShop: (cat) => set({ shopCategory: cat, step: 'shop' }),
     setRoomPhoto: (dataUrl) => set({ roomPhoto: dataUrl }),
     startBlankRoom: () => set({ room: BLANK_ROOM, units: [], selectedId: null, step: 'room', view: 'design', cameraPreset: 'perspective' }),
     startDemoRoom: () => set({ room: DEMO_ROOM, units: [], selectedId: null, step: 'room', view: 'design', cameraPreset: 'perspective' }),
     resetProject: () => set({ room: BLANK_ROOM, units: [], selectedId: null, step: 'entry', roomPhoto: null, roomScanStatus: 'idle', roomScanError: null, roomAnalysisResult: null }),
     addUnit: (type) => addSized(type),
     addPresetUnit: (type, width) => addSized(type, width),
+    orderPreset: (newUnits, goTo) => set((s) => ({
+      room: { ...s.room, enabled: false },
+      units: [...s.units, ...newUnits],
+      selectedId: newUnits[newUnits.length - 1]?.id ?? s.selectedId,
+      step: goTo,
+      view: 'design',
+      cameraPreset: 'perspective',
+    })),
     removeUnit: (id) => set((s) => {
       const units = s.units.filter((u) => u.id !== id);
       return { units, selectedId: s.selectedId === id ? (units[0]?.id ?? null) : s.selectedId };

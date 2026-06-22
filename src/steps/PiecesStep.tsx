@@ -46,6 +46,8 @@ const modules: { label: string; sub: string; type: UnitType; width?: number; not
   { label: '36″ hutch base', sub: 'base cabinet', type: 'base', width: 36, note: 'Coffee or laundry storage' },
   { label: 'Wall cabinet', sub: 'upper cabinet', type: 'upper', width: 36, note: 'Optional upper storage' },
   { label: 'Book / display shelf', sub: 'open shelf', type: 'shelf', width: 48, note: 'Simple shelf module' },
+  { label: 'Montessori bookshelf', sub: 'kids display', type: 'montessori', width: 30, note: 'Forward-facing, child height' },
+  { label: 'Learning tower', sub: 'kitchen helper', type: 'learning-tower', width: 16, note: 'Toddler standing platform' },
 ];
 
 // ─── Main component ──────────────────────────────────────────────────────────
@@ -219,6 +221,37 @@ function CabinetSVG({ type }: { type: UnitType }) {
     );
   }
 
+  if (type === 'montessori') {
+    return (
+      <svg viewBox="0 0 64 72" className="w-full" style={{ maxHeight: 70 }}>
+        <rect x="6" y="4" width="52" height="64" rx="2" fill={fill} stroke={stroke} strokeWidth="1.5" />
+        {[22, 40, 58].map((y) => (
+          <g key={y}>
+            <rect x="9" y={y} width="46" height="3" fill={shadow} opacity="0.6" />
+            <rect x="12" y={y - 8} width="7" height="7" rx="1" fill="#7a9a6e" />
+            <rect x="21" y={y - 8} width="7" height="7" rx="1" fill="#b9794f" />
+            <rect x="30" y={y - 8} width="7" height="7" rx="1" fill="#6e86a8" />
+          </g>
+        ))}
+      </svg>
+    );
+  }
+
+  if (type === 'bunk') {
+    return (
+      <svg viewBox="0 0 90 72" className="w-full" style={{ maxHeight: 68 }}>
+        <rect x="4" y="10" width="7" height="56" rx="1.5" fill={fill} stroke={stroke} strokeWidth="1.5" />
+        <rect x="79" y="10" width="7" height="56" rx="1.5" fill={fill} stroke={stroke} strokeWidth="1.5" />
+        <rect x="11" y="24" width="68" height="5" fill={wood} opacity="0.6" />
+        <rect x="11" y="54" width="68" height="5" fill={wood} opacity="0.6" />
+        <line x1="11" y1="20" x2="58" y2="20" stroke={stroke} strokeWidth="2" />
+        <line x1="70" y1="24" x2="70" y2="66" stroke={stroke} strokeWidth="1.5" />
+        <line x1="76" y1="24" x2="76" y2="66" stroke={stroke} strokeWidth="1.5" />
+        {[34, 46, 58].map((y) => <line key={y} x1="70" y1={y} x2="76" y2={y} stroke={stroke} strokeWidth="1.5" />)}
+      </svg>
+    );
+  }
+
   if (type === 'upper') {
     return (
       <svg viewBox="0 0 80 58" className="w-full" style={{ maxHeight: 60 }}>
@@ -386,6 +419,10 @@ function UnitEditor({ room, onRemove, onDuplicate }: { room: ReturnType<typeof u
   const widerThanWall = Boolean(cabWall && sel.overall.width > cabWall.length);
   const isShelf = sel.type === 'shelf';
   const isUpper = sel.type === 'upper';
+  const isMontessori = sel.type === 'montessori';
+  const isBunk = sel.type === 'bunk';
+  const isCabinet = sel.type === 'base' || sel.type === 'upper' || sel.type === 'tall';
+  const depthMax = isBunk ? 48 : 30;
 
   return (
     <div className="overflow-hidden rounded-3xl border border-champagne/35 bg-warmWhite shadow-card">
@@ -412,14 +449,31 @@ function UnitEditor({ room, onRemove, onDuplicate }: { room: ReturnType<typeof u
 
       <div className="space-y-6 p-5">
         <Section title="Basic size">
-          <DimensionSlider label="Width" value={sel.overall.width} min={6} max={96} onChange={(v) => setSelOverall({ width: v })} />
+          <DimensionSlider label={isBunk ? 'Length' : 'Width'} value={sel.overall.width} min={6} max={96} onChange={(v) => setSelOverall({ width: v })} />
           <DimensionSlider label={isShelf ? 'Thickness' : 'Height'} value={sel.overall.height} min={isShelf ? 1 : 12} max={isShelf ? 4 : 120} onChange={(v) => setSelOverall({ height: v })} />
-          <DimensionSlider label="Depth" value={sel.overall.depth} min={4} max={30} onChange={(v) => setSelOverall({ depth: v })} />
+          <DimensionSlider label={isBunk ? 'Bed width' : 'Depth'} value={sel.overall.depth} min={4} max={depthMax} onChange={(v) => setSelOverall({ depth: v })} />
         </Section>
+
+        {isMontessori && (
+          <Section title="Display">
+            <Stepper label="Book ledges" value={sel.shelvesPerSection} min={2} max={6} onChange={(v) => updateSel({ shelvesPerSection: v })} />
+          </Section>
+        )}
 
         <Section title="Finish">
           <MaterialSwatches role={isShelf ? 'shelf' : 'carcass'} label={isShelf ? 'Shelf finish' : 'Body finish'} value={sel.materials.carcass} onChange={(v) => setSelMaterials({ carcass: v })} />
           {!isShelf && <MaterialSwatches role="door" label="Door / front finish" value={sel.materials.doors} onChange={(v) => setSelMaterials({ doors: v })} />}
+        </Section>
+
+        <Section title="Special requests">
+          <p className="-mt-1 mb-2 text-[11px] leading-5 text-ink-muted">Vent or A/C return cutouts, wire/outlet holes, pull-out trays, specific hooks — anything custom. Our team reviews these and confirms feasibility + cost in your quote.</p>
+          <textarea
+            value={sel.notes ?? ''}
+            onChange={(e) => updateSel({ notes: e.target.value })}
+            rows={3}
+            placeholder="e.g. 6×10 return-air vent cutout in the back of this cabinet, lower left"
+            className="w-full resize-none rounded-2xl border border-champagne/45 bg-warmWhite px-3.5 py-2.5 text-sm outline-none transition focus:border-brass"
+          />
         </Section>
 
         {room.enabled && walls.length > 0 && (
@@ -429,9 +483,9 @@ function UnitEditor({ room, onRemove, onDuplicate }: { room: ReturnType<typeof u
           </Section>
         )}
 
-        <Toggle label="Show advanced construction details" checked={advanced} onChange={setAdvanced} />
+        {(isCabinet || isShelf || isUpper) && <Toggle label="Show advanced construction details" checked={advanced} onChange={setAdvanced} />}
 
-        {advanced && !isShelf && (
+        {advanced && isCabinet && (
           <>
             <Section title="Interior layout">
               <Stepper label="Compartments" value={sel.sections} min={1} max={8} onChange={(v) => updateSel({ sections: v })} />

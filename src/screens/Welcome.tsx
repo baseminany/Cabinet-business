@@ -12,7 +12,7 @@ const systems = [
 
 export default function Welcome() {
   const setStep = useStore((s) => s.setStep);
-  const go = () => setStep('entry');
+  const go = () => setStep('intake');
 
   return (
     <div className="nice-scroll min-h-0 flex-1 overflow-y-auto bg-warmWhite text-ink">
@@ -29,17 +29,17 @@ export default function Welcome() {
 
         <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 pb-16 pt-8 lg:grid-cols-[0.82fr_1.18fr] lg:pb-24 lg:pt-14">
           <div className="max-w-2xl">
-            <p className="eyebrow text-brass">Modular nook systems</p>
-            <h1 className="fade-up mt-5 text-[clamp(3rem,6.4vw,6.4rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-ink">Small spaces, beautifully built.</h1>
+            <p className="eyebrow text-brass">Kids rooms & playrooms · made in the USA</p>
+            <h1 className="fade-up mt-5 text-[clamp(3rem,6.4vw,6.4rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-ink">Real-wood rooms kids grow into.</h1>
             <p className="fade-up-2 mt-7 max-w-xl text-base leading-8 text-ink-soft">
-              Plan warm, practical built-ins that can be made in modules and shipped to real homes: mudrooms, playrooms, laundry nooks, coffee bars, reading corners, and storage beds.
+              Montessori bookshelves, twin bunks, and playroom storage in real wood with kid-safe rounded edges — designed online for your space, shipped flat, assembled in an afternoon. The same shop builds mudrooms, coffee bars, and reading nooks for the rest of the home.
             </p>
             <div className="fade-up-3 mt-9 flex flex-wrap gap-3">
-              <button onClick={go} className="premium-button px-8 py-4 text-sm">Build my nook</button>
-              <a href="#systems" className="rounded-full border border-brass/35 bg-warmWhite px-8 py-4 text-sm font-bold text-walnut shadow-sm transition hover:border-walnut hover:bg-porcelain">Explore systems</a>
+              <button onClick={() => setStep('shop')} className="premium-button px-8 py-4 text-sm">Shop kids & playroom</button>
+              <button onClick={() => setStep('entry')} className="rounded-full border border-brass/35 bg-warmWhite px-8 py-4 text-sm font-bold text-walnut shadow-sm transition hover:border-walnut hover:bg-porcelain">Design my own</button>
             </div>
             <div className="mt-8 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-3">
-              {['Garage-buildable', 'Shippable modules', 'Family-home scale'].map((item) => (
+              {['Kid-safe edges', 'Ships flat-pack', 'Real wood, USA-made'].map((item) => (
                 <div key={item} className="rounded-2xl border border-champagne/35 bg-white/60 p-4 text-[11px] font-bold uppercase tracking-[0.14em] text-ink-muted shadow-sm">{item}</div>
               ))}
             </div>
@@ -47,12 +47,12 @@ export default function Welcome() {
 
           <div className="grid gap-3 sm:grid-cols-[1.05fr_0.95fr]">
             <figure className="premium-card overflow-hidden p-3">
-              <Img name="hero-mudroom-nook.jpg" alt="Compact modular mudroom nook" label="Mudroom Nook" className="aspect-[16/11] w-full rounded-[20px]" />
-              <figcaption className="flex items-center justify-between px-2 py-3"><span className="text-sm font-black tracking-tight">Mudroom Nook</span><span className="text-[10px] font-bold uppercase tracking-[0.16em] text-brass">painted / oak bench</span></figcaption>
+              <Img name="kids-montessori-bookshelf.png" alt="Montessori forward-facing bookshelf in a playroom" label="Montessori Bookshelf" className="aspect-[16/11] w-full rounded-[20px]" />
+              <figcaption className="flex items-center justify-between px-2 py-3"><span className="text-sm font-black tracking-tight">Montessori Bookshelf</span><span className="text-[10px] font-bold uppercase tracking-[0.16em] text-brass">white oak · forward-facing</span></figcaption>
             </figure>
             <div className="grid gap-3">
-              <MiniProject file="product-coffee-nook.jpg" title="Coffee Nook" />
               <MiniProject file="product-playroom-storage.jpg" title="Playroom Storage" />
+              <MiniProject file="product-reading-nook.jpg" title="Reading Nook" />
             </div>
           </div>
         </div>
@@ -126,7 +126,7 @@ export default function Welcome() {
           </div>
 
           {/* Proof stat row */}
-          <div className="mt-14 grid gap-px overflow-hidden rounded-3xl border border-champagne/30 grid-cols-2 sm:grid-cols-5">
+          <div className="mt-14 grid gap-px overflow-hidden rounded-3xl border border-champagne/30 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
             {[
               ['4–6 weeks', 'From order to your door — not 14'],
               ['To the inch', 'Sized for your actual wall, not a showroom floor'],

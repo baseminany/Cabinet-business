@@ -40,8 +40,9 @@ export default function DesignAssistantPanel() {
       scrollToBottom();
     } catch (e) {
       const errText = e instanceof AssistantUnavailableError
-        ? 'The AI planner needs an API key to work. Add ANTHROPIC_API_KEY to your Netlify environment variables, then redeploy. For local dev, run `netlify dev` with a `.env` file.'
+        ? 'Our AI planner is getting set up — check back soon, or continue designing manually below.'
         : `Sorry — ${(e as Error).message}`;
+      if (e instanceof AssistantUnavailableError) console.warn('[assistant] not configured:', (e as Error).message);
       setLog((l) => [...l, { role: 'studio', text: errText }]);
       scrollToBottom();
     } finally {
@@ -101,7 +102,7 @@ export default function DesignAssistantPanel() {
               : <><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="9" cy="11" r="2" /><path d="m4 18 5-4 4 3 3-2 4 3" /></svg>Render</>
             }
           </button>
-          <button onClick={() => setOpen(false)} className="text-ink-muted hover:text-ink">✕</button>
+          <button onClick={() => setOpen(false)} aria-label="Close assistant" className="text-ink-muted hover:text-ink">✕</button>
         </div>
       </div>
 
@@ -169,7 +170,7 @@ export default function DesignAssistantPanel() {
                 placeholder="Design my nook…"
                 className="flex-1 rounded-full border border-champagne/45 bg-warmWhite px-3 py-2 text-sm outline-none focus:border-brass"
               />
-              <button onClick={() => send(input)} disabled={busy} className="rounded-full bg-walnut px-4 py-2 text-sm font-semibold text-porcelain disabled:opacity-50">→</button>
+              <button onClick={() => send(input)} disabled={busy} aria-label="Send message" className="rounded-full bg-walnut px-4 py-2 text-sm font-semibold text-porcelain disabled:opacity-50">→</button>
             </div>
           </div>
         </>

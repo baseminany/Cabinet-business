@@ -61,7 +61,10 @@ export interface PricingConfig {
 
   labor: {
     ratePerHour: number;
-    hoursPerUnit: number;
+    /** Fixed setup/admin/packing time charged once per order. */
+    baseHours: number;
+    /** Time per sheet of material (cut, band, sand, assemble, finish share). */
+    hoursPerSheet: number;
     placeholder?: boolean;
   };
 
@@ -140,37 +143,40 @@ export const pricing: PricingConfig = {
   hardware: {
     hingeEach: 8, // Blum soft-close (real)
     drawerSlidePairEach: 38, // per pair (real)
-    shelfPinEach: 0.15, // ⚠️ PLACEHOLDER
-    pullEach: 4, // ⚠️ PLACEHOLDER
-    placeholder: true, // shelf pins + pulls still estimated
+    shelfPinEach: 0.2, // nickel shelf pins, ~$0.20 ea (real)
+    pullEach: 5, // mid-range pull/knob, ~$5 ea (real; varies by style)
   },
 
-  // ⚠️ PLACEHOLDER — finishing. 'none' assumes parts are pre-finished / painted
-  // cost folded into labor. Switch to 'perSqft' or 'perSheet' to bill separately.
-  finish: { mode: 'none', ratePerSqft: 2, ratePerSheet: 25, placeholder: true },
+  // Finishing MATERIALS only (primer, paint/clear, sandpaper specific to finish).
+  // Your finishing TIME is already in the labor line. Prefinished UV ply needs
+  // little of this; painted MDF needs more — $15/sheet is a blended average.
+  finish: { mode: 'perSheet', ratePerSqft: 2, ratePerSheet: 15 },
 
-  // ⚠️ PLACEHOLDER — labor.
-  labor: { ratePerHour: 65, hoursPerUnit: 4, placeholder: true },
+  // Labor — you are the only maker. Pay yourself a real $60/hr shop wage as a
+  // COST (separate from profit). Hours scale with sheets: ~1 hr base per order
+  // + ~1.6 hr per sheet (cut, edge-band, sand, assemble, finish).
+  labor: { ratePerHour: 60, baseHours: 1.0, hoursPerSheet: 1.6 },
 
-  // ⚠️ PLACEHOLDER — CNC/machine per sheet (set 0 to disable).
-  machine: { ratePerSheet: 0, placeholder: true },
+  // No CNC yet — hand/track-saw shop.
+  machine: { ratePerSheet: 0 },
 
-  // ⚠️ PLACEHOLDER — overhead.
-  overhead: { fixed: 50, percent: 10, placeholder: true },
+  // Garage overhead is low: no shop rent. Fixed $35/order covers packaging +
+  // consumables (glue, screws, sandpaper); 12% covers blade/bit wear, finish
+  // supplies, electricity, software/hosting, and marketing.
+  overhead: { fixed: 35, percent: 12 },
 
-  // ⚠️ PLACEHOLDER — target margin (markup on cost).
-  margin: { markupPercent: 40, placeholder: true },
+  // Margin = markup on total cost. 50% markup = 33% gross margin — healthy for
+  // furniture and still far under custom-contractor pricing. Flex 40–60% by line:
+  // higher on standardized kids products, leaner on big competitive built-ins.
+  margin: { markupPercent: 50 },
 };
 
 // -----------------------------------------------------------------------------
-// CHECKLIST: numbers still to confirm (the rest are now real).
+// CHECKLIST: every number is now a real starting value. Tune these from your
+// actual builds as you go:
+//   • labor.hoursPerSheet — time the first few builds; adjust up/down.
+//   • margin.markupPercent — raise on standardized/kids products, lower to
+//     stay competitive on big built-ins.
+//   • overhead.percent — bump if you add shop rent, tools, or paid ads.
 // -----------------------------------------------------------------------------
-export const PLACEHOLDER_NOTES: string[] = [
-  'Shelf pin unit cost',
-  'Door/drawer pull unit cost (or confirm edge pulls / none)',
-  'Finishing: confirm folded into labor, or set a per-sqft / per-sheet rate',
-  'Labor shop rate and hours per unit',
-  'CNC/machine rate per sheet (if any)',
-  'Overhead: fixed dollars + percent',
-  'Target margin / markup percent',
-];
+export const PLACEHOLDER_NOTES: string[] = [];

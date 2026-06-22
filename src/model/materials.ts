@@ -19,7 +19,7 @@ export interface MaterialDef {
 }
 
 export const MATERIALS: MaterialDef[] = [
-  { id: 'uv-ply-natural', label: 'Natural Birch UV', premiumLabel: 'clean utility birch', color: '#dcc095', roughness: 0.55, kind: 'wood', category: 'Utility', appliesTo: ['carcass', 'shelf'] },
+  { id: 'uv-ply-natural', label: 'Pre-finished Birch', premiumLabel: 'pre-finished — ships faster, best value', color: '#dcc095', roughness: 0.55, kind: 'wood', category: 'Utility', appliesTo: ['carcass', 'shelf', 'door'] },
   { id: 'white-oak', label: 'White Oak Natural', premiumLabel: 'warm natural oak', color: '#ceae7a', roughness: 0.5, kind: 'wood', category: 'White Oak', appliesTo: ['carcass', 'door', 'shelf'], grainStrength: 0.5 },
   { id: 'white-oak-rift', label: 'Rift White Oak Natural', premiumLabel: 'linear designer grain', color: '#d4b886', roughness: 0.48, kind: 'wood', category: 'Rift White Oak', appliesTo: ['carcass', 'door', 'shelf'], grainStrength: 0.7 },
   { id: 'white-oak-rift-warm', label: 'Rift White Oak Warm', premiumLabel: 'slightly honeyed tone', color: '#c99f67', roughness: 0.5, kind: 'wood', category: 'Rift White Oak', appliesTo: ['carcass', 'door', 'shelf'], grainStrength: 0.75 },
@@ -38,6 +38,14 @@ export const MATERIALS: MaterialDef[] = [
 ];
 
 export const CUSTOMER_FINISHES = MATERIALS.filter((m) => m.customerFacing !== false);
+
+export type MaterialTier = 'value' | 'premium';
+
+/** Value = pre-finished birch + painted MDF (cheaper, faster, ships flat).
+ *  Premium = hardwood veneer (white oak, rift oak, walnut) for high-end. */
+export function materialTier(m: MaterialDef): MaterialTier {
+  return (m.category === 'White Oak' || m.category === 'Rift White Oak' || m.category === 'Walnut') ? 'premium' : 'value';
+}
 
 export function materialsFor(role: MaterialRole): MaterialDef[] {
   return MATERIALS.filter((m) => m.customerFacing !== false && m.appliesTo.includes(role));

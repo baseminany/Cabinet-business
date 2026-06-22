@@ -24,7 +24,6 @@ Rules: all dimensions in INCHES. Keep designs modest and shippable: individual m
 
 export default async (req: Request): Promise<Response> => {
   if (req.method !== 'POST') return json({ error: 'POST only' }, 405);
-  if (!process.env.ANTHROPIC_API_KEY) return json({ error: 'Assistant not configured (set ANTHROPIC_API_KEY).' }, 501);
 
   let message = '';
   let context: unknown = {};
@@ -36,12 +35,36 @@ export default async (req: Request): Promise<Response> => {
     return json({ error: 'Invalid request body.' }, 400);
   }
   if (!message) return json({ error: 'No message provided.' }, 400);
+  if (message.length > 4000) return json({ error: 'Message too long.' }, 400);
+
+  // Browser proxy mode: forward to local mbrowse proxy (no API key needed)
+  const PROXY = process.env.BROWSER_PROXY_URL;
+  if (PROXY) {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 120000);
+      const res = await fetch(`${PROXY}/api/assistant`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ message, context }),
+        signal: ctrl.signal,
+      });
+      clearTimeout(timer);
+      const data = await res.json();
+      return json(data, res.status);
+    } catch (e: any) {
+      return json({ error: `Browser proxy error: ${e?.message}` }, 502);
+    }
+  }
+
+  // Direct API mode (requires ANTHROPIC_API_KEY)
+  if (!process.env.ANTHROPIC_API_KEY) return json({ error: 'Assistant not configured. Set BROWSER_PROXY_URL (browser mode) or ANTHROPIC_API_KEY (API mode).' }, 501);
 
   try {
     const client = new Anthropic();
     const resp = await client.messages.create({
       model: 'claude-opus-4-8',
-      max_tokens: 4096,
+      max_tokens: 2048,
       system: SYSTEM,
       messages: [{ role: 'user', content: `PROJECT CONTEXT:\n${JSON.stringify(context)}\n\nUSER REQUEST:\n${message}\n\nRespond with ONLY the JSON object.` }],
     });

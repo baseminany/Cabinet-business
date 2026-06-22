@@ -4,19 +4,40 @@ export const config = { path: '/api/generate-render' };
 
 export default async (req: Request): Promise<Response> => {
   if (req.method !== 'POST') return json({ error: 'POST only' }, 405);
-  if (!process.env.OPENAI_API_KEY) return json({ error: 'Image generation not configured (set OPENAI_API_KEY).' }, 501);
 
   let designDesc = '';
   try {
     const body = await req.json();
-    designDesc = body.designDesc ?? '';
+    designDesc = (body.designDesc ?? '').slice(0, 3800);
   } catch {
     return json({ error: 'Invalid request body.' }, 400);
   }
   if (!designDesc) return json({ error: 'No design description provided.' }, 400);
 
-  const prompt = buildPrompt(designDesc);
+  // Browser proxy mode: forward to local mbrowse proxy (no API key needed)
+  const PROXY = process.env.BROWSER_PROXY_URL;
+  if (PROXY) {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 120000);
+      const res = await fetch(`${PROXY}/api/generate-render`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ designDesc }),
+        signal: ctrl.signal,
+      });
+      clearTimeout(timer);
+      const data = await res.json();
+      return json(data, res.status);
+    } catch (e: any) {
+      return json({ error: `Browser proxy error: ${e?.message}` }, 502);
+    }
+  }
 
+  // Direct API mode (requires OPENAI_API_KEY)
+  if (!process.env.OPENAI_API_KEY) return json({ error: 'Image generation not configured. Set BROWSER_PROXY_URL (browser mode) or OPENAI_API_KEY (API mode).' }, 501);
+
+  const prompt = buildPrompt(designDesc);
   try {
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const response = await openai.images.generate({

@@ -6,6 +6,7 @@ import OpeningsStep from './steps/OpeningsStep';
 import PiecesStep from './steps/PiecesStep';
 import QuoteStep from './steps/QuoteStep';
 import DesignAssistantPanel from './components/DesignAssistantPanel';
+import LivePriceBar from './components/LivePriceBar';
 
 type WStep = 'room' | 'openings' | 'pieces' | 'quote';
 
@@ -82,6 +83,8 @@ export default function Wizard() {
           </div>
         </aside>
       </div>
+
+      <LivePriceBar />
 
       <nav className="flex items-center justify-between gap-3 border-t border-champagne/25 bg-warmWhite px-4 py-3 sm:px-6"><button onClick={goBack} className="rounded-full px-4 py-2.5 text-sm font-bold text-ink-muted transition hover:bg-porcelain hover:text-ink">← Back</button>{step !== 'quote' ? <button onClick={goNext} className="premium-button px-7 py-2.5 text-sm">{nextLabel} →</button> : <button onClick={resetProject} className="rounded-full px-4 py-2.5 text-sm font-bold text-ink-muted transition hover:bg-porcelain hover:text-ink">Start new plan</button>}</nav>
       <DesignAssistantPanel />

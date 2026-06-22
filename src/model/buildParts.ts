@@ -18,6 +18,12 @@ import type { BuiltUnit, EdgeId, Part, Unit } from './types';
 export function buildParts(unit: Unit): BuiltUnit {
   // Floating shelf = a single solid board (its own simple geometry).
   if (unit.type === 'shelf') return buildShelf(unit);
+  // Montessori forward-facing bookshelf — open carcass with display ledges + rails.
+  if (unit.type === 'montessori') return buildMontessori(unit);
+  // Twin-over-twin bunk bed — plywood panel ends, rails, slatted decks, ladder.
+  if (unit.type === 'bunk') return buildBunk(unit);
+  // Montessori learning tower — toddler kitchen helper with a safe standing platform.
+  if (unit.type === 'learning-tower') return buildLearningTower(unit);
 
   const parts: Part[] = [];
   let n = 0;
@@ -279,6 +285,388 @@ function buildShelf(unit: Unit): BuiltUnit {
     notes: 'Hollow torsion-box build at the shop; shown solid here.',
   };
   return { parts: [part], hardware: { hinges: 0, shelfPins: 0, pulls: 0, drawerSlides: 0 } };
+}
+
+// =============================================================================
+// MONTESSORI forward-facing bookshelf
+// =============================================================================
+// A low, child-height open shelf with shallow display ledges + front retaining
+// rails so book covers face out. Material-efficient: one carcass box + thin
+// ledges and rails, all nesting from a single sheet for a typical 30" unit.
+//   • full-height sides capture top + bottom (frameless)
+//   • 1/4" back for squareness
+//   • N display ledges (shelvesPerSection drives count; default 3)
+//   • a low front rail per ledge to hold books in place
+// =============================================================================
+function buildMontessori(unit: Unit): BuiltUnit {
+  const parts: Part[] = [];
+  let n = 0;
+  const id = (role: string) => `${role}-${n++}`;
+
+  const T = C.carcassThickness;
+  const TB = C.backThickness;
+  const W = unit.overall.width;
+  const H = unit.overall.height;
+  const D = unit.overall.depth;
+  const mat = unit.materials;
+
+  const interiorWidth = W - 2 * T;
+  const interiorHeight = H - 2 * T;
+  const bottomInsideY = T;
+  const frontZ = D / 2;
+  const backInsideZ = -D / 2 + TB;
+
+  // Sides — full height.
+  for (const side of [-1, 1] as const) {
+    parts.push({
+      id: id('side'),
+      name: side < 0 ? 'Side (Left)' : 'Side (Right)',
+      role: 'side',
+      material: mat.carcass,
+      length: H,
+      width: D,
+      thickness: T,
+      grain: 'length',
+      bandedEdges: ['L1'],
+      position: { x: side * (W / 2 - T / 2), y: H / 2, z: 0 },
+      size3d: { w: T, h: H, d: D },
+    });
+  }
+
+  // Bottom + Top captured between the sides.
+  for (const [name, cy] of [
+    ['Bottom', bottomInsideY - T / 2],
+    ['Top', H - T / 2],
+  ] as const) {
+    parts.push({
+      id: id(name.toLowerCase()),
+      name,
+      role: name === 'Top' ? 'top' : 'bottom',
+      material: mat.carcass,
+      length: interiorWidth,
+      width: D,
+      thickness: T,
+      grain: 'length',
+      bandedEdges: ['L1'],
+      position: { x: 0, y: cy, z: 0 },
+      size3d: { w: interiorWidth, h: T, d: D },
+    });
+  }
+
+  // Back — 1/4" panel for squareness.
+  parts.push({
+    id: id('back'),
+    name: 'Back Panel',
+    role: 'back',
+    material: mat.back,
+    length: interiorHeight,
+    width: interiorWidth,
+    thickness: TB,
+    grain: 'length',
+    bandedEdges: [],
+    position: { x: 0, y: H / 2, z: backInsideZ - TB / 2 },
+    size3d: { w: interiorWidth, h: interiorHeight, d: TB },
+  });
+
+  // Display ledges + front rails. shelvesPerSection drives the pocket count.
+  const pockets = Math.max(2, Math.floor(unit.shelvesPerSection) || 3);
+  const ledgeDepth = D - TB - 0.5; // nearly full depth; book leans back
+  const ledgeCenterZ = (frontZ + backInsideZ) / 2;
+  const railH = 3.0; // low retaining rail
+  const railThk = 0.5;
+  for (let k = 1; k <= pockets; k++) {
+    const y = bottomInsideY + (k * interiorHeight) / (pockets + 1);
+    // Display ledge (a shallow shelf).
+    parts.push({
+      id: id('shelf'),
+      name: 'Display Ledge',
+      role: 'shelf',
+      material: mat.carcass,
+      length: interiorWidth,
+      width: ledgeDepth,
+      thickness: T,
+      grain: 'length',
+      bandedEdges: ['L1'],
+      position: { x: 0, y, z: ledgeCenterZ },
+      size3d: { w: interiorWidth, h: T, d: ledgeDepth },
+    });
+    // Front retaining rail (covers face the room, rail keeps them from sliding).
+    parts.push({
+      id: id('rail'),
+      name: 'Book Rail',
+      role: 'shelf',
+      material: mat.carcass,
+      length: interiorWidth,
+      width: railH,
+      thickness: railThk,
+      grain: 'length',
+      bandedEdges: ['L1', 'W1', 'W2'],
+      position: { x: 0, y: y + railH / 2, z: frontZ - railThk / 2 - 0.25 },
+      size3d: { w: interiorWidth, h: railH, d: railThk },
+      notes: 'Low front rail so book covers face out without sliding off.',
+    });
+  }
+
+  const shelves = parts.filter((p) => p.name === 'Display Ledge');
+  return {
+    parts,
+    hardware: { hinges: 0, shelfPins: shelves.length * C.shelfPinsPerShelf, pulls: 0, drawerSlides: 0 },
+  };
+}
+
+// =============================================================================
+// TWIN-OVER-TWIN BUNK BED
+// =============================================================================
+// Material-efficient plywood bunk that ships as flat panels (House of Nook's
+// method). Twin mattress is 38" x 75"; the default 80 x 42 x 65 frame gives
+// clearance. Coordinate convention: width (X) runs along the wall = bed LENGTH;
+// depth (Z) projects into the room = bed WIDTH; height (Y) is total height.
+//   • 2 plywood end panels (head + foot) — the structure, ship flat
+//   • 2 side rails per bunk (front + back) carry the slatted deck
+//   • 1 slatted mattress deck per bunk (shown solid; cut as slats)
+//   • upper guard rail on the open (front) side for safety
+//   • integrated ladder (2 stringers + rungs) at the foot end
+// =============================================================================
+function buildBunk(unit: Unit): BuiltUnit {
+  const parts: Part[] = [];
+  let n = 0;
+  const id = (role: string) => `${role}-${n++}`;
+
+  const T = C.carcassThickness; // 3/4" panels
+  const W = unit.overall.width; // bed length along the wall (~80)
+  const H = unit.overall.height; // total height (~65)
+  const D = unit.overall.depth; // bed width into the room (~42)
+  const mat = unit.materials;
+
+  // Deck heights (top of the mattress platform) off the floor.
+  const lowerDeckY = 13;
+  const upperDeckY = Math.max(lowerDeckY + 24, H - 28);
+  const railH = 6; // rail face height
+  const railThk = 1.5; // doubled 3/4 ply or solid
+  const innerLen = W - 2 * T; // clear length between end panels
+
+  // End panels (head + foot) — full depth x full height.
+  for (const [sx, label] of [
+    [-1, 'End Panel (Head)'],
+    [1, 'End Panel (Foot)'],
+  ] as const) {
+    parts.push({
+      id: id('side'),
+      name: label,
+      role: 'side',
+      material: mat.carcass,
+      length: H,
+      width: D,
+      thickness: T,
+      grain: 'length',
+      bandedEdges: ['L1', 'L2'],
+      position: { x: sx * (W / 2 - T / 2), y: H / 2, z: 0 },
+      size3d: { w: T, h: H, d: D },
+    });
+  }
+
+  // Side rails + slatted deck per bunk level.
+  for (const [lvl, deckY] of [
+    ['Lower', lowerDeckY],
+    ['Upper', upperDeckY],
+  ] as const) {
+    for (const sz of [-1, 1] as const) {
+      parts.push({
+        id: id('divider'),
+        name: `${lvl} Side Rail (${sz < 0 ? 'Back' : 'Front'})`,
+        role: 'divider',
+        material: mat.carcass,
+        length: innerLen,
+        width: railH,
+        thickness: railThk,
+        grain: 'length',
+        bandedEdges: ['L1'],
+        position: { x: 0, y: deckY - railH / 2, z: sz * (D / 2 - railThk / 2) },
+        size3d: { w: innerLen, h: railH, d: railThk },
+      });
+    }
+    // Slatted mattress deck (shown solid; cut as ~13 slats at the shop).
+    parts.push({
+      id: id('shelf'),
+      name: `${lvl} Mattress Deck`,
+      role: 'shelf',
+      material: mat.carcass,
+      length: innerLen,
+      width: D - 2 * railThk,
+      thickness: 0.75,
+      grain: 'length',
+      bandedEdges: [],
+      position: { x: 0, y: deckY, z: 0 },
+      size3d: { w: innerLen, h: 0.75, d: D - 2 * railThk },
+      notes: 'Slatted platform: 13 slats × 3" on 3" gaps. Shown solid for preview.',
+    });
+  }
+
+  // Upper guard rail on the open (front) side, above the upper deck.
+  const guardLen = innerLen * 0.66;
+  parts.push({
+    id: id('divider'),
+    name: 'Upper Guard Rail',
+    role: 'divider',
+    material: mat.carcass,
+    length: guardLen,
+    width: railH,
+    thickness: railThk,
+    grain: 'length',
+    bandedEdges: ['L1', 'L2'],
+    position: { x: -innerLen * 0.12, y: upperDeckY + 7, z: D / 2 - railThk / 2 },
+    size3d: { w: guardLen, h: railH, d: railThk },
+    notes: 'Safety rail — leaves a clear opening at the ladder end.',
+  });
+
+  // Ladder at the foot end, on the front side: 2 stringers + 4 rungs.
+  const ladderX = W / 2 - T - 2;
+  const ladderZ = D / 2 + 1.5;
+  const stringerH = upperDeckY + 4;
+  for (const dz of [-3.5, 3.5]) {
+    parts.push({
+      id: id('divider'),
+      name: 'Ladder Stringer',
+      role: 'divider',
+      material: mat.carcass,
+      length: stringerH,
+      width: 2.5,
+      thickness: 1.0,
+      grain: 'length',
+      bandedEdges: ['L1', 'L2'],
+      position: { x: ladderX + dz, y: stringerH / 2, z: ladderZ },
+      size3d: { w: 1.0, h: stringerH, d: 2.5 },
+    });
+  }
+  const rungs = 4;
+  for (let r = 1; r <= rungs; r++) {
+    const y = (r * upperDeckY) / (rungs + 1);
+    parts.push({
+      id: id('divider'),
+      name: 'Ladder Rung',
+      role: 'divider',
+      material: mat.carcass,
+      length: 7,
+      width: 1.5,
+      thickness: 1.0,
+      grain: 'length',
+      bandedEdges: ['L1'],
+      position: { x: ladderX, y, z: ladderZ },
+      size3d: { w: 7, h: 1.5, d: 1.0 },
+    });
+  }
+
+  return {
+    parts,
+    hardware: { hinges: 0, shelfPins: 0, pulls: 0, drawerSlides: 0 },
+  };
+}
+
+// =============================================================================
+// MONTESSORI LEARNING TOWER (toddler kitchen helper)
+// =============================================================================
+// A small, safe standing platform so a toddler can reach the counter. Easy to
+// build from offcuts, ships in a medium box, high demand. Two plywood side
+// panels + an adjustable standing platform + a lower step + top safety rails
+// and an enclosed back so the child can't tip backward.
+// =============================================================================
+function buildLearningTower(unit: Unit): BuiltUnit {
+  const parts: Part[] = [];
+  let n = 0;
+  const id = (role: string) => `${role}-${n++}`;
+
+  const T = C.carcassThickness;
+  const W = unit.overall.width; // ~16
+  const H = unit.overall.height; // ~36 (counter reach)
+  const D = unit.overall.depth; // ~18
+  const mat = unit.materials;
+
+  const interiorWidth = W - 2 * T;
+  const platformY = Math.min(H - 14, Math.round(H * 0.56)); // standing height
+  const stepY = Math.max(8, Math.round(platformY * 0.45));
+  const frontZ = D / 2;
+  const backInsideZ = -D / 2 + T;
+  const railH = 3;
+  const railThk = 1.0;
+
+  // Two side panels — the structure.
+  for (const side of [-1, 1] as const) {
+    parts.push({
+      id: id('side'),
+      name: side < 0 ? 'Side (Left)' : 'Side (Right)',
+      role: 'side',
+      material: mat.carcass,
+      length: H,
+      width: D,
+      thickness: T,
+      grain: 'length',
+      bandedEdges: ['L1', 'L2'],
+      position: { x: side * (W / 2 - T / 2), y: H / 2, z: 0 },
+      size3d: { w: T, h: H, d: D },
+    });
+  }
+
+  // Standing platform (adjustable height) + a lower climbing step.
+  for (const [name, y, depthFrac, zc] of [
+    ['Standing Platform', platformY, 0.85, 0],
+    ['Step', stepY, 0.5, D * 0.2],
+  ] as const) {
+    const pd = D * depthFrac;
+    parts.push({
+      id: id('shelf'),
+      name,
+      role: 'shelf',
+      material: mat.carcass,
+      length: interiorWidth,
+      width: pd,
+      thickness: 0.75,
+      grain: 'length',
+      bandedEdges: ['L1'],
+      position: { x: 0, y, z: zc },
+      size3d: { w: interiorWidth, h: 0.75, d: pd },
+    });
+  }
+
+  // Enclosed back panel from the platform up (anti-tip).
+  const backH = H - platformY - 2;
+  parts.push({
+    id: id('divider'),
+    name: 'Back Guard',
+    role: 'divider',
+    material: mat.carcass,
+    length: interiorWidth,
+    width: backH,
+    thickness: 0.5,
+    grain: 'length',
+    bandedEdges: ['L1'],
+    position: { x: 0, y: platformY + backH / 2, z: backInsideZ - 0.25 },
+    size3d: { w: interiorWidth, h: backH, d: 0.5 },
+  });
+
+  // Safety rails: top front + a front rail at chest height (fall protection).
+  for (const [name, y] of [
+    ['Top Front Rail', H - 4],
+    ['Front Guard Rail', platformY + 9],
+  ] as const) {
+    parts.push({
+      id: id('divider'),
+      name,
+      role: 'divider',
+      material: mat.carcass,
+      length: interiorWidth,
+      width: railH,
+      thickness: railThk,
+      grain: 'length',
+      bandedEdges: ['L1', 'L2'],
+      position: { x: 0, y, z: frontZ - railThk / 2 },
+      size3d: { w: interiorWidth, h: railH, d: railThk },
+    });
+  }
+
+  return {
+    parts,
+    hardware: { hinges: 0, shelfPins: 4, pulls: 0, drawerSlides: 0 },
+  };
 }
 
 /**

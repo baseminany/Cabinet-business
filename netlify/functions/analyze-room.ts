@@ -27,7 +27,6 @@ All dimensions are INCHES. Wall 0 is the main/back wall. This is a STARTING DRAF
 
 export default async (req: Request): Promise<Response> => {
   if (req.method !== 'POST') return json({ error: 'POST only' }, 405);
-  if (!process.env.ANTHROPIC_API_KEY) return json({ error: 'Photo analysis not configured (set ANTHROPIC_API_KEY).' }, 501);
 
   let imageBase64 = '';
   let mediaType = 'image/jpeg';
@@ -39,6 +38,33 @@ export default async (req: Request): Promise<Response> => {
     return json({ error: 'Invalid request body.' }, 400);
   }
   if (!imageBase64) return json({ error: 'No image provided.' }, 400);
+  // base64 is ~33% larger than binary; 5MB image ≈ 6.7MB base64
+  if (imageBase64.length > 7_000_000) return json({ error: 'Image too large (max ~5MB).' }, 413);
+  const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+  if (!ALLOWED_TYPES.includes(mediaType)) return json({ error: 'Unsupported image type.' }, 415);
+
+  // Browser proxy mode: route the photo through claude.ai vision (no API key).
+  const PROXY = process.env.BROWSER_PROXY_URL;
+  if (PROXY) {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 150000);
+      const res = await fetch(`${PROXY}/api/analyze-room`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ imageBase64, mediaType }),
+        signal: ctrl.signal,
+      });
+      clearTimeout(timer);
+      const data = await res.json();
+      return json(data, res.status);
+    } catch (e: any) {
+      return json({ error: `Browser proxy error: ${e?.message}` }, 502);
+    }
+  }
+
+  // Direct API mode (requires ANTHROPIC_API_KEY)
+  if (!process.env.ANTHROPIC_API_KEY) return json({ error: 'Photo analysis not configured. Set BROWSER_PROXY_URL (browser mode) or ANTHROPIC_API_KEY (API mode).' }, 501);
 
   try {
     const client = new Anthropic();
