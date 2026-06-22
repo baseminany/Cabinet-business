@@ -74,6 +74,82 @@ export default function Welcome() {
         <div className="mx-auto max-w-7xl"><p className="eyebrow text-brass">Designed for real homes</p><div className="mt-4 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]"><LargeTile file="product-reading-nook.jpg" title="Reading bench with storage" sub="bench · drawers · book ledges" /><div className="grid gap-5"><SmallTile file="product-laundry-nook.jpg" title="Laundry utility nook" /><SmallTile file="product-kids-bed-storage.jpg" title="Storage bed nook" /></div></div></div>
       </section>
 
+      {/* WHY WE EXIST — competitive positioning section */}
+      <section className="border-y border-champagne/25 bg-[linear-gradient(180deg,#fdf9f2,#f6ede0)] px-6 py-24 sm:px-10 lg:px-14">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow text-brass">Why we built this</p>
+            <h2 className="mt-4 text-4xl font-semibold leading-[0.98] tracking-[-0.045em] sm:text-5xl">The in-between finally exists.</h2>
+            <p className="mt-5 text-base leading-8 text-ink-soft">
+              For a long time, "custom built-ins" meant picking between two bad options. We built the third one.
+            </p>
+          </div>
+
+          {/* Three-way contrast cards */}
+          <div className="mt-14 grid gap-5 md:grid-cols-3">
+            {/* IKEA path */}
+            <div className="rounded-3xl border border-champagne/30 bg-warmWhite p-7">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-champagne/40 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-ink-muted">IKEA / big-box</div>
+              <div className="text-3xl font-bold text-ink">~$800–$2k</div>
+              <div className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">+ your weekend + your sanity</div>
+              <ul className="mt-5 space-y-3 text-sm leading-6 text-ink-soft">
+                <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-red-400">✗</span>Boxes sized for showrooms, not real walls</li>
+                <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-red-400">✗</span>Missing hardware, misread pictograms, restart from scratch</li>
+                <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-red-400">✗</span>Looks assembled. Feels assembled. Won't last like built-in.</li>
+              </ul>
+            </div>
+
+            {/* Contractor path */}
+            <div className="rounded-3xl border border-champagne/30 bg-warmWhite p-7">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-champagne/40 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-ink-muted">Custom contractor</div>
+              <div className="text-3xl font-bold text-ink">$15k–$60k</div>
+              <div className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">8–14 week wait, no preview</div>
+              <ul className="mt-5 space-y-3 text-sm leading-6 text-ink-soft">
+                <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-red-400">✗</span>You won't see it until it's installed — and priced</li>
+                <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-red-400">✗</span>Material selections from a binder, not a live 3D model</li>
+                <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-red-400">✗</span>Two months of dust, delays, and back-and-forth</li>
+              </ul>
+            </div>
+
+            {/* House of Nook */}
+            <div className="relative rounded-3xl border-2 border-walnut/30 bg-walnut p-7 text-porcelain shadow-lift">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-porcelain/80">House of Nook</div>
+              <div className="text-3xl font-bold">$2k–$6k</div>
+              <div className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-porcelain/60">4–6 weeks, see it before you buy</div>
+              <ul className="mt-5 space-y-3 text-sm leading-6 text-porcelain/85">
+                <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-amber-300">✓</span>Custom-fit to your exact wall — to the inch</li>
+                <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-amber-300">✓</span>Design live in 3D before ordering a single piece</li>
+                <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-amber-300">✓</span>Ships flat-pack, assembles in a day — not a month</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Proof stat row */}
+          <div className="mt-14 grid gap-px overflow-hidden rounded-3xl border border-champagne/30 sm:grid-cols-4">
+            {[
+              ['4–6 weeks', 'From order to your door — not 14'],
+              ['To the inch', 'Sized for your actual wall, not a showroom floor'],
+              ['See it first', 'Design in 3D before you spend a dollar'],
+              ['$2k–$6k', 'The custom look, without the contractor price'],
+            ].map(([stat, desc]) => (
+              <div key={stat} className="bg-warmWhite px-6 py-7">
+                <div className="text-xl font-black tracking-tight text-ink">{stat}</div>
+                <div className="mt-2 text-[12px] leading-5 text-ink-muted">{desc}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Emotional closer */}
+          <div className="mt-14 mx-auto max-w-2xl rounded-3xl border border-brass/20 bg-[#fffbf2] px-8 py-8 text-center">
+            <p className="text-lg font-semibold leading-7 text-ink">
+              "Your space isn't disorganized because you failed.<br className="hidden sm:block" /> It was just never designed for how your family actually lives."
+            </p>
+            <p className="mt-4 text-sm text-ink-muted">House of Nook builds the nook your space always needed — without the contractor markup or the IKEA regret.</p>
+            <button onClick={go} className="premium-button mt-6 px-8 py-3.5 text-sm">Design my nook →</button>
+          </div>
+        </div>
+      </section>
+
       <section className="bg-warmWhite px-6 py-20 sm:px-10 lg:px-14">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr]"><div><p className="eyebrow text-brass">How it works</p><h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Simple first. Detailed only when needed.</h2><p className="mt-5 max-w-md text-sm leading-7 text-ink-muted">Choose a nook system, adjust size, pick finishes, then review a starting estimate. Advanced construction details stay tucked away until they matter.</p></div><div className="grid gap-4 sm:grid-cols-2">{[['01','Choose a system','Mudroom, coffee, playroom, laundry, reading, or storage bed.'],['02','Fit the space','Enter the wall width, room depth, and major openings.'],['03','Pick finishes','Named paints, white oak, rift oak, and walnut.'],['04','Review estimate','Starting price before measurement and shipping review.']].map(([n,t,d]) => <div key={t} className="premium-card p-6"><div className="text-3xl font-semibold tracking-[-0.05em] text-brass">{n}</div><h3 className="mt-5 text-xl font-black tracking-tight">{t}</h3><p className="mt-2 text-sm leading-6 text-ink-muted">{d}</p></div>)}</div></div>
       </section>
