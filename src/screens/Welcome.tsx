@@ -35,8 +35,8 @@ export default function Welcome() {
               Montessori bookshelves, twin bunks, and playroom storage in real wood with kid-safe rounded edges — designed online for your space, shipped flat, assembled in an afternoon. The same shop builds mudrooms, coffee bars, and reading nooks for the rest of the home.
             </p>
             <div className="fade-up-3 mt-9 flex flex-wrap gap-3">
-              <button onClick={() => setStep('shop')} className="premium-button px-8 py-4 text-sm">Shop kids & playroom</button>
-              <button onClick={() => setStep('entry')} className="rounded-full border border-brass/35 bg-warmWhite px-8 py-4 text-sm font-bold text-walnut shadow-sm transition hover:border-walnut hover:bg-porcelain">Design my own</button>
+              <button onClick={go} className="premium-button px-8 py-4 text-sm">Start designing →</button>
+              <a href="#systems" className="rounded-full border border-brass/35 bg-warmWhite px-8 py-4 text-sm font-bold text-walnut shadow-sm transition hover:border-walnut hover:bg-porcelain">See our work</a>
             </div>
             <div className="mt-8 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-3">
               {['Kid-safe edges', 'Ships flat-pack', 'Real wood, USA-made'].map((item) => (
