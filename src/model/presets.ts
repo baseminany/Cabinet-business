@@ -48,6 +48,7 @@ export const PRESETS: PresetSpec[] = [
     blurb: 'A taller forward-facing tower for bigger collections — still scaled so kids reach the lower ledges.',
     highlights: ['28″ wide × 44″ tall', '4 display ledges', 'Soft white painted finish', 'Anti-tip wall strap included'],
     items: [{ type: 'montessori', patch: { overall: { width: 28, height: 44, depth: 9 }, shelvesPerSection: 4, materials: { carcass: 'sw-alabaster', doors: 'sw-alabaster', back: 'ply-back' }, label: 'Book Tower' } }],
+    image: '/images/kids-book-tower.png',
   },
   {
     id: 'learning-tower',
@@ -90,6 +91,7 @@ export const PRESETS: PresetSpec[] = [
       { type: 'base', patch: { overall: { width: 48, height: 24, depth: 15 }, sections: 3, shelvesPerSection: 0, door: 'none', toeKick: { enabled: false, height: 0 }, materials: { carcass: 'white-oak', doors: 'sw-alabaster', back: 'ply-back' }, label: 'Toy Cubbies' } },
       { type: 'montessori', patch: { overall: { width: 30, height: 33, depth: 9 }, shelvesPerSection: 3, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Bookshelf' } },
     ],
+    image: '/images/kids-play-nook.png',
   },
   {
     id: 'mudroom-lockers',

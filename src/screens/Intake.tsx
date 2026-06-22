@@ -8,6 +8,7 @@ import { useStore, type ShopCategory } from '../store';
 export default function Intake() {
   const setStep = useStore((s) => s.setStep);
   const openShop = useStore((s) => s.openShop);
+  const chooseNook = useStore((s) => s.chooseNook);
 
   const readyMade: { cat: ShopCategory; title: string; sub: string; icon: ReactNode; accent: string }[] = [
     { cat: 'Kids', title: 'Kids & playroom', sub: 'Montessori shelves, learning tower, book ledges, toy storage', accent: '#6b7f53', icon: <PathIcon d="M4 19V8l8-4 8 4v11M9 19v-6h6v6" /> },
@@ -28,12 +29,12 @@ export default function Intake() {
         <h1 className="mt-4 max-w-2xl text-4xl font-semibold leading-[1.0] tracking-[-0.045em] text-ink sm:text-5xl">What are you making?</h1>
         <p className="mt-4 max-w-xl text-base leading-8 text-ink-soft">Pick a ready-made piece to order and customize, or design a built-in to fit your exact wall. You can switch paths any time.</p>
 
-        {/* Ready-made */}
+        {/* Pick a nook type → fit the space */}
         <div className="mt-10">
-          <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-ink-muted">Order ready-made · ships flat, customize anything</h2>
+          <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-ink-muted">Pick a nook · we'll help you fit it to your space</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             {readyMade.map((r) => (
-              <button key={r.cat} onClick={() => openShop(r.cat)} className="group flex items-center gap-4 rounded-3xl border border-champagne/35 bg-warmWhite p-5 text-left shadow-soft transition hover:border-brass/55 hover:shadow-card active:scale-[0.99]">
+              <button key={r.cat} onClick={() => chooseNook(r.cat)} className="group flex items-center gap-4 rounded-3xl border border-champagne/35 bg-warmWhite p-5 text-left shadow-soft transition hover:border-brass/55 hover:shadow-card active:scale-[0.99]">
                 <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-porcelain" style={{ background: r.accent }}>{r.icon}</span>
                 <span className="flex-1">
                   <span className="block text-lg font-black tracking-tight text-ink">{r.title}</span>

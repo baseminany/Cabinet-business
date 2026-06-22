@@ -115,6 +115,8 @@ interface AppState {
   shopCategory: ShopCategory;
   /** Open the ready-made shop on a given category (used by the intake page). */
   openShop: (cat: ShopCategory) => void;
+  /** Pick a nook type, then go to "fit the space" (ready-made offered there). */
+  chooseNook: (cat: ShopCategory) => void;
   setRoomPhoto: (dataUrl: string | null) => void;
   startBlankRoom: () => void;
   startDemoRoom: () => void;
@@ -203,6 +205,7 @@ export const useStore = create<AppState>((set, get) => {
     setStep: (s) => set({ step: s }),
     shopCategory: 'Kids',
     openShop: (cat) => set({ shopCategory: cat, step: 'shop' }),
+    chooseNook: (cat) => set({ shopCategory: cat, step: 'entry' }),
     setRoomPhoto: (dataUrl) => set({ roomPhoto: dataUrl }),
     startBlankRoom: () => set({ room: BLANK_ROOM, units: [], selectedId: null, step: 'room', view: 'design', cameraPreset: 'perspective' }),
     startDemoRoom: () => set({ room: DEMO_ROOM, units: [], selectedId: null, step: 'room', view: 'design', cameraPreset: 'perspective' }),

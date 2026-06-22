@@ -64,11 +64,11 @@ Lead with kids/Montessori (easy to build, ship parcel, high margin, hot demand).
 | Product | ~Price | Photo |
 |---|---|---|
 | Montessori forward-facing bookshelf (white oak) | $545 | ✅ real |
-| Montessori tall book tower (painted) | $456 | sketch |
+| Montessori tall book tower (painted) | $456 | ✅ real |
 | Learning tower (toddler kitchen helper) | $365 | ✅ real |
 | Forward-facing book ledges (set of 3) | $222 | ✅ real |
 | Toy cubby bench | $479 | ✅ real |
-| Montessori play nook (cubbies + bookshelf) | $1,041 | sketch |
+| Montessori play nook (cubbies + bookshelf) | $1,041 | ✅ real |
 
 Also: mudroom, coffee, reading, laundry nook systems (the "built-in" tier).
 
@@ -144,11 +144,17 @@ Per-unit "Special requests" field (vent cutouts, wire holes) flows into the quot
 
 ---
 
+## App flow detail (current)
+
+- Landing hero "Start designing" → Intake. Intake category tiles (Kids/Coffee/Mudroom/Reading)
+  → **fit-the-space** (EntryChoice) remembering the category; "Custom built-in" tile → fit-the-space too.
+- Fit-the-space (EntryChoice) offers, for the chosen category: "Start from a ready-made {category}
+  design" (→ shop filtered) + upload-photo + design-against-a-wall + start-blank-module.
+- Landing has a "Who we are" section (owner-run USA shop story).
+
 ## Open items / next steps
 
-- "Who we are / about" section on the landing (listed by owner, not built yet).
-- Intake routing: category tiles currently → shop; consider routing every nook type through fit-the-space.
-- AI product photos for the last 2 shop cards (tall book tower, play nook).
-- Real shop numbers to finalize pricing (labor hrs per type, confirm overhead/margin).
+- Real shop numbers to finalize pricing (labor hrs per type, confirm overhead/margin). NEEDS OWNER INPUT.
 - Vent cutouts are captured as quote notes only; not modeled in 3D/cut list yet.
 - AI rate limiting on the Netlify functions (flagged in earlier review).
+- Enable AI in production (API keys in Netlify env, or tunnel to local proxy) — currently local-only.

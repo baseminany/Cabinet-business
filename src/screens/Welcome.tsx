@@ -152,6 +152,29 @@ export default function Welcome() {
         </div>
       </section>
 
+      {/* WHO WE ARE — the maker behind it */}
+      <section className="border-y border-champagne/25 bg-porcelain px-6 py-20 sm:px-10 lg:px-14">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1fr_1fr]">
+          <figure className="premium-card overflow-hidden p-3">
+            <Img name="kids-learning-tower.png" alt="House of Nook piece in a real home" label="In-house build" className="aspect-[5/4] w-full rounded-[20px]" />
+          </figure>
+          <div>
+            <p className="eyebrow text-brass">Who we are</p>
+            <h2 className="mt-3 text-4xl font-semibold leading-[1.0] tracking-[-0.045em] sm:text-5xl">A real shop, not a warehouse.</h2>
+            <div className="mt-5 space-y-4 text-base leading-8 text-ink-soft">
+              <p>House of Nook is a small, owner-run woodworking shop in the USA. Every piece is designed, cut, and finished in-house — not imported, not drop-shipped, not assembled from someone else's flat-pack.</p>
+              <p>We started it for a simple reason: the furniture for the spaces families actually live in — the mudroom, the playroom, the reading corner — is either cheap and disposable or custom and unaffordable. So we built the in-between: real-wood, built-to-fit pieces you can design online and put together yourself.</p>
+              <p>When you order, you're not buying from a faceless catalog. You're working with the person who builds it.</p>
+            </div>
+            <div className="mt-7 flex flex-wrap gap-3">
+              {['Owner-run', 'Made in the USA 🇺🇸', 'Real wood', 'Built to your measurements'].map((t) => (
+                <span key={t} className="rounded-full border border-champagne/40 bg-warmWhite px-4 py-2 text-[11px] font-bold uppercase tracking-[0.14em] text-ink-muted">{t}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* SHIPPING & ASSEMBLY — how it gets to your home */}
       <section className="bg-warmWhite px-6 py-20 sm:px-10 lg:px-14">
         <div className="mx-auto max-w-7xl">
