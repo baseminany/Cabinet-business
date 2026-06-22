@@ -120,17 +120,19 @@ export default function Welcome() {
                 <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-amber-300">✓</span>Custom-fit to your exact wall — to the inch</li>
                 <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-amber-300">✓</span>Design live in 3D before ordering a single piece</li>
                 <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-amber-300">✓</span>Ships flat-pack, assembles in a day — not a month</li>
+                <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-amber-300">✓</span>Designed and built in-house in the USA — not imported or prefab</li>
               </ul>
             </div>
           </div>
 
           {/* Proof stat row */}
-          <div className="mt-14 grid gap-px overflow-hidden rounded-3xl border border-champagne/30 sm:grid-cols-4">
+          <div className="mt-14 grid gap-px overflow-hidden rounded-3xl border border-champagne/30 grid-cols-2 sm:grid-cols-5">
             {[
               ['4–6 weeks', 'From order to your door — not 14'],
               ['To the inch', 'Sized for your actual wall, not a showroom floor'],
               ['See it first', 'Design in 3D before you spend a dollar'],
               ['$2k–$6k', 'The custom look, without the contractor price'],
+              ['🇺🇸 Made here', 'Built in-house in the USA — not imported or prefab'],
             ].map(([stat, desc]) => (
               <div key={stat} className="bg-warmWhite px-6 py-7">
                 <div className="text-xl font-black tracking-tight text-ink">{stat}</div>
@@ -179,7 +181,7 @@ export default function Welcome() {
 
           {/* Reassurance strip */}
           <div className="mt-10 flex flex-wrap justify-center gap-5 text-[12px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
-            {['No contractor needed', 'No special tools', 'No freight surcharge', 'Full instructions included'].map((t) => (
+            {['No contractor needed', 'No special tools', 'No freight surcharge', 'Full instructions included', 'Made in the USA 🇺🇸'].map((t) => (
               <span key={t} className="flex items-center gap-1.5"><span className="text-brass">✓</span>{t}</span>
             ))}
           </div>
