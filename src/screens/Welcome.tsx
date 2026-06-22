@@ -94,7 +94,7 @@ export default function Welcome() {
               <div className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">+ your weekend + your sanity</div>
               <ul className="mt-5 space-y-3 text-sm leading-6 text-ink-soft">
                 <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-red-400">✗</span>Boxes sized for showrooms, not real walls</li>
-                <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-red-400">✗</span>Missing hardware, misread pictograms, restart from scratch</li>
+                <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-red-400">✗</span>Assembly instructions written for a showroom, not your wall</li>
                 <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-red-400">✗</span>Looks assembled. Feels assembled. Won't last like built-in.</li>
               </ul>
             </div>
@@ -146,6 +146,42 @@ export default function Welcome() {
             </p>
             <p className="mt-4 text-sm text-ink-muted">House of Nook builds the nook your space always needed — without the contractor markup or the IKEA regret.</p>
             <button onClick={go} className="premium-button mt-6 px-8 py-3.5 text-sm">Design my nook →</button>
+          </div>
+        </div>
+      </section>
+
+      {/* SHIPPING & ASSEMBLY — how it gets to your home */}
+      <section className="bg-warmWhite px-6 py-20 sm:px-10 lg:px-14">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow text-brass">Design to doorstep</p>
+            <h2 className="mt-4 text-4xl font-semibold leading-[0.98] tracking-[-0.045em] sm:text-5xl">Built for your room.<br className="hidden sm:block" /> Shipped to your door.</h2>
+            <p className="mt-5 text-base leading-8 text-ink-soft">Every nook is made to the exact measurements of your space — then broken into flat panels that fit through any door and go up in a day.</p>
+          </div>
+
+          <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { n: '01', icon: '📐', title: 'You design it', body: 'Enter your wall dimensions and openings. See it live in 3D before committing to a single piece.' },
+              { n: '02', icon: '🪚', title: 'We build it', body: 'Your order goes to our shop. Every panel is cut to your exact measurements — no standard sizes, no filler strips.' },
+              { n: '03', icon: '📦', title: 'Ships flat', body: 'Panels arrive flat-packed and labeled. No freight truck, no white-glove delivery fee — standard carrier to your door.' },
+              { n: '04', icon: '🔧', title: 'You assemble', body: 'Step-by-step instructions, pre-drilled hardware holes, and a weekend. Most nooks go up in 4–8 hours.' },
+            ].map(({ n, icon, title, body }) => (
+              <div key={n} className="relative rounded-3xl border border-champagne/35 bg-[linear-gradient(180deg,#fffdf8,#f7f1e6)] p-7">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{icon}</span>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-brass">{n}</span>
+                </div>
+                <h3 className="mt-4 text-xl font-black tracking-tight text-ink">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-ink-muted">{body}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Reassurance strip */}
+          <div className="mt-10 flex flex-wrap justify-center gap-5 text-[12px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
+            {['No contractor needed', 'No special tools', 'No freight surcharge', 'Full instructions included'].map((t) => (
+              <span key={t} className="flex items-center gap-1.5"><span className="text-brass">✓</span>{t}</span>
+            ))}
           </div>
         </div>
       </section>
