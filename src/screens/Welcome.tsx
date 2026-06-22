@@ -29,17 +29,17 @@ export default function Welcome() {
 
         <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 pb-16 pt-8 lg:grid-cols-[0.82fr_1.18fr] lg:pb-24 lg:pt-14">
           <div className="max-w-2xl">
-            <p className="eyebrow text-brass">Kids rooms & playrooms · made in the USA</p>
-            <h1 className="fade-up mt-5 text-[clamp(3rem,6.4vw,6.4rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-ink">Real-wood rooms kids grow into.</h1>
+            <p className="eyebrow text-brass">Modular built-ins for everyday rooms · made in the USA</p>
+            <h1 className="fade-up mt-5 text-[clamp(3rem,6.4vw,6.4rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-ink">Small spaces, beautifully built.</h1>
             <p className="fade-up-2 mt-7 max-w-xl text-base leading-8 text-ink-soft">
-              Montessori bookshelves, twin bunks, and playroom storage in real wood with kid-safe rounded edges — designed online for your space, shipped flat, assembled in an afternoon. The same shop builds mudrooms, coffee bars, and reading nooks for the rest of the home.
+              Warm, practical built-ins for the rooms you actually live in — mudrooms, coffee bars, reading nooks, laundry, entryways, and kids' playrooms. Designed online to fit your space, shipped flat, and assembled in an afternoon.
             </p>
             <div className="fade-up-3 mt-9 flex flex-wrap gap-3">
               <button onClick={go} className="premium-button px-8 py-4 text-sm">Start designing →</button>
               <a href="#systems" className="rounded-full border border-brass/35 bg-warmWhite px-8 py-4 text-sm font-bold text-walnut shadow-sm transition hover:border-walnut hover:bg-porcelain">See our work</a>
             </div>
             <div className="mt-8 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-3">
-              {['Kid-safe edges', 'Ships flat-pack', 'Real wood, USA-made'].map((item) => (
+              {['Made to fit', 'Ships flat-pack', 'Real wood, USA-made'].map((item) => (
                 <div key={item} className="rounded-2xl border border-champagne/35 bg-white/60 p-4 text-[11px] font-bold uppercase tracking-[0.14em] text-ink-muted shadow-sm">{item}</div>
               ))}
             </div>
@@ -47,12 +47,12 @@ export default function Welcome() {
 
           <div className="grid gap-3 sm:grid-cols-[1.05fr_0.95fr]">
             <figure className="premium-card overflow-hidden p-3">
-              <Img name="kids-montessori-bookshelf.png" alt="Montessori forward-facing bookshelf in a playroom" label="Montessori Bookshelf" className="aspect-[16/11] w-full rounded-[20px]" />
-              <figcaption className="flex items-center justify-between px-2 py-3"><span className="text-sm font-black tracking-tight">Montessori Bookshelf</span><span className="text-[10px] font-bold uppercase tracking-[0.16em] text-brass">white oak · forward-facing</span></figcaption>
+              <Img name="hero-mudroom-nook.jpg" alt="Compact modular mudroom nook" label="Mudroom Nook" className="aspect-[16/11] w-full rounded-[20px]" />
+              <figcaption className="flex items-center justify-between px-2 py-3"><span className="text-sm font-black tracking-tight">Mudroom Nook</span><span className="text-[10px] font-bold uppercase tracking-[0.16em] text-brass">bench · lockers · shelf</span></figcaption>
             </figure>
             <div className="grid gap-3">
-              <MiniProject file="product-playroom-storage.jpg" title="Playroom Storage" />
-              <MiniProject file="product-reading-nook.jpg" title="Reading Nook" />
+              <MiniProject file="kids-montessori-bookshelf.png" title="Montessori Shelf" />
+              <MiniProject file="product-coffee-nook.jpg" title="Coffee Nook" />
             </div>
           </div>
         </div>
@@ -156,7 +156,7 @@ export default function Welcome() {
       <section className="border-y border-champagne/25 bg-porcelain px-6 py-20 sm:px-10 lg:px-14">
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1fr_1fr]">
           <figure className="premium-card overflow-hidden p-3">
-            <Img name="kids-learning-tower.png" alt="House of Nook piece in a real home" label="In-house build" className="aspect-[5/4] w-full rounded-[20px]" />
+            <Img name="product-reading-nook.jpg" alt="House of Nook built-in in a real home" label="In-house build" className="aspect-[5/4] w-full rounded-[20px]" />
           </figure>
           <div>
             <p className="eyebrow text-brass">Who we are</p>

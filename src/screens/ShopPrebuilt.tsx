@@ -7,7 +7,7 @@ function money(n: number): string {
   return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 }
 
-const CATS: (PresetCategory | 'All')[] = ['Kids', 'All', 'Entry', 'Coffee', 'Storage'];
+const CATS: (PresetCategory | 'All')[] = ['All', 'Kids', 'Entry', 'Coffee', 'Storage'];
 
 export default function ShopPrebuilt() {
   const setStep = useStore((s) => s.setStep);
@@ -29,9 +29,9 @@ export default function ShopPrebuilt() {
       </header>
 
       <div className="mx-auto max-w-6xl px-6 pb-16 pt-10 sm:px-10">
-        <p className="eyebrow text-brass">Kids rooms & playrooms · built in the USA</p>
-        <h1 className="mt-4 max-w-2xl text-5xl font-semibold leading-[0.95] tracking-[-0.05em] text-ink sm:text-6xl">Montessori shelves, towers & nooks — ready to order.</h1>
-        <p className="mt-5 max-w-xl text-base leading-8 text-ink-soft">Real wood, kid-safe rounded edges, ships flat and assembles in an afternoon. Order a ready-made design as-is, or open it in the planner and make it yours — size, finish, and layout. Every price is a real starting estimate from our shop.</p>
+        <p className="eyebrow text-brass">Ready-made nooks for every room · built in the USA</p>
+        <h1 className="mt-4 max-w-2xl text-5xl font-semibold leading-[0.95] tracking-[-0.05em] text-ink sm:text-6xl">Pre-built nooks — order, then make them yours.</h1>
+        <p className="mt-5 max-w-xl text-base leading-8 text-ink-soft">Entryways, coffee bars, reading nooks, kids' rooms, and more — real wood, ships flat, assembles in an afternoon. Order a ready-made design as-is, or open it in the planner and change the size, finish, and layout. Every price is a real starting estimate from our shop.</p>
 
         {/* Category filter */}
         <div className="mt-8 flex flex-wrap gap-2">

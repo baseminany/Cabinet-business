@@ -55,10 +55,16 @@ Hero CTA "Start designing" → Intake. Category tiles → Shop (pre-filtered). C
 
 ---
 
-## Product line (kids-first)
+## Product line (balanced — everyday rooms, kids slightly forward)
 
-Lead with kids/Montessori (easy to build, ship parcel, high margin, hot demand). Built-ins
-(den, mudroom, coffee) are the higher-ticket margin tier.
+Positioned as **modular built-ins for everyday rooms** (mudroom, coffee, entry, reading, laundry,
+kids). Kids/Montessori is one prominent category, not the whole brand. Landing + shop lead general;
+kids is slightly forward in the portfolio. Built-ins (den, mudroom) are the higher-ticket margin tier.
+
+**Non-kids profitable nooks (parcel-ship, 1-2 sheet builds, good margin):**
+Floating Wall Shelves set ($289, walnut), Entryway Console ($631), Bedside Nightstand ($424),
+Compact Coffee Station ($690), Coffee Bar Hutch ($1,408), Mudroom Bench + Lockers ($1,713),
+Window Reading Bench ($636). All built from existing base/shelf geometry via presets.
 
 **Kids shop products (all ship parcel, ~1-2 sheet builds, no safety-cert liability):**
 | Product | ~Price | Photo |

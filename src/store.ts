@@ -203,7 +203,7 @@ export const useStore = create<AppState>((set, get) => {
     setCameraPreset: (v) => set({ cameraPreset: v }),
     step: saved?.step ?? 'welcome',
     setStep: (s) => set({ step: s }),
-    shopCategory: 'Kids',
+    shopCategory: 'All',
     openShop: (cat) => set({ shopCategory: cat, step: 'shop' }),
     chooseNook: (cat) => set({ shopCategory: cat, step: 'entry' }),
     setRoomPhoto: (dataUrl) => set({ roomPhoto: dataUrl }),
