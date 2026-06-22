@@ -94,6 +94,8 @@ interface AppState {
   selectedId: string | null;
   draggingId: string | null;
   setDragging: (id: string | null) => void;
+  draggingOpeningId: string | null;
+  setDraggingOpening: (id: string | null) => void;
   roomPhoto: string | null;
   roomScanStatus: RoomScanStatus;
   roomScanError: string | null;
@@ -153,6 +155,8 @@ export const useStore = create<AppState>((set, get) => {
     selectedId: saved?.selectedId ?? null,
     draggingId: null,
     setDragging: (id) => set({ draggingId: id }),
+    draggingOpeningId: null,
+    setDraggingOpening: (id) => set({ draggingOpeningId: id }),
     roomPhoto: null,
     roomScanStatus: 'idle',
     roomScanError: null,

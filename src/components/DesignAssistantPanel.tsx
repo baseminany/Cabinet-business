@@ -72,7 +72,7 @@ export default function DesignAssistantPanel() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-20 right-4 z-30 flex items-center gap-2 rounded-full bg-walnut px-4 py-3 text-sm font-semibold text-porcelain shadow-lift transition hover:bg-obsidian sm:bottom-6"
+        className="fixed bottom-28 right-4 z-30 flex items-center gap-2 rounded-full bg-walnut px-4 py-3 text-sm font-semibold text-porcelain shadow-lift transition hover:bg-obsidian sm:bottom-24"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3a9 9 0 0 0-9 9 8.8 8.8 0 0 0 1.2 4.5L3 21l4.7-1.2A9 9 0 1 0 12 3z" /></svg>
         Ask Nook
@@ -81,7 +81,7 @@ export default function DesignAssistantPanel() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-30 flex w-[22rem] max-w-[calc(100vw-2rem)] flex-col rounded-3xl bg-warmWhite shadow-card ring-1 ring-champagne/45" style={{ height: tab === 'render' && latestRender ? '34rem' : '28rem' }}>
+    <div className="fixed bottom-20 right-4 z-30 flex w-[22rem] max-w-[calc(100vw-2rem)] flex-col rounded-3xl bg-warmWhite shadow-card ring-1 ring-champagne/45 sm:bottom-20" style={{ height: tab === 'render' && latestRender ? '34rem' : '28rem' }}>
       {/* Header */}
       <div className="flex items-center justify-between border-b border-champagne/30 px-4 py-3">
         <div className="flex items-center gap-2">

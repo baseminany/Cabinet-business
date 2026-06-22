@@ -2,8 +2,6 @@ import { useEffect, useMemo, useRef } from 'react';
 import type React from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Grid, Environment, ContactShadows } from '@react-three/drei';
-import { EffectComposer, SSAO, Bloom, Vignette } from '@react-three/postprocessing';
-import { BlendFunction } from 'postprocessing';
 import * as THREE from 'three';
 import { useStore } from '../store';
 import { buildParts } from '../model/buildParts';
@@ -18,6 +16,7 @@ export default function Scene() {
   const view = useStore((s) => s.view);
   const cameraPreset = useStore((s) => s.cameraPreset);
   const draggingId = useStore((s) => s.draggingId);
+  const draggingOpeningId = useStore((s) => s.draggingOpeningId);
   const selectUnit = useStore((s) => s.selectUnit);
   const setDragging = useStore((s) => s.setDragging);
   const controls = useRef<any>(null);
@@ -48,30 +47,10 @@ export default function Scene() {
       {inRoom && <Room room={room} walls={fp.walls} points={fp.points} />}
       {units.map((u, i) => { const t = transforms[i]; return <group key={u.id} position={[t.x, t.y, t.z]} rotation={[0, t.rotY, 0]} onPointerDown={(e) => { e.stopPropagation(); startDrag(u.id); }} onPointerOver={() => inRoom && (document.body.style.cursor = 'grab')} onPointerOut={() => (document.body.style.cursor = 'auto')}><CabinetMesh parts={built[i].parts} unitId={u.id} /></group>; })}
       {inRoom && <Dragger walls={fp.walls} controls={controls} />}
+      {inRoom && <OpeningDragger walls={fp.walls} controls={controls} />}
       <ContactShadows position={[focus.cx, 0.025, focus.cz]} scale={sceneSpan * 2.4} far={sceneSpan} blur={2.15} opacity={inRoom ? 0.38 : 0.44} color="#2b2016" resolution={1024} />
       {view === 'maker' && !inRoom && <Grid args={[480, 480]} cellSize={12} cellThickness={0.55} cellColor="#cdbfa9" sectionSize={48} sectionThickness={1} sectionColor="#b88a44" fadeDistance={900} infiniteGrid />}
-      <OrbitControls ref={controls} makeDefault enabled={!draggingId} target={target} enableDamping minPolarAngle={0.08} maxPolarAngle={Math.PI / 2 + 0.05} enableRotate={cameraPreset !== 'top'} />
-      <EffectComposer multisampling={4}>
-        <SSAO
-          blendFunction={BlendFunction.MULTIPLY}
-          samples={24}
-          radius={6}
-          intensity={12}
-          luminanceInfluence={0.6}
-          color={new THREE.Color('#2b1a0a')}
-          worldDistanceThreshold={20}
-          worldDistanceFalloff={5}
-          worldProximityThreshold={0.4}
-          worldProximityFalloff={0.1}
-        />
-        <Bloom
-          intensity={0.18}
-          luminanceThreshold={0.72}
-          luminanceSmoothing={0.4}
-          blendFunction={BlendFunction.ADD}
-        />
-        <Vignette eskil={false} offset={0.28} darkness={0.52} blendFunction={BlendFunction.NORMAL} />
-      </EffectComposer>
+      <OrbitControls ref={controls} makeDefault enabled={!draggingId && !draggingOpeningId} target={target} enableDamping minPolarAngle={0.08} maxPolarAngle={Math.PI / 2 + 0.05} enableRotate={cameraPreset !== 'top'} />
     </Canvas>
   );
 }
@@ -80,6 +59,42 @@ function cameraFor(preset: string, cx: number, cz: number, topY: number, dist: n
   if (preset === 'front') return { position: [cx, Math.max(46, topY * 0.52), cz + dist] as [number, number, number], fov: 32 };
   if (preset === 'top') return { position: [cx, Math.max(190, span * 1.6), cz + 0.1] as [number, number, number], fov: 36 };
   return { position: [cx + dist * 0.36, Math.max(60, topY * 0.75), cz + dist] as [number, number, number], fov: 38 };
+}
+
+function OpeningDragger({ walls, controls }: { walls: WallSeg[]; controls: React.MutableRefObject<any> }) {
+  const { gl, camera } = useThree();
+  const setDraggingOpening = useStore((s) => s.setDraggingOpening);
+  const updateOpening = useStore((s) => s.updateOpening);
+  const ref = useRef({ walls, openings: useStore.getState().room.openings, dragging: useStore.getState().draggingOpeningId });
+  useEffect(() => useStore.subscribe((s) => (ref.current = { ...ref.current, openings: s.room.openings, dragging: s.draggingOpeningId })), []);
+  ref.current.walls = walls;
+  useEffect(() => {
+    const el = gl.domElement;
+    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    const ray = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
+    const hit = new THREE.Vector3();
+    const onMove = (e: PointerEvent) => {
+      const { dragging, openings, walls } = ref.current;
+      if (!dragging || walls.length === 0) return;
+      const o = openings.find((x) => x.id === dragging);
+      if (!o) return;
+      const wall = walls[o.wallIndex];
+      if (!wall) return;
+      const rect = el.getBoundingClientRect();
+      ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      ray.setFromCamera(ndc, camera);
+      if (!ray.ray.intersectPlane(plane, hit)) return;
+      const t = (hit.x - wall.mid[0]) * wall.dir[0] + (hit.z - wall.mid[1]) * wall.dir[1];
+      const maxOff = Math.max(0, wall.length / 2 - o.width / 2);
+      updateOpening(o.id, { offset: Math.max(-maxOff, Math.min(maxOff, t)) });
+    };
+    const onUp = () => { if (ref.current.dragging) { setDraggingOpening(null); if (controls.current) controls.current.enabled = true; document.body.style.cursor = 'auto'; } };
+    el.addEventListener('pointermove', onMove); window.addEventListener('pointerup', onUp);
+    return () => { el.removeEventListener('pointermove', onMove); window.removeEventListener('pointerup', onUp); };
+  }, [gl, camera, setDraggingOpening, updateOpening, controls]);
+  return null;
 }
 
 function Dragger({ walls, controls }: { walls: WallSeg[]; controls: React.MutableRefObject<any> }) {

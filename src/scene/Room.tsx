@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import type { RoomModel, Opening } from '../model/room';
 import { WALL_THICKNESS as WT } from '../model/room';
 import type { Vec2, WallSeg } from '../model/roomShapes';
+import { useStore } from '../store';
 
 const WALL_COLOR = '#eadfce';
 const WALL_SIDE = '#d9c8ad';
@@ -105,9 +106,22 @@ function OpeningMesh({ opening, wall }: { opening: Opening; wall: WallSeg }) {
   const px = mx + dx * offset;
   const pz = mz + dz * offset;
   const yc = kind === 'window' ? sill + h / 2 : h / 2;
+  const setDraggingOpening = useStore((s) => s.setDraggingOpening);
+  const dragging = useStore((s) => s.draggingOpeningId);
+  const isActive = dragging === opening.id;
 
   return (
-    <group position={[px, yc, pz]} rotation={[0, wall.angleY, 0]}>
+    <group
+      position={[px, yc, pz]}
+      rotation={[0, wall.angleY, 0]}
+      onPointerDown={(e) => { e.stopPropagation(); setDraggingOpening(opening.id); document.body.style.cursor = 'grabbing'; }}
+      onPointerOver={() => { if (!dragging) document.body.style.cursor = 'grab'; }}
+      onPointerOut={() => { if (!dragging) document.body.style.cursor = 'auto'; }}
+    >
+      {/* Invisible grab-pad for easier hit detection */}
+      <mesh visible={false}><boxGeometry args={[w + 8, h + 8, 8]} /><meshBasicMaterial /></mesh>
+      {/* Active highlight ring */}
+      {isActive && <mesh><boxGeometry args={[w + 3, h + 3, 0.3]} /><meshBasicMaterial color="#b88a44" wireframe /></mesh>}
       {kind === 'window' ? (
         <>
           <Box size={[w + 2.2, h + 2.2, 0.42]} position={[0, 0, -0.06]} color="#d5c4aa" roughness={0.92} transparent opacity={0.62} />
