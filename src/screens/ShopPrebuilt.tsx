@@ -86,7 +86,7 @@ export default function ShopPrebuilt() {
 
 // ─── Lightweight product sketches by type ──────────────────────────────────────
 
-function ProductSketch({ type }: { type: UnitType }) {
+export function ProductSketch({ type }: { type: UnitType }) {
   const stroke = '#9a7b4a';
   const fill = '#efe7d6';
   const wood = '#c79a5c';

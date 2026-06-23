@@ -1,5 +1,12 @@
+import { useMemo } from 'react';
 import { useStore } from '../store';
 import Img from '../components/Img';
+import { PRESETS, presetPrice, type PresetSpec } from '../model/presets';
+import { ProductSketch } from './ShopPrebuilt';
+
+function money(n: number): string { return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }); }
+
+const FEATURED_IDS = ['montessori-bookshelf', 'floating-shelves', 'entry-console', 'coffee-station'];
 
 const systems = [
   ['product-mudroom-nook.jpg', 'Mudroom Nook', 'A shippable bench, hooks, shoe cubbies, and optional locker modules for busy entries.'],
@@ -12,7 +19,10 @@ const systems = [
 
 export default function Welcome() {
   const setStep = useStore((s) => s.setStep);
+  const openShop = useStore((s) => s.openShop);
   const go = () => setStep('intake');
+  const featured = useMemo(() => FEATURED_IDS.map((id) => PRESETS.find((p) => p.id === id)).filter(Boolean) as PresetSpec[], []);
+  const prices = useMemo(() => Object.fromEntries(PRESETS.map((p) => [p.id, presetPrice(p)])), []);
 
   return (
     <div className="nice-scroll min-h-0 flex-1 overflow-y-auto bg-warmWhite text-ink">
@@ -35,8 +45,8 @@ export default function Welcome() {
               Warm, practical built-ins for the rooms you actually live in — mudrooms, coffee bars, reading nooks, laundry, entryways, and kids' playrooms. Designed online to fit your space, shipped flat, and assembled in an afternoon.
             </p>
             <div className="fade-up-3 mt-9 flex flex-wrap gap-3">
-              <button onClick={go} className="premium-button px-8 py-4 text-sm">Start designing →</button>
-              <a href="#systems" className="rounded-full border border-brass/35 bg-warmWhite px-8 py-4 text-sm font-bold text-walnut shadow-sm transition hover:border-walnut hover:bg-porcelain">See our work</a>
+              <button onClick={() => openShop('All')} className="premium-button px-8 py-4 text-sm">Shop ready-made →</button>
+              <button onClick={go} className="rounded-full border border-brass/35 bg-warmWhite px-8 py-4 text-sm font-bold text-walnut shadow-sm transition hover:border-walnut hover:bg-porcelain">Design for my space</button>
             </div>
             <div className="mt-8 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-3">
               {['Made to fit', 'Ships flat-pack', 'Real wood, USA-made'].map((item) => (
@@ -54,6 +64,36 @@ export default function Welcome() {
               <MiniProject file="kids-montessori-bookshelf.png" title="Montessori Shelf" />
               <MiniProject file="product-coffee-nook.jpg" title="Coffee Nook" />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* READY TO ORDER — surface the pre-built shop high on the page */}
+      <section className="border-b border-champagne/25 bg-warmWhite px-6 py-16 sm:px-10 lg:px-14">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="eyebrow text-brass">Ready to order · ships flat</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">Pre-built nooks, priced and ready.</h2>
+              <p className="mt-2 max-w-xl text-sm leading-7 text-ink-muted">Order as-is, or open one in the planner to change the size, shelves, and finish. Real starting prices from our shop.</p>
+            </div>
+            <button onClick={() => openShop('All')} className="self-start rounded-full bg-walnut px-6 py-3 text-xs font-bold uppercase tracking-[0.16em] text-porcelain shadow-soft transition hover:bg-obsidian sm:self-end">Browse all ready-made →</button>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {featured.map((p) => (
+              <button key={p.id} onClick={() => openShop(p.category)} className="group premium-card overflow-hidden p-0 text-left transition hover:shadow-card active:scale-[0.99]">
+                <div className="flex h-40 items-center justify-center overflow-hidden bg-[linear-gradient(160deg,#f4ede0,#e8ddc9)]">
+                  {p.image ? <img src={p.image} alt={p.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" /> : <ProductSketch type={p.items[0].type} />}
+                </div>
+                <div className="p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="rounded-full bg-champagne/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-walnut">{p.category}</span>
+                    <span className="text-sm font-black text-ink">{money(prices[p.id])}<span className="ml-1 text-[9px] font-bold uppercase tracking-wide text-ink-muted">from</span></span>
+                  </div>
+                  <div className="mt-2 text-sm font-black leading-tight tracking-tight text-ink">{p.name}</div>
+                </div>
+              </button>
+            ))}
           </div>
         </div>
       </section>
