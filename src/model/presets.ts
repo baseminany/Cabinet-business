@@ -104,6 +104,16 @@ export const PRESETS: PresetSpec[] = [
       { type: 'base', patch: { overall: { width: 60, height: 18, depth: 16 }, door: 'none', label: 'Bench' } },
       { type: 'shelf', patch: { overall: { width: 60, height: 1.5, depth: 10 }, mountHeight: 60, label: 'Top Shelf' } },
     ],
+    image: '/images/product-mudroom.png',
+  },
+  {
+    id: 'hall-tree',
+    name: 'Entry Hall Tree',
+    category: 'Entry',
+    blurb: 'A single tidy piece for the entry: a bench to sit on, hooks for coats and bags, and a shelf above for baskets.',
+    highlights: ['30″ wide × 66″ tall × 16″ deep', 'Bench seat + open cubby below', 'Coat hooks + upper basket shelf', 'White oak, ships flat'],
+    items: [{ type: 'tall', patch: { overall: { width: 30, height: 66, depth: 16 }, sections: 1, shelvesPerSection: 2, door: 'none', toeKick: { enabled: true, height: 3 }, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Hall Tree' } }],
+    image: '/images/product-hall-tree.png',
   },
   {
     id: 'coffee-hutch',
@@ -146,6 +156,7 @@ export const PRESETS: PresetSpec[] = [
     blurb: 'A compact open nightstand sized for real beds — a shelf for books and a spot on top for a lamp and your phone. Order one or a matching pair.',
     highlights: ['18″ × 24″ tall × 16″ deep', 'Open shelf — no drawer to stick', 'Walnut or white oak', 'Ships in one box, assembles in minutes'],
     items: [{ type: 'base', patch: { overall: { width: 18, height: 24, depth: 16 }, sections: 1, shelvesPerSection: 1, door: 'none', toeKick: { enabled: false, height: 0 }, materials: { carcass: 'walnut', doors: 'walnut', back: 'ply-back' }, label: 'Nightstand' } }],
+    image: '/images/product-nightstand.png',
   },
   {
     id: 'coffee-station',
@@ -158,6 +169,15 @@ export const PRESETS: PresetSpec[] = [
       { type: 'shelf', patch: { overall: { width: 36, height: 2, depth: 9 }, mountHeight: 50, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'white-oak' }, label: 'Mug Shelf' } },
     ],
     image: '/images/product-coffee.png',
+  },
+  {
+    id: 'coffee-cabinet',
+    name: 'Coffee Wall Cabinet',
+    category: 'Coffee',
+    blurb: 'A two-door wall cabinet to hang above your coffee station — mugs, beans, filters, and supplies tucked away behind clean fronts.',
+    highlights: ['30″ wide × 24″ tall × 12″ deep', 'Two doors, two shelves', 'Soft-close hinges', 'White oak or painted'],
+    items: [{ type: 'upper', patch: { overall: { width: 30, height: 24, depth: 12 }, sections: 1, shelvesPerSection: 2, door: 'double', materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Coffee Cabinet' } }],
+    image: '/images/product-coffee-cabinet.png',
   },
   {
     id: 'shoe-bench',
@@ -211,6 +231,7 @@ export const PRESETS: PresetSpec[] = [
     blurb: 'A simple cushion-ready bench with cubbies below — perfect under a window or in a hallway nook.',
     highlights: ['54″ bench, cushion-ready top', '3 open cubbies for baskets', 'White oak natural', 'One-piece, ships assembled-ready'],
     items: [{ type: 'base', patch: { overall: { width: 54, height: 18, depth: 16 }, sections: 3, shelvesPerSection: 0, door: 'none', toeKick: { enabled: true, height: 3 }, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Reading Bench' } }],
+    image: '/images/product-reading-bench.png',
   },
 ];
 

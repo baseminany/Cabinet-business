@@ -68,9 +68,7 @@ export default function ShopPrebuilt() {
           {shown.map((spec) => (
             <article key={spec.id} className="premium-card flex flex-col overflow-hidden p-0">
               <div className="flex h-44 items-center justify-center overflow-hidden bg-[linear-gradient(160deg,#f4ede0,#e8ddc9)]">
-                {spec.image
-                  ? <img src={spec.image} alt={spec.name} className="h-full w-full object-cover" />
-                  : <ProductSketch type={spec.items[0].type} />}
+                <CardImage image={spec.image} alt={spec.name} type={spec.items[0].type} />
               </div>
               <div className="flex flex-1 flex-col p-5">
                 <div className="flex items-center justify-between gap-2">
@@ -102,6 +100,14 @@ export default function ShopPrebuilt() {
 }
 
 // ─── Lightweight product sketches by type ──────────────────────────────────────
+
+// Shows the product photo, falling back to the line-drawing sketch if the
+// image is missing or fails to load (so a not-yet-rendered product never breaks).
+function CardImage({ image, alt, type }: { image?: string; alt: string; type: UnitType }) {
+  const [failed, setFailed] = useState(false);
+  if (!image || failed) return <ProductSketch type={type} />;
+  return <img src={image} alt={alt} onError={() => setFailed(true)} className="h-full w-full object-cover" />;
+}
 
 export function ProductSketch({ type }: { type: UnitType }) {
   const stroke = '#9a7b4a';
