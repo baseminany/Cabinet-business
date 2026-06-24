@@ -46,7 +46,7 @@ export default function Welcome() {
             <p className="eyebrow text-brass">Modular built-ins for everyday rooms · made in the USA</p>
             <h1 className="fade-up mt-5 text-[clamp(3rem,6.4vw,6.4rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-ink">Small spaces, beautifully built.</h1>
             <p className="fade-up-2 mt-7 max-w-xl text-base leading-8 text-ink-soft">
-              Warm, practical built-ins for the rooms you actually live in — mudrooms, coffee bars, reading nooks, laundry, entryways, and kids' playrooms. Designed online to fit your space, shipped flat, and assembled in an afternoon.
+              Warm, practical built-ins for the rooms you actually live in — mudrooms, coffee bars, reading nooks, laundry, entryways, and kids' playrooms. Designed online to fit your space, shipped flat, with straightforward assembly.
             </p>
             <div className="fade-up-3 mt-9 flex flex-wrap gap-3">
               <button onClick={() => openShop('All')} className="premium-button px-8 py-4 text-sm">Shop ready-made →</button>
@@ -160,7 +160,7 @@ export default function Welcome() {
               <ul className="mt-5 space-y-3 text-sm leading-6 text-porcelain/85">
                 <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-amber-300">✓</span>Custom-fit to your exact wall — to the inch</li>
                 <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-amber-300">✓</span>Design live in 3D before ordering a single piece</li>
-                <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-amber-300">✓</span>Ships flat-pack, assembles in a day — not a month</li>
+                <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-amber-300">✓</span>Ships flat-pack — designed for straightforward assembly</li>
                 <li className="flex items-start gap-2.5"><span className="mt-0.5 shrink-0 text-amber-300">✓</span>Designed and built in-house in the USA — not imported or prefab</li>
               </ul>
             </div>
@@ -230,7 +230,7 @@ export default function Welcome() {
               { n: '01', icon: '📐', title: 'You design it', body: 'Enter your wall dimensions and openings. See it live in 3D before committing to a single piece.' },
               { n: '02', icon: '🪚', title: 'We build it', body: 'Your order goes to our shop. Every panel is cut to your exact measurements — no standard sizes, no filler strips.' },
               { n: '03', icon: '📦', title: 'Ships flat', body: 'Panels arrive flat-packed and labeled. No freight truck, no white-glove delivery fee — standard carrier to your door.' },
-              { n: '04', icon: '🔧', title: 'You assemble', body: 'Step-by-step instructions, pre-drilled hardware holes, and a weekend. Most nooks go up in 4–8 hours.' },
+              { n: '04', icon: '🔧', title: 'You assemble', body: 'Step-by-step instructions and pre-fitted Lamello connectors — designed to go together with simple hand tools, no power drill.' },
             ].map(({ n, icon, title, body }) => (
               <div key={n} className="relative rounded-3xl border border-champagne/35 bg-[linear-gradient(180deg,#fffdf8,#f7f1e6)] p-7">
                 <div className="flex items-center gap-3">
@@ -245,7 +245,7 @@ export default function Welcome() {
 
           {/* Reassurance strip */}
           <div className="mt-10 flex flex-wrap justify-center gap-5 text-[12px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
-            {['No contractor needed', 'No special tools', 'No freight surcharge', 'Full instructions included', 'Made in the USA 🇺🇸'].map((t) => (
+            {['No contractor needed', 'No power tools', 'Shipping reviewed before order', 'Instructions included', 'Made in the USA 🇺🇸'].map((t) => (
               <span key={t} className="flex items-center gap-1.5"><span className="text-brass">✓</span>{t}</span>
             ))}
           </div>

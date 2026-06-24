@@ -569,10 +569,11 @@ function buildBunk(unit: Unit): BuiltUnit {
 // =============================================================================
 // MONTESSORI LEARNING TOWER (toddler kitchen helper)
 // =============================================================================
-// A small, safe standing platform so a toddler can reach the counter. Easy to
-// build from offcuts, ships in a medium box, high demand. Two plywood side
-// panels + an adjustable standing platform + a lower step + top safety rails
-// and an enclosed back so the child can't tip backward.
+// A standing platform that lets a toddler reach the counter. Two plywood side
+// panels run continuous to the floor; the platform and step are HOUSED in dados
+// so the wood carries the standing load (connectors only clamp). A base stretcher
+// ties the sides together for rigidity and a wide, stable stance.
+// NOTE: load-bearing kids product — verify stability / load rating before sale.
 // =============================================================================
 function buildLearningTower(unit: Unit): BuiltUnit {
   const parts: Part[] = [];
@@ -610,10 +611,11 @@ function buildLearningTower(unit: Unit): BuiltUnit {
     });
   }
 
-  // Standing platform (adjustable height) + a lower climbing step.
-  for (const [name, y, depthFrac, zc] of [
-    ['Standing Platform', platformY, 0.85, 0],
-    ['Step', stepY, 0.5, D * 0.2],
+  // Standing platform (load-bearing, 1" thick) + a lower climbing step, both
+  // housed in dados in the sides so the wood carries the load.
+  for (const [name, y, depthFrac, zc, thick] of [
+    ['Standing Platform', platformY, 0.95, 0, 1.0],
+    ['Step', stepY, 0.5, D * 0.2, 0.75],
   ] as const) {
     const pd = D * depthFrac;
     parts.push({
@@ -623,19 +625,20 @@ function buildLearningTower(unit: Unit): BuiltUnit {
       material: mat.carcass,
       length: interiorWidth,
       width: pd,
-      thickness: 0.75,
+      thickness: thick,
       grain: 'length',
       bandedEdges: ['L1'],
       position: { x: 0, y, z: zc },
-      size3d: { w: interiorWidth, h: 0.75, d: pd },
+      size3d: { w: interiorWidth, h: thick, d: pd },
+      notes: 'Housed in 3/4" dados in the sides — carries the standing load in shear.',
     });
   }
 
-  // Enclosed back panel from the platform up (anti-tip).
+  // Enclosed rear panel from the platform up, set in a groove for rigidity.
   const backH = H - platformY - 2;
   parts.push({
     id: id('divider'),
-    name: 'Back Guard',
+    name: 'Back Panel',
     role: 'divider',
     material: mat.carcass,
     length: interiorWidth,
@@ -645,12 +648,13 @@ function buildLearningTower(unit: Unit): BuiltUnit {
     bandedEdges: ['L1'],
     position: { x: 0, y: platformY + backH / 2, z: backInsideZ - 0.25 },
     size3d: { w: interiorWidth, h: backH, d: 0.5 },
+    notes: 'Set in 1/4" grooves in both sides — stiffens the frame against racking.',
   });
 
-  // Safety rails: top front + a front rail at chest height (fall protection).
+  // Front rails (top + chest height) so the child is enclosed on three sides.
   for (const [name, y] of [
     ['Top Front Rail', H - 4],
-    ['Front Guard Rail', platformY + 9],
+    ['Front Rail', platformY + 9],
   ] as const) {
     parts.push({
       id: id('divider'),
@@ -664,6 +668,25 @@ function buildLearningTower(unit: Unit): BuiltUnit {
       bandedEdges: ['L1', 'L2'],
       position: { x: 0, y, z: frontZ - railThk / 2 },
       size3d: { w: interiorWidth, h: railH, d: railThk },
+    });
+  }
+
+  // Base stretchers — front + back rails tying the sides together at the floor.
+  // Resist racking and give a wide, stable stance (the structural backbone).
+  for (const sz of [-1, 1] as const) {
+    parts.push({
+      id: id('divider'),
+      name: 'Base Stretcher',
+      role: 'divider',
+      material: mat.carcass,
+      length: interiorWidth,
+      width: 4,
+      thickness: railThk,
+      grain: 'length',
+      bandedEdges: ['L1'],
+      position: { x: 0, y: 2, z: sz * (D / 2 - railThk / 2) },
+      size3d: { w: interiorWidth, h: 4, d: railThk },
+      notes: 'Glued + Clamex into the sides at the base — ties the frame, anti-racking.',
     });
   }
 

@@ -27,22 +27,31 @@ function r16(n: number): number {
   return Math.round(n * 16) / 16;
 }
 
+/** buildProject() namespaces names as "Unit Label · Part Name". Group the cut
+ *  list by the GENERIC part name so identical pieces from different modules
+ *  (e.g. two "Side (Left)") merge into one row with a combined quantity. */
+function genericName(name: string): string {
+  const i = name.indexOf(' · ');
+  return i >= 0 ? name.slice(i + 3) : name;
+}
+
 export function aggregateParts(parts: Part[]): CutListRow[] {
   const map = new Map<string, CutListRow>();
 
   for (const p of parts) {
+    const name = genericName(p.name);
     const length = r16(p.length);
     const width = r16(p.width);
     const thickness = r16(p.thickness);
     const banded = [...p.bandedEdges].sort().join('');
-    const key = [p.name, p.material, length, width, thickness, p.grain, banded].join('|');
+    const key = [name, p.material, length, width, thickness, p.grain, banded].join('|');
 
     const existing = map.get(key);
     if (existing) {
       existing.qty += 1;
     } else {
       map.set(key, {
-        name: p.name,
+        name,
         materialId: p.material,
         materialLabel: getMaterial(p.material).label,
         qty: 1,

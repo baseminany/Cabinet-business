@@ -73,9 +73,8 @@ export default function QuoteStep() {
 
           {done ? (
             <div className="mt-5 rounded-2xl bg-[#edf5ee] px-4 py-5 text-center ring-1 ring-deepGreen/20">
-              <p className="text-base font-black text-deepGreen">Thank you, {name.split(' ')[0]}! Your nook plan is in.</p>
-              <p className="mt-1.5 text-sm leading-6 text-ink-soft">We'll review your design and reply to <strong>{email}</strong> within one business day with a firm quote and next steps.</p>
-              {state === 'saved' && <p className="mt-3 text-[11px] leading-5 text-ink-muted">(Saved to House of Nook. Connect a delivery webhook to auto-email each lead — see QUOTE_WEBHOOK_URL.)</p>}
+              <p className="text-base font-black text-deepGreen">Thanks, {name.split(' ')[0]}! Your design is saved.</p>
+              <p className="mt-1.5 text-sm leading-6 text-ink-soft">Custom quotes aren't open online just yet. This saves your design and details so we can pick it right back up — check back as we launch.</p>
             </div>
           ) : (
             <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="mt-5 space-y-3">
@@ -90,9 +89,9 @@ export default function QuoteStep() {
               </div>
               {state === 'error' && <p className="rounded-xl bg-red-50 px-3 py-2 text-xs font-semibold text-red-600 ring-1 ring-red-200">{errMsg}</p>}
               <button type="submit" disabled={!canSubmit} className="premium-button w-full px-5 py-4 text-base disabled:opacity-50">
-                {state === 'sending' ? 'Sending…' : 'Send my nook plan for review'}
+                {state === 'sending' ? 'Saving…' : 'Save my design'}
               </button>
-              <p className="text-center text-[11px] leading-5 text-ink-muted">No payment now. This sends your design + estimate to House of Nook for a firm quote.</p>
+              <p className="text-center text-[11px] leading-5 text-ink-muted">No payment. For larger or fully-custom pieces — saves your design so we can quote it as we launch.</p>
             </form>
           )}
         </div>

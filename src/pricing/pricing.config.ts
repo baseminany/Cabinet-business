@@ -83,6 +83,17 @@ export interface PricingConfig {
     markupPercent: number;
     placeholder?: boolean;
   };
+
+  /** Packaging materials: boxes, edge/corner protectors, foam, tape, labels.
+   *  Fixed per order + a bit per sheet (more panels = more packing). */
+  packaging: { fixed: number; perSheet: number };
+
+  /** Card processing fee (Stripe ≈ 2.9% + $0.30). Added so you don't eat it. */
+  paymentFeePercent: number;
+  paymentFeeFixed: number;
+
+  /** Floor on the customer price — covers setup/admin on the smallest items. */
+  minPrice: number;
 }
 
 // -----------------------------------------------------------------------------
@@ -169,6 +180,17 @@ export const pricing: PricingConfig = {
   // furniture and still far under custom-contractor pricing. Flex 40–60% by line:
   // higher on standardized kids products, leaner on big competitive built-ins.
   margin: { markupPercent: 50 },
+
+  // Packaging: ~$12 base (box, tape, labels) + ~$6/sheet of panels (edge/corner
+  // protectors, foam, kraft fill). A real, recurring cost on every order.
+  packaging: { fixed: 12, perSheet: 6 },
+
+  // Card processing — Stripe's standard 2.9% + $0.30. Added so it isn't eaten.
+  paymentFeePercent: 2.9,
+  paymentFeeFixed: 0.3,
+
+  // Minimum customer price — even a tiny shelf carries setup + admin + packing.
+  minPrice: 95,
 };
 
 // -----------------------------------------------------------------------------

@@ -205,6 +205,31 @@ needs NO runtime AI.
 **AI is back-office only.** Customer-facing AI removed (couldn't run on Netlify). AI is used by the
 owner to generate product renders + cut lists. Site is now fully reliable in production.
 
+## Review-response changes (2026-06-24, after external code review)
+
+Done (the agreed launch-hardening items):
+- **Learning tower kept** but **safety CLAIMS removed** from copy ("anti-tip"/"safe" gone), and
+  **geometry reinforced**: platform/step now housed in dados (wood carries load), 1" platform,
+  added a base stretcher tying the sides for rigidity + stable stance. Still flagged in code as a
+  load-bearing kids product to verify before sale.
+- **Quote is an honest placeholder** — no email/webhook promised; copy says custom quotes aren't
+  open online yet and the design is saved. Quote is for large/fully-custom only; everything else is
+  Buy now.
+- **Landing claims softened** — "assembled in an afternoon" → "straightforward assembly"; "no
+  freight surcharge" → "shipping reviewed before order"; "4–8 hours" → "no power tools". Kept
+  Made-in-USA (true).
+- **Dead customer AI removed** — deleted DesignAssistantPanel + designAssistant/renderGen services
+  + assistant/ dir (the unmounted browser-proxy chat/render). Back-office AI (netlify functions +
+  browser-proxy for generating renders) stays.
+- **Cut-list grouping fixed** — aggregateParts now groups by GENERIC part name, so identical pieces
+  from different modules merge into one row + qty (the unit-label prefix no longer splits them).
+- **Pricing hardened** — added packaging line ($12 + $6/sheet), card-processing fee (2.9% + $0.30,
+  grossed up), and a $95 minimum price. Prices rose appropriately (e.g. learning tower $365→$418).
+
+Deferred (lower priority, agreed not launch-blocking): single-wall planner mode, wall labels/minimap,
+3D cutaway/opening cutouts/camera-remount, validateUnit/validateProject layer, starter-systems as
+true placement templates, ProductSketch extraction, STUDIO_DESIGN_V1 rename, Laundry shop category.
+
 ## Open items / next steps
 
 - Real shop numbers to finalize pricing (labor hrs per type, confirm overhead/margin). NEEDS OWNER INPUT.

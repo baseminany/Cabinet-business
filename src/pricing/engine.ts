@@ -174,6 +174,17 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
     });
   }
 
+  // --- 7) PACKAGING ----------------------------------------------------------
+  // Box, edge/corner protectors, foam, kraft fill, tape, labels.
+  const packagingAmount = config.packaging.fixed + config.packaging.perSheet * fractionalSheets;
+  lines.push({
+    key: 'packaging',
+    label: 'Packaging & ship prep',
+    detail: `$${config.packaging.fixed} base + $${config.packaging.perSheet}/sheet × ${fractionalSheets.toFixed(2)}`,
+    amount: packagingAmount,
+    placeholder: false,
+  });
+
   // --- SUBTOTAL --------------------------------------------------------------
   const subtotal = lines.reduce((sum, l) => sum + l.amount, 0);
 
@@ -184,7 +195,15 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
 
   // --- MARGIN ----------------------------------------------------------------
   const marginAmount = totalCost * (config.margin.markupPercent / 100);
-  const customerPrice = totalCost + marginAmount;
+  let customerPrice = totalCost + marginAmount;
+
+  // --- CARD PROCESSING FEE (added so it isn't eaten) -------------------------
+  // Grossed up: the fee applies to the final charged amount, so solve for it.
+  const feeRate = config.paymentFeePercent / 100;
+  customerPrice = (customerPrice + config.paymentFeeFixed) / (1 - feeRate);
+
+  // --- MINIMUM PRICE FLOOR ---------------------------------------------------
+  customerPrice = Math.max(customerPrice, config.minPrice);
 
   const usesPlaceholders =
     lines.some((l) => l.placeholder) ||
