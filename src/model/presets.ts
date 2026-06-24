@@ -128,6 +128,7 @@ export const PRESETS: PresetSpec[] = [
       { type: 'shelf', patch: { overall: { width: 36, height: 2, depth: 8 }, mountHeight: 44, materials: { carcass: 'walnut', doors: 'walnut', back: 'walnut' }, label: 'Floating Shelf 2' } },
       { type: 'shelf', patch: { overall: { width: 36, height: 2, depth: 8 }, mountHeight: 58, materials: { carcass: 'walnut', doors: 'walnut', back: 'walnut' }, label: 'Floating Shelf 3' } },
     ],
+    image: '/images/product-floating-shelves.png',
   },
   {
     id: 'entry-console',
@@ -136,6 +137,7 @@ export const PRESETS: PresetSpec[] = [
     blurb: 'A slim open console for the entry or hallway — a landing spot for keys and mail up top, baskets and shoes on the shelf below.',
     highlights: ['48″ × 32″ tall × 12″ deep — fits tight halls', 'Open lower shelf for baskets', 'White oak, finished all around', 'Wall-anchored for stability'],
     items: [{ type: 'base', patch: { overall: { width: 48, height: 32, depth: 12 }, sections: 1, shelvesPerSection: 1, door: 'none', toeKick: { enabled: false, height: 0 }, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Entry Console' } }],
+    image: '/images/product-console.png',
   },
   {
     id: 'nightstand',
@@ -155,6 +157,7 @@ export const PRESETS: PresetSpec[] = [
       { type: 'base', patch: { overall: { width: 36, height: 34.5, depth: 18 }, materials: { carcass: 'sw-alabaster', doors: 'sw-alabaster', back: 'ply-back' }, label: 'Coffee Base' } },
       { type: 'shelf', patch: { overall: { width: 36, height: 2, depth: 9 }, mountHeight: 50, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'white-oak' }, label: 'Mug Shelf' } },
     ],
+    image: '/images/product-coffee.png',
   },
   {
     id: 'reading-bench',

@@ -9,12 +9,12 @@ function money(n: number): string { return n.toLocaleString('en-US', { style: 'c
 const FEATURED_IDS = ['montessori-bookshelf', 'floating-shelves', 'entry-console', 'coffee-station'];
 
 const systems = [
-  ['product-mudroom-nook.jpg', 'Mudroom Nook', 'A shippable bench, hooks, shoe cubbies, and optional locker modules for busy entries.'],
-  ['product-coffee-nook.jpg', 'Coffee Nook', 'A compact hutch-style coffee bar with base storage, shelves, and a finished back panel.'],
-  ['product-playroom-storage.jpg', 'Playroom Nook', 'Low Montessori-inspired shelves, baskets, toy storage, and book display for family rooms.'],
-  ['product-reading-nook.jpg', 'Reading Nook', 'Bench storage, pillows, book ledges, and cozy shelf modules for corners and kids rooms.'],
-  ['product-laundry-nook.jpg', 'Laundry Nook', 'Utility towers, uppers, folding counters, and shelves for small laundry spaces.'],
-  ['product-kids-bed-storage.jpg', 'Storage Bed Nook', 'Low twin bed platforms with drawers, cubbies, and simple book ledges — no bunk complexity yet.'],
+  ['product-mudroom.png', 'Mudroom & Entry', 'Bench seats, locker towers, hooks, and shoe cubbies for busy entryways.'],
+  ['product-coffee.png', 'Coffee Bar', 'Counter-height base, mug shelves, and storage for your coffee station.'],
+  ['kids-montessori-bookshelf.png', 'Kids & Playroom', 'Montessori bookshelves, learning towers, book ledges, and toy storage.'],
+  ['product-floating-shelves.png', 'Living & Office', 'Floating shelves, consoles, and display pieces for everyday rooms.'],
+  ['product-console.png', 'Entry Console', 'Slim consoles and hall pieces for keys, mail, baskets, and decor.'],
+  ['kids-cubby-bench.png', 'Reading & Storage', 'Bench storage, book ledges, nightstands, and cozy shelf modules.'],
 ] as const;
 
 export default function Welcome() {
@@ -57,12 +57,12 @@ export default function Welcome() {
 
           <div className="grid gap-3 sm:grid-cols-[1.05fr_0.95fr]">
             <figure className="premium-card overflow-hidden p-3">
-              <Img name="hero-mudroom-nook.jpg" alt="Compact modular mudroom nook" label="Mudroom Nook" className="aspect-[16/11] w-full rounded-[20px]" />
+              <Img name="product-mudroom.png" alt="Mudroom bench with lockers and cubbies" label="Mudroom Nook" className="aspect-[16/11] w-full rounded-[20px]" />
               <figcaption className="flex items-center justify-between px-2 py-3"><span className="text-sm font-black tracking-tight">Mudroom Nook</span><span className="text-[10px] font-bold uppercase tracking-[0.16em] text-brass">bench · lockers · shelf</span></figcaption>
             </figure>
             <div className="grid gap-3">
               <MiniProject file="kids-montessori-bookshelf.png" title="Montessori Shelf" />
-              <MiniProject file="product-coffee-nook.jpg" title="Coffee Nook" />
+              <MiniProject file="product-coffee.png" title="Coffee Bar" />
             </div>
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function Welcome() {
       <section className="border-y border-champagne/25 bg-porcelain px-6 py-20 sm:px-10 lg:px-14">
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1fr_1fr]">
           <figure className="premium-card overflow-hidden p-3">
-            <Img name="product-reading-nook.jpg" alt="House of Nook built-in in a real home" label="In-house build" className="aspect-[5/4] w-full rounded-[20px]" />
+            <Img name="product-mudroom.png" alt="House of Nook built-in in a real home" label="In-house build" className="aspect-[5/4] w-full rounded-[20px]" />
           </figure>
           <div>
             <p className="eyebrow text-brass">Who we are</p>
