@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useStore } from '../store';
 import { PRESETS, instantiatePreset, presetPrice, type PresetSpec, type PresetCategory } from '../model/presets';
+import { startCheckout, CheckoutUnavailableError } from '../services/checkout';
 import type { UnitType } from '../model/types';
 
 function money(n: number): string {
@@ -17,9 +18,25 @@ export default function ShopPrebuilt() {
 
   const shown = useMemo(() => (cat === 'All' ? PRESETS : PRESETS.filter((p) => p.category === cat)), [cat]);
   const prices = useMemo(() => Object.fromEntries(PRESETS.map((p) => [p.id, presetPrice(p)])), []);
+  const [busyId, setBusyId] = useState<string | null>(null);
 
-  const order = (spec: PresetSpec) => orderPreset(instantiatePreset(spec), 'quote');
   const customize = (spec: PresetSpec) => orderPreset(instantiatePreset(spec), 'pieces');
+  // Buy now → Stripe Checkout. Until STRIPE_SECRET_KEY is set, fall back to the
+  // quote/order-capture flow so the order is still captured (nothing breaks).
+  const buy = async (spec: PresetSpec) => {
+    setBusyId(spec.id);
+    try {
+      await startCheckout([{ name: spec.name, amount: Math.round(prices[spec.id] * 100), quantity: 1 }], spec.name);
+    } catch (e) {
+      if (e instanceof CheckoutUnavailableError) {
+        orderPreset(instantiatePreset(spec), 'quote');
+      } else {
+        orderPreset(instantiatePreset(spec), 'quote');
+      }
+    } finally {
+      setBusyId(null);
+    }
+  };
 
   return (
     <div className="nice-scroll min-h-0 flex-1 overflow-y-auto bg-[linear-gradient(180deg,#fffdf8,#f4eadb)] text-ink">
@@ -70,7 +87,7 @@ export default function ShopPrebuilt() {
                   ))}
                 </ul>
                 <div className="mt-5 flex gap-2 pt-1">
-                  <button onClick={() => order(spec)} className="premium-button flex-1 px-4 py-3 text-sm">Order this</button>
+                  <button onClick={() => buy(spec)} disabled={busyId === spec.id} className="premium-button flex-1 px-4 py-3 text-sm disabled:opacity-60">{busyId === spec.id ? 'Starting…' : 'Buy now'}</button>
                   <button onClick={() => customize(spec)} className="flex-1 rounded-full border border-brass/40 px-4 py-3 text-sm font-bold text-walnut transition hover:border-walnut hover:bg-walnut hover:text-porcelain">Customize</button>
                 </div>
               </div>

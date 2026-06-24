@@ -64,7 +64,9 @@ kids is slightly forward in the portfolio. Built-ins (den, mudroom) are the high
 **Non-kids profitable nooks (parcel-ship, 1-2 sheet builds, good margin):**
 Floating Wall Shelves set ($289, walnut), Entryway Console ($631), Bedside Nightstand ($424),
 Compact Coffee Station ($690), Coffee Bar Hutch ($1,408), Mudroom Bench + Lockers ($1,713),
-Window Reading Bench ($636). All built from existing base/shelf geometry via presets.
+Window Reading Bench ($636), Entry Shoe Bench, Media Console, Narrow Bookcase, Toy Box Bench,
+Toddler Step Stool. All built from existing base/shelf/tall geometry via presets, all with AI
+product renders. Shop now has ~18 products across Kids / Entry / Coffee / Storage.
 
 **Kids shop products (all ship parcel, ~1-2 sheet builds, no safety-cert liability):**
 | Product | ~Price | Photo |
@@ -185,11 +187,14 @@ Per-unit "Special requests" field (vent cutouts, wire holes) flows into the quot
 - Kids: Montessori floor/house bed (high demand; ships larger), toy box bench, step stool.
 Each: design with sheet-yield + Lamello in mind, then AI-render (ChatGPT pipeline) and wire into the shop.
 
-**Checkout / Buy Now (item 5).** Real card payment REQUIRES a processor — there is no "browser-proxy"
-workaround for money. Plan: **Stripe Checkout** (hosted, PCI-compliant; customer enters card on
-Stripe's page, never on our site). Build: "Buy now" → Netlify function creates a Stripe Checkout
-session with the product + price → redirect to Stripe → success page. NEEDS the owner's Stripe
-account + keys (Stripe secret key in Netlify env). Do NOT collect raw card fields on our site.
+**Checkout / Buy Now (item 5) — BUILT.** Stripe Checkout is wired:
+- `netlify/functions/checkout.ts` creates a Checkout session (inline price_data from our pricing,
+  US shipping + phone collection). `src/services/checkout.ts` redirects the browser to Stripe.
+- Shop cards have a **"Buy now"** button → Stripe Checkout. Until `STRIPE_SECRET_KEY` is set it
+  gracefully falls back to the quote/order-capture flow (verified). Success → `/?checkout=success`
+  shows a thank-you banner.
+- **TO GO LIVE: owner creates a Stripe account and sets `STRIPE_SECRET_KEY` in Netlify env.** No
+  raw card fields on our site (PCI-safe).
 
 **In-photo preview (item 9).** Replace AI room-scan with: customer uploads a room photo, we overlay a
 PRODUCT RENDER (our pre-made images) onto it, sized to scale. To-scale needs a reference — simplest:

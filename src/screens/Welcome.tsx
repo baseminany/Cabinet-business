@@ -23,9 +23,13 @@ export default function Welcome() {
   const go = () => setStep('intake');
   const featured = useMemo(() => FEATURED_IDS.map((id) => PRESETS.find((p) => p.id === id)).filter(Boolean) as PresetSpec[], []);
   const prices = useMemo(() => Object.fromEntries(PRESETS.map((p) => [p.id, presetPrice(p)])), []);
+  const checkout = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('checkout') : null;
 
   return (
     <div className="nice-scroll min-h-0 flex-1 overflow-y-auto bg-warmWhite text-ink">
+      {checkout === 'success' && (
+        <div className="bg-deepGreen px-6 py-3 text-center text-sm font-bold text-porcelain">Thank you — your order is in! We'll email your receipt and shipping details shortly.</div>
+      )}
       <section className="relative overflow-hidden border-b border-champagne/25 bg-[linear-gradient(180deg,#fffdf8,#f4eadb)] px-6 sm:px-10 lg:px-14">
         <div className="absolute right-[-18rem] top-[-18rem] h-[42rem] w-[42rem] rounded-full bg-champagne/25 blur-3xl" />
         <div className="absolute left-[-12rem] bottom-[-16rem] h-[34rem] w-[34rem] rounded-full bg-sageStone/10 blur-3xl" />
