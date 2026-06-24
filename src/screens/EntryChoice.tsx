@@ -1,32 +1,32 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import { useStore, type Step } from '../store';
 
 export default function EntryChoice() {
   const setStep = useStore((s) => s.setStep);
   const setRoom = useStore((s) => s.setRoom);
+  const setRoomPhoto = useStore((s) => s.setRoomPhoto);
   const shopCategory = useStore((s) => s.shopCategory);
   const openShop = useStore((s) => s.openShop);
   const startBlankRoom = useStore((s) => s.startBlankRoom);
   const resetProject = useStore((s) => s.resetProject);
-  const analyze = useStore((s) => s.analyzeRoomPhoto);
-  const applyRes = useStore((s) => s.applyRoomAnalysis);
-  const status = useStore((s) => s.roomScanStatus);
-  const error = useStore((s) => s.roomScanError);
-  const result = useStore((s) => s.roomAnalysisResult);
   const roomPhoto = useStore((s) => s.roomPhoto);
   const savedUnits = useStore((s) => s.units);
   const savedStep = useStore((s) => s.step) as Step;
   const fileRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
-  useEffect(() => {
-    if (status === 'success' && result) {
-      applyRes(result);
-      setStep('photoReview');
-    }
-  }, [status, result, applyRes, setStep]);
-
-  const handleFile = (file?: File | null) => file && analyze(file);
+  // Accept the photo as a backdrop reference and go straight to the planner.
+  // No AI call — works everywhere, including production.
+  const handleFile = (file?: File | null) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') setRoomPhoto(reader.result);
+      setRoom({ enabled: true, openings: [] });
+      setStep('room');
+    };
+    reader.readAsDataURL(file);
+  };
 
   const hasSavedDesign = savedUnits.length > 0;
   const resumeStep: Step = (['room', 'openings', 'pieces', 'quote'] as Step[]).includes(savedStep) ? savedStep : 'pieces';
@@ -69,11 +69,10 @@ export default function EntryChoice() {
             <span className="absolute right-4 top-4 rounded-full bg-deepGreen px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-porcelain">Reference</span>
             <IconShell><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="9" cy="11" r="2" /><path d="m4 18 5-4 4 3 3-2 4 3" /></svg></IconShell>
             <h2 className="mt-5 text-2xl font-black tracking-tight">Upload a space photo</h2>
-            <p className="mt-2 flex-1 text-sm leading-6 text-ink-muted">Use a photo for reference. If the Netlify AI endpoint is connected, House of Nook can create a draft; otherwise you will plan manually.</p>
-            {roomPhoto && status !== 'idle' && <img src={roomPhoto} alt="room" className="mt-4 h-24 w-full rounded-2xl object-cover ring-1 ring-champagne/40" />}
-            <button onClick={() => fileRef.current?.click()} disabled={status === 'analyzing'} className="premium-button mt-5 px-4 py-3 text-sm disabled:opacity-60">{status === 'analyzing' ? 'Checking photo…' : 'Upload photo'}</button>
+            <p className="mt-2 flex-1 text-sm leading-6 text-ink-muted">Drop in a photo of your room to use as a reference while you size and place your nook. (Live in-photo previews are coming soon.)</p>
+            {roomPhoto && <img src={roomPhoto} alt="room" className="mt-4 h-24 w-full rounded-2xl object-cover ring-1 ring-champagne/40" />}
+            <button onClick={() => fileRef.current?.click()} className="premium-button mt-5 px-4 py-3 text-sm">Upload photo</button>
             <input ref={fileRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} />
-            {status === 'error' && <div className="mt-4 rounded-2xl bg-parchment/70 p-3 text-xs leading-5 text-ink-soft ring-1 ring-brass/30">{error}<button onClick={() => { setRoom({ enabled: true, openings: [] }); setStep('room'); }} className="mt-2 block font-bold text-walnut underline-offset-4 hover:underline">Continue with photo as reference →</button></div>}
           </div>
 
           <EntryCard icon={<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" /><path d="M9 21v-6h6v6" /></svg>} title="Plan against a wall" body="Start with a blank wall or simple room, then add doors, windows, and the nook system." cta="Start blank" onClick={startBlankRoom} />

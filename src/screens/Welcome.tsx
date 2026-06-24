@@ -101,7 +101,7 @@ export default function Welcome() {
       <section id="systems" className="bg-warmWhite px-6 py-20 sm:px-10 lg:px-14">
         <div className="mx-auto max-w-7xl">
           <div className="mb-9 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div><p className="eyebrow text-brass">Start with one useful nook</p><h2 className="mt-3 max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Modular products that feel custom, without starting with a full remodel.</h2></div>
+            <div><p className="eyebrow text-brass">A nook for every room</p><h2 className="mt-3 max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Mudroom to playroom, entry to coffee bar — pick a design and make it yours.</h2><p className="mt-3 max-w-2xl text-sm leading-7 text-ink-muted">Every product can be customized — size, finish, extra shelves or doors — with the price updating as you go. Need something truly one-of-a-kind? Fully custom built-ins are available by quote.</p></div>
             <button onClick={go} className="self-start rounded-full border border-ink/15 px-6 py-3 text-xs font-bold uppercase tracking-[0.16em] transition hover:border-ink hover:bg-ink hover:text-white sm:self-end">Open planner →</button>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -110,9 +110,6 @@ export default function Welcome() {
         </div>
       </section>
 
-      <section className="border-y border-champagne/25 bg-porcelain px-6 py-20 sm:px-10 lg:px-14">
-        <div className="mx-auto max-w-7xl"><p className="eyebrow text-brass">Designed for real homes</p><div className="mt-4 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]"><LargeTile file="product-reading-nook.jpg" title="Reading bench with storage" sub="bench · drawers · book ledges" /><div className="grid gap-5"><SmallTile file="product-laundry-nook.jpg" title="Laundry utility nook" /><SmallTile file="product-kids-bed-storage.jpg" title="Storage bed nook" /></div></div></div>
-      </section>
 
       {/* WHY WE EXIST — competitive positioning section */}
       <section className="border-y border-champagne/25 bg-[linear-gradient(180deg,#fdf9f2,#f6ede0)] px-6 py-24 sm:px-10 lg:px-14">
@@ -251,10 +248,6 @@ export default function Welcome() {
         </div>
       </section>
 
-      <section className="bg-warmWhite px-6 py-20 sm:px-10 lg:px-14">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr]"><div><p className="eyebrow text-brass">How it works</p><h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Simple first. Detailed only when needed.</h2><p className="mt-5 max-w-md text-sm leading-7 text-ink-muted">Choose a nook system, adjust size, pick finishes, then review a starting estimate. Advanced construction details stay tucked away until they matter.</p></div><div className="grid gap-4 sm:grid-cols-2">{[['01','Choose a system','Mudroom, coffee, playroom, laundry, reading, or storage bed.'],['02','Fit the space','Enter the wall width, room depth, and major openings.'],['03','Pick finishes','Named paints, white oak, rift oak, and walnut.'],['04','Review estimate','Starting price before measurement and shipping review.']].map(([n,t,d]) => <div key={t} className="premium-card p-6"><div className="text-3xl font-semibold tracking-[-0.05em] text-brass">{n}</div><h3 className="mt-5 text-xl font-black tracking-tight">{t}</h3><p className="mt-2 text-sm leading-6 text-ink-muted">{d}</p></div>)}</div></div>
-      </section>
-
       <section className="bg-[linear-gradient(180deg,#f4eadb,#fffdf8)] px-6 py-24 text-center sm:px-10 lg:px-14"><p className="eyebrow text-brass">Ready when you are</p><h2 className="mx-auto mt-4 max-w-3xl text-4xl font-semibold leading-[0.98] tracking-[-0.045em] sm:text-6xl">Start with one nook. Build toward a calmer home.</h2><button onClick={go} className="premium-button mt-9 px-9 py-4 text-sm">Begin your plan</button></section>
     </div>
   );
@@ -262,5 +255,3 @@ export default function Welcome() {
 
 function MiniProject({ file, title }: { file: string; title: string }) { return <figure className="premium-card overflow-hidden p-3"><Img name={file} alt={title} label={title} className="aspect-[4/3] w-full rounded-[18px]" /><figcaption className="px-2 py-2 text-sm font-black tracking-tight">{title}</figcaption></figure>; }
 function SystemCard({ file, title, copy }: { file: string; title: string; copy: string }) { return <figure className="group premium-card overflow-hidden p-3"><div className="overflow-hidden rounded-[18px] bg-parchment"><Img name={file} alt={title} label={title} className="aspect-[4/3] w-full transition-transform duration-500 group-hover:scale-[1.035]" /></div><figcaption className="p-3"><div className="text-lg font-black tracking-tight">{title}</div><p className="mt-1 text-sm leading-6 text-ink-muted">{copy}</p></figcaption></figure>; }
-function LargeTile({ file, title, sub }: { file: string; title: string; sub: string }) { return <figure className="premium-card overflow-hidden p-3"><Img name={file} alt={title} label={title} className="min-h-[24rem] w-full rounded-[20px]" /><figcaption className="flex flex-wrap items-end justify-between gap-3 px-2 py-3"><span className="text-2xl font-black tracking-tight">{title}</span><span className="text-[11px] uppercase tracking-[0.16em] text-ink-muted">{sub}</span></figcaption></figure>; }
-function SmallTile({ file, title }: { file: string; title: string }) { return <figure className="premium-card overflow-hidden p-3"><Img name={file} alt={title} label={title} className="aspect-[3/2] w-full rounded-[18px]" /><figcaption className="px-2 py-3 text-lg font-black tracking-tight">{title}</figcaption></figure>; }

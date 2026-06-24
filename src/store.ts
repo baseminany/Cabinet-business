@@ -84,7 +84,8 @@ function loadSaved(): Partial<AppState> | null {
       room: parsed.room ? cleanRoom(parsed.room) : BLANK_ROOM,
       units: Array.isArray(parsed.units) ? parsed.units : [],
       selectedId: parsed.selectedId ?? null,
-      step: parsed.step && parsed.step !== 'welcome' ? parsed.step : 'entry',
+      // Always boot to the landing page; saved units still power the "Resume" banner.
+      step: 'welcome',
     };
   } catch {
     return null;

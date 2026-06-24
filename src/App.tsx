@@ -8,7 +8,6 @@ import Wizard from './Wizard';
 import Scene from './scene/Scene';
 import RightPanel from './RightPanel';
 import ErrorBoundary from './components/ErrorBoundary';
-import DesignAssistantPanel from './components/DesignAssistantPanel';
 
 function AppInner() {
   const view = useStore((s) => s.view);
@@ -53,7 +52,6 @@ function AppInner() {
           <PhotoRoomReviewStep />
         </aside>
       </div>
-      <DesignAssistantPanel />
     </div>
   );
   return <Wizard />;
