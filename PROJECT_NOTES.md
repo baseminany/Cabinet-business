@@ -158,6 +158,48 @@ Per-unit "Special requests" field (vent cutouts, wire holes) flows into the quot
   design" (→ shop filtered) + upload-photo + design-against-a-wall + start-blank-module.
 - Landing has a "Who we are" section (owner-run USA shop story).
 
+## Direction / roadmap (set 2026-06-23)
+
+**Productization pivot.** Three tiers:
+1. **Curated products** — we choose them: aesthetic, functional, affordable, HIGH margin, easy to
+   make, scalable. A few per nook category.
+2. **Bounded customization** — depth / width / height / extra shelves or doors, but CONSTRAINED so
+   each variant still nests in reasonable sheet-good use; pricing scales with the added material +
+   labor (engine already does fractional-sheet + per-sheet labor).
+3. **Fully custom** — kept and advertised but SECONDARY: expensive, a few/year, custom quote only.
+
+**Build method (carpenter + scale):**
+- Design every product so its parts **nest from one or two 48×96 sheets** with >85% yield. Standardize
+  part sizes across products so offcuts get reused. Document the sheet layout per product.
+- **Lamello Zeta P2 + Clamex P-14** (and Tenso/Divario variants) for tool-light, no-screwdriver
+  assembly — advertise "no power tools, no stripped screws." BUT **let the wood do the lifting**:
+  captured dados/rabbets/housed shelves so the case geometry carries load; Clamex clamps the joint,
+  it isn't the sole structure. Load/climb pieces ship structural core pre-assembled (glued+pinned).
+- Connector cost (~$1–2 ea ×several) goes in the hardware pricing line; Zeta P2 (~$1,800) amortized in overhead.
+
+**High-demand products to design + render (research-backed), by category:**
+- Entry: Hall tree (bench+hooks+shelf), shoe bench, key/mail wall rail.
+- Living/Storage: Media/TV console, floating shelf sets, plant ladder shelf, narrow bookcase, nightstand pair.
+- Office/WFH: Floating wall desk, wall organizer.
+- Coffee: floating coffee shelf set, coffee cart.
+- Kids: Montessori floor/house bed (high demand; ships larger), toy box bench, step stool.
+Each: design with sheet-yield + Lamello in mind, then AI-render (ChatGPT pipeline) and wire into the shop.
+
+**Checkout / Buy Now (item 5).** Real card payment REQUIRES a processor — there is no "browser-proxy"
+workaround for money. Plan: **Stripe Checkout** (hosted, PCI-compliant; customer enters card on
+Stripe's page, never on our site). Build: "Buy now" → Netlify function creates a Stripe Checkout
+session with the product + price → redirect to Stripe → success page. NEEDS the owner's Stripe
+account + keys (Stripe secret key in Netlify env). Do NOT collect raw card fields on our site.
+
+**In-photo preview (item 9).** Replace AI room-scan with: customer uploads a room photo, we overlay a
+PRODUCT RENDER (our pre-made images) onto it, sized to scale. To-scale needs a reference — simplest:
+user drags/scales the render and/or enters one known dimension (e.g., wall width or ceiling height) so
+we can size the overlay. Keep the 3D virtual space too, but lead with the render-overlay demo. This
+needs NO runtime AI.
+
+**AI is back-office only.** Customer-facing AI removed (couldn't run on Netlify). AI is used by the
+owner to generate product renders + cut lists. Site is now fully reliable in production.
+
 ## Open items / next steps
 
 - Real shop numbers to finalize pricing (labor hrs per type, confirm overhead/margin). NEEDS OWNER INPUT.
