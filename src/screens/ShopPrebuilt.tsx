@@ -2,7 +2,25 @@ import { useMemo, useState } from 'react';
 import { useStore } from '../store';
 import { PRESETS, instantiatePreset, presetPrice, type PresetSpec, type PresetCategory } from '../model/presets';
 import { startCheckout, CheckoutUnavailableError } from '../services/checkout';
+import { CUSTOMER_FINISHES } from '../model/materials';
 import type { UnitType } from '../model/types';
+
+// A row of finish swatches so every product shows it comes in many colors/woods,
+// not just the one shown in the photo.
+function FinishOptions() {
+  const seen = new Set<string>();
+  const dots = CUSTOMER_FINISHES.filter((m) => (seen.has(m.color) ? false : (seen.add(m.color), true))).slice(0, 8);
+  return (
+    <div className="mt-2.5 flex items-center gap-2">
+      <div className="flex">
+        {dots.map((m) => (
+          <span key={m.id} title={m.label} className="-ml-0.5 h-4 w-4 rounded-full border border-black/10 ring-1 ring-white first:ml-0" style={{ background: m.color }} />
+        ))}
+      </div>
+      <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-ink-muted">{CUSTOMER_FINISHES.length} finishes</span>
+    </div>
+  );
+}
 
 function money(n: number): string {
   return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
@@ -76,6 +94,7 @@ export default function ShopPrebuilt() {
                   <span className="text-sm font-black text-ink">{money(prices[spec.id])}<span className="ml-1 text-[10px] font-bold uppercase tracking-wide text-ink-muted">from</span></span>
                 </div>
                 <h2 className="mt-3 text-xl font-black leading-tight tracking-tight text-ink">{spec.name}</h2>
+                <FinishOptions />
                 <p className="mt-2 text-sm leading-6 text-ink-muted">{spec.blurb}</p>
                 <ul className="mt-3 space-y-1.5">
                   {spec.highlights.map((h) => (

@@ -58,7 +58,9 @@ export function buildParts(unit: Unit): BuiltUnit {
   // CARCASS: 2 sides, top, bottom, back
   // ---------------------------------------------------------------------------
 
-  // Sides — full height, full depth, captured nothing (they capture top/bottom).
+  // Sides — full height, full depth. They house the top/bottom in dados and run
+  // continuous to the floor, so the wood carries the load; Clamex P-14 connectors
+  // clamp the front corners (no screws). Back sits in a groove for squareness.
   for (const side of [-1, 1] as const) {
     parts.push({
       id: id('side'),
@@ -72,6 +74,7 @@ export function buildParts(unit: Unit): BuiltUnit {
       bandedEdges: ['L1'], // front vertical edge shows → banded
       position: { x: side * (W / 2 - T / 2), y: carcassCenterY, z: 0 },
       size3d: { w: T, h: Hc, d: D },
+      notes: 'Dado top + bottom, 1/4" back groove; Clamex P-14 at front corners (no screws).',
     });
   }
 
@@ -89,6 +92,7 @@ export function buildParts(unit: Unit): BuiltUnit {
     bandedEdges: tbBanded,
     position: { x: 0, y: bottomInsideY - T / 2, z: 0 },
     size3d: { w: interiorWidth, h: T, d: D },
+    notes: 'Housed in 3/4" dado in the sides — carries the load in shear.',
   });
   parts.push({
     id: id('top'),
