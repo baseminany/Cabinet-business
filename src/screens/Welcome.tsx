@@ -6,7 +6,7 @@ import { ProductSketch } from './ShopPrebuilt';
 
 function money(n: number): string { return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }); }
 
-const FEATURED_IDS = ['montessori-bookshelf', 'floating-shelves', 'entry-console', 'coffee-station'];
+const FEATURED_IDS = ['montessori-bookshelf', 'floating-shelves', 'entry-console', 'coffee-open-station'];
 
 const systems = [
   ['product-mudroom.png', 'Mudroom & Entry', 'Bench seats, locker towers, hooks, and shoe cubbies for busy entryways.'],
@@ -62,12 +62,12 @@ export default function Welcome() {
 
           <div className="grid gap-3 sm:grid-cols-[1.05fr_0.95fr]">
             <figure className="premium-card overflow-hidden p-3">
-              <Img name="product-mudroom.png" alt="Mudroom bench with lockers and cubbies" label="Mudroom Nook" className="aspect-[16/11] w-full rounded-[20px]" />
-              <figcaption className="flex items-center justify-between px-2 py-3"><span className="text-sm font-black tracking-tight">Mudroom Nook</span><span className="text-[10px] font-bold uppercase tracking-[0.16em] text-brass">bench · lockers · shelf</span></figcaption>
+              <Img name="kids-montessori-bookshelf.png" alt="Montessori forward-facing bookshelf in white oak" label="Montessori Bookshelf" className="aspect-[16/11] w-full rounded-[20px]" />
+              <figcaption className="flex items-center justify-between px-2 py-3"><span className="text-sm font-black tracking-tight">Montessori Bookshelf</span><span className="text-[10px] font-bold uppercase tracking-[0.16em] text-brass">white oak · forward-facing</span></figcaption>
             </figure>
             <div className="grid gap-3">
-              <MiniProject file="kids-montessori-bookshelf.png" title="Montessori Shelf" />
-              <MiniProject file="product-coffee.png" title="Coffee Bar" />
+              <MiniProject file="product-floating-shelves.png" title="Floating Shelves" />
+              <MiniProject file="product-shoe-bench.png" title="Shoe Bench" />
             </div>
           </div>
         </div>

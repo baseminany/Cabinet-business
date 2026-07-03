@@ -18,7 +18,7 @@ import { priceModel } from '../pricing/engine';
 import { materialsFor, materialTier, getMaterial } from '../model/materials';
 import { startCheckout } from '../services/checkout';
 import CabinetMesh from '../scene/CabinetMesh';
-import { ProductSketch } from './ShopPrebuilt';
+import { ProductSketch, CardImage } from './ShopPrebuilt';
 import type { MaterialId } from '../model/types';
 
 function money(n: number): string {
@@ -120,9 +120,7 @@ export default function ProductDetail() {
           <div className="overflow-hidden rounded-3xl border border-champagne/35 bg-[linear-gradient(160deg,#f4ede0,#e8ddc9)] shadow-card">
             {view === 'photo' ? (
               <div className="flex aspect-[4/3] items-center justify-center overflow-hidden">
-                {gallery.length > 0
-                  ? <img src={gallery[Math.min(imgIdx, gallery.length - 1)]} alt={spec.name} className="h-full w-full object-cover" />
-                  : <ProductSketch type={spec.items[0].type} />}
+                <CardImage image={gallery[Math.min(imgIdx, gallery.length - 1)]} alt={spec.name} type={spec.items[0].type} />
               </div>
             ) : (
               <div className="aspect-[4/3]">
@@ -147,7 +145,7 @@ export default function ProductDetail() {
           <div className="mt-3 flex flex-wrap items-center gap-2">
             {gallery.map((src, i) => (
               <button key={src} onClick={() => { setView('photo'); setImgIdx(i); }} className={'h-16 w-20 overflow-hidden rounded-xl border transition ' + (view === 'photo' && imgIdx === i ? 'border-brass ring-1 ring-brass' : 'border-champagne/40 hover:border-brass/50')}>
-                <img src={src} alt="" className="h-full w-full object-cover" />
+                <img src={src} alt="" onError={(e) => { (e.currentTarget.parentElement as HTMLElement).style.display = 'none'; }} className="h-full w-full object-cover" />
               </button>
             ))}
             <button onClick={() => setView('3d')} className={'flex h-16 w-20 flex-col items-center justify-center gap-1 rounded-xl border text-[10px] font-bold uppercase tracking-wide transition ' + (view === '3d' ? 'border-brass bg-parchment text-walnut ring-1 ring-brass' : 'border-champagne/40 text-ink-muted hover:border-brass/50')}>

@@ -120,7 +120,7 @@ export default function ShopPrebuilt() {
 
 // Shows the product photo, falling back to the line-drawing sketch if the
 // image is missing or fails to load (so a not-yet-rendered product never breaks).
-function CardImage({ image, alt, type }: { image?: string; alt: string; type: UnitType }) {
+export function CardImage({ image, alt, type }: { image?: string; alt: string; type: UnitType }) {
   const [failed, setFailed] = useState(false);
   if (!image || failed) return <ProductSketch type={type} />;
   return <img src={image} alt={alt} onError={() => setFailed(true)} className="h-full w-full object-cover" />;

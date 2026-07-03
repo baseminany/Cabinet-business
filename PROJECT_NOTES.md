@@ -205,6 +205,24 @@ needs NO runtime AI.
 **AI is back-office only.** Customer-facing AI removed (couldn't run on Netlify). AI is used by the
 owner to generate product renders + cut lists. Site is now fully reliable in production.
 
+## Fast-lane catalog cut (2026-07-03) — start small, grow later
+
+Per Basem: the catalog is now FAST-LANE ONLY (≈1–3 shop hours, no doors, batchable, parcel-ship).
+Door-heavy and multi-unit pieces removed until we scale (mudroom set, coffee hutch, doored media
+console, doored laundry set, coffee wall cabinet, doored coffee station, hall tree, play nook,
+tall book tower — renders kept in public/images for easy re-add).
+
+**Current 17 SKUs** — Kids (6): montessori bookshelf, book ledges, toy cubby bench, toy box bench,
+step stool, learning tower (kept by explicit owner call — the one >3hr exception, demand magnet).
+Entry (3): shoe bench, entryway console, NEW hook rail + shelf. Coffee (2, both NEW): open coffee
+station, coffee wall shelf set. Laundry (1, NEW): laundry shelf tower. Storage (5): floating
+shelves, nightstand, bookcase, reading bench, NEW open media console (3 open bays, no doors).
+All 17 have buildable AI renders.
+
+**Joinery policy (time-efficiency, 2026-07-03):** Lamello-only butt joints for casework (~15s/slot,
+no dado setup); routed dados ONLY on people-load surfaces (seats, steps, tower platform); backs in
+grooves; Tenso on shop-glued joints, Clamex where the customer assembles.
+
 ## Shop-first restructure (2026-07-03) — THE conversion funnel
 
 The app is now ONE funnel: **Landing → Shop → Product detail page → Buy**, with the room
