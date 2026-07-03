@@ -15,7 +15,7 @@ export type CameraPreset = 'perspective' | 'front' | 'top';
 export type Step = 'welcome' | 'entry' | 'shop' | 'product' | 'photoReview' | 'room' | 'openings' | 'pieces' | 'quote';
 
 /** Which shop category the shop screen opens on. */
-export type ShopCategory = 'Kids' | 'Entry' | 'Coffee' | 'Laundry' | 'Storage' | 'All';
+export type ShopCategory = 'Kids' | 'Entry' | 'Coffee' | 'Laundry' | 'Storage' | 'Decor' | 'All';
 
 export function makerEnabled(): boolean {
   try {

@@ -12,7 +12,7 @@ import { makeUnit } from './catalog';
 import { buildProject } from './buildParts';
 import { priceModel } from '../pricing/engine';
 
-export type PresetCategory = 'Kids' | 'Entry' | 'Coffee' | 'Laundry' | 'Storage';
+export type PresetCategory = 'Kids' | 'Entry' | 'Coffee' | 'Laundry' | 'Storage' | 'Decor';
 
 export interface PresetItem {
   type: UnitType;
@@ -94,6 +94,16 @@ export const PRESETS: PresetSpec[] = [
     widthRange: { min: 24, max: 48 },
   },
   {
+    id: 'mail-organizer',
+    name: 'Mail + Key Organizer',
+    category: 'Entry',
+    blurb: 'A small wall box by the door: a slot for mail, a shelf for sunglasses and wallets, and key hooks underneath. Never lose your keys again.',
+    highlights: ['16″ × 12″ wall box with divider shelf', 'Four key hooks (in the hardware bag)', 'White oak, finished all around', 'Mounts with two screws into a stud'],
+    items: [{ type: 'upper', patch: { overall: { width: 16, height: 12, depth: 5 }, sections: 1, shelvesPerSection: 1, door: 'none', mountHeight: 58, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Mail Organizer' } }],
+    image: '/images/product-mail-organizer.png',
+    widthRange: { min: 12, max: 20 },
+  },
+  {
     id: 'floating-shelves',
     name: 'Floating Wall Shelves (Set of 3)',
     category: 'Storage',
@@ -149,6 +159,26 @@ export const PRESETS: PresetSpec[] = [
     ],
     image: '/images/product-coffee-shelves.png',
     widthRange: { min: 20, max: 40 },
+  },
+  {
+    id: 'mug-rack',
+    name: 'Mug Rack Shelf',
+    category: 'Coffee',
+    blurb: 'A small oak shelf with a row of hooks below — your favorite mugs on display, beans and a plant up top. The 10-minute coffee corner.',
+    highlights: ['24″ shelf + five mug hooks', 'Hooks in the hardware bag — no screws into wood', 'White oak or walnut', 'Ships in one small box'],
+    items: [{ type: 'shelf', patch: { overall: { width: 24, height: 2, depth: 6 }, mountHeight: 54, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'white-oak' }, label: 'Mug Rack' } }],
+    image: '/images/product-mug-rack.png',
+    widthRange: { min: 18, max: 36 },
+  },
+  {
+    id: 'counter-riser',
+    name: 'Coffee Counter Riser',
+    category: 'Coffee',
+    blurb: 'A low riser that lifts the machine and jars onto their own stage — and tucks a tray, filters, or a scale in the open bay below.',
+    highlights: ['28″ × 7″ tall × 11″ deep', 'Open bay below for trays + filters', 'Sits on any counter — no mounting', 'Built from premium offcuts — priced to match'],
+    items: [{ type: 'base', patch: { overall: { width: 28, height: 7, depth: 11 }, sections: 1, shelvesPerSection: 0, door: 'none', toeKick: { enabled: false, height: 0 }, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Counter Riser' } }],
+    image: '/images/product-counter-riser.png',
+    widthRange: { min: 18, max: 36 },
   },
   {
     id: 'shoe-bench',
@@ -218,6 +248,74 @@ export const PRESETS: PresetSpec[] = [
     items: [{ type: 'tall', patch: { overall: { width: 24, height: 72, depth: 16 }, sections: 1, shelvesPerSection: 4, door: 'none', toeKick: { enabled: true, height: 3 }, materials: { carcass: 'uv-ply-natural', doors: 'uv-ply-natural', back: 'ply-back' }, label: 'Laundry Tower' } }],
     image: '/images/product-laundry-tower.png',
     widthRange: { min: 18, max: 30 },
+  },
+  {
+    id: 'laundry-shelf',
+    name: 'Over-Machine Shelf',
+    category: 'Laundry',
+    blurb: 'One long, deep shelf that spans above the washer and dryer — detergent, baskets, and towels off the machines and out of the way.',
+    highlights: ['60″ × 12″ deep — spans both machines', 'Hidden heavy-duty brackets', 'White oak or pre-finished birch', 'The single best laundry upgrade'],
+    items: [{ type: 'shelf', patch: { overall: { width: 60, height: 2, depth: 12 }, mountHeight: 76, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'white-oak' }, label: 'Over-Machine Shelf' } }],
+    image: '/images/product-laundry-shelf.png',
+    widthRange: { min: 40, max: 94 },
+  },
+  {
+    id: 'hamper-bench',
+    name: 'Hamper Bench',
+    category: 'Laundry',
+    blurb: 'Two open bays sized for laundry baskets, with a folding-height top. Sort below, fold on top — one piece, no doors.',
+    highlights: ['40″ × 20″ tall — two basket bays', 'Flat top for folding', 'Pre-finished birch — wipes clean', 'No doors, no hardware to break'],
+    items: [{ type: 'base', patch: { overall: { width: 40, height: 20, depth: 18 }, sections: 2, shelvesPerSection: 0, door: 'none', toeKick: { enabled: false, height: 0 }, materials: { carcass: 'uv-ply-natural', doors: 'uv-ply-natural', back: 'ply-back' }, label: 'Hamper Bench' } }],
+    image: '/images/product-hamper-bench.png',
+    widthRange: { min: 32, max: 48 },
+  },
+  {
+    id: 'drying-rail',
+    name: 'Drying Rail + Shelf',
+    category: 'Laundry',
+    blurb: 'A wall shelf with a hanging rod below — air-dry shirts straight from the machine, supplies up top. Saves a drying rack\'s floor space.',
+    highlights: ['36″ shelf + hanging rod below', 'Rod + brackets in the hardware bag', 'Mounts to studs — holds wet laundry', 'White oak, sealed for humidity'],
+    items: [{ type: 'shelf', patch: { overall: { width: 36, height: 2, depth: 10 }, mountHeight: 68, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'white-oak' }, label: 'Drying Rail' } }],
+    image: '/images/product-drying-rail.png',
+    widthRange: { min: 24, max: 48 },
+  },
+  {
+    id: 'art-ledges',
+    name: 'Art Ledge Set (Set of 3)',
+    category: 'Decor',
+    blurb: 'Three narrow picture ledges for any blank wall — lean frames, prints, and small plants, and swap them whenever you like. Gallery wall, no nail holes in your art.',
+    highlights: ['Three 36″ × 4″ ledges with a front lip', 'Layer frames — no hanging hardware per piece', 'Walnut or white oak', 'Ships flat in one small box'],
+    items: [
+      { type: 'shelf', patch: { overall: { width: 36, height: 2, depth: 4 }, mountHeight: 40, materials: { carcass: 'walnut', doors: 'walnut', back: 'walnut' }, label: 'Art Ledge 1' } },
+      { type: 'shelf', patch: { overall: { width: 36, height: 2, depth: 4 }, mountHeight: 52, materials: { carcass: 'walnut', doors: 'walnut', back: 'walnut' }, label: 'Art Ledge 2' } },
+      { type: 'shelf', patch: { overall: { width: 36, height: 2, depth: 4 }, mountHeight: 64, materials: { carcass: 'walnut', doors: 'walnut', back: 'walnut' }, label: 'Art Ledge 3' } },
+    ],
+    image: '/images/product-art-ledges.png',
+    widthRange: { min: 24, max: 48 },
+  },
+  {
+    id: 'wall-boxes',
+    name: 'Wall Display Boxes (Set of 3)',
+    category: 'Decor',
+    blurb: 'Three open oak boxes that mount in a staggered cluster — plants, candles, and ceramics get a stage instead of a shelf.',
+    highlights: ['Three 14″ × 14″ × 6″ open boxes', 'Arrange them any way you like', 'White oak, finished inside and out', 'Keyhole mounts — no visible hardware'],
+    items: [
+      { type: 'upper', patch: { overall: { width: 14, height: 14, depth: 6 }, sections: 1, shelvesPerSection: 0, door: 'none', mountHeight: 42, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Display Box 1' } },
+      { type: 'upper', patch: { overall: { width: 14, height: 14, depth: 6 }, sections: 1, shelvesPerSection: 0, door: 'none', mountHeight: 56, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Display Box 2' } },
+      { type: 'upper', patch: { overall: { width: 14, height: 14, depth: 6 }, sections: 1, shelvesPerSection: 0, door: 'none', mountHeight: 48, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Display Box 3' } },
+    ],
+    image: '/images/product-wall-boxes.png',
+    widthRange: { min: 10, max: 18 },
+  },
+  {
+    id: 'monitor-riser',
+    name: 'Monitor Riser',
+    category: 'Decor',
+    blurb: 'Lift the monitor to eye level and slide the keyboard underneath at the end of the day. The desk suddenly looks intentional.',
+    highlights: ['24″ × 5″ tall × 9″ deep', 'Keyboard tucks in the open bay', 'White oak or walnut', 'Built from premium offcuts — priced to match'],
+    items: [{ type: 'base', patch: { overall: { width: 24, height: 5, depth: 9 }, sections: 1, shelvesPerSection: 0, door: 'none', toeKick: { enabled: false, height: 0 }, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Monitor Riser' } }],
+    image: '/images/product-monitor-riser.png',
+    widthRange: { min: 20, max: 36 },
   },
 ];
 

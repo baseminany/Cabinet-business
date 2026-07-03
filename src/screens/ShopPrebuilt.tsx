@@ -26,7 +26,7 @@ function money(n: number): string {
   return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 }
 
-const CATS: (PresetCategory | 'All')[] = ['All', 'Kids', 'Entry', 'Coffee', 'Laundry', 'Storage'];
+const CATS: (PresetCategory | 'All')[] = ['All', 'Kids', 'Entry', 'Coffee', 'Laundry', 'Storage', 'Decor'];
 
 export default function ShopPrebuilt() {
   const setStep = useStore((s) => s.setStep);

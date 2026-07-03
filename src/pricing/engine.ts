@@ -81,7 +81,10 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
       config.materials[materialId] ?? config.defaultMaterial;
     const usableArea = cost.sheetWidth * cost.sheetHeight * cost.yield;
     const used = areaSqIn / usableArea; // fractional sheets consumed
-    const billed = Math.max(0.5, Math.ceil(used * 2) / 2); // half-sheet minimum billing
+    // Quarter-sheet billing: rounds waste UP so the order carries it, without
+    // forcing tiny accessory items to buy half a sheet of every material they
+    // touch (small items batch several-per-sheet in production).
+    const billed = Math.max(0.25, Math.ceil(used * 4) / 4);
     const wholeSheets = Math.max(1, Math.ceil(used)); // for the shop cut list
     const amount = billed * cost.sheetCost;
     fractionalSheets += used;

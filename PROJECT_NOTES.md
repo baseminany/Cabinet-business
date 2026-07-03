@@ -205,6 +205,22 @@ needs NO runtime AI.
 **AI is back-office only.** Customer-facing AI removed (couldn't run on Netlify). AI is used by the
 owner to generate product renders + cut lists. Site is now fully reliable in production.
 
+## Catalog expansion (2026-07-03, same day) — accessories + Decor category
+
+Added 9 fast-lane products (all ≤2 shop hrs, most build from OFFCUTS of the bigger SKUs —
+waste becomes revenue; all with buildable AI renders): **Laundry** Over-Machine Shelf,
+Hamper Bench, Drying Rail + Shelf. **Coffee** Mug Rack Shelf, Coffee Counter Riser.
+**Entry** Mail + Key Organizer. **NEW Decor category** (regular walls + tabletop):
+Art Ledge Set, Wall Display Boxes (set of 3), Monitor Riser. Catalog = **26 SKUs**, 26/26
+photographed.
+
+**Pricing calibration:** material billing softened from half-sheet to QUARTER-sheet
+granularity (min 0.25/material) — half-sheet minimums were punishing small items
+(montessori $545→$816; now $678). ⚠️ Accessory prices still read premium (monitor riser
+~$349, mug rack ~$283) because global baseHours(1.0)+fixed overhead($35)+packaging($12)
+stack on tiny items. Real fix = per-product labor profiles calibrated from Basem's first
+actual builds; batching amortizes setup across a run. Flagged, not yet tuned.
+
 ## Fast-lane catalog cut (2026-07-03) — start small, grow later
 
 Per Basem: the catalog is now FAST-LANE ONLY (≈1–3 shop hours, no doors, batchable, parcel-ship).
