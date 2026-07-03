@@ -1,4 +1,17 @@
 
+## Knowledge base (shared across all of Basem's AI tools)
+
+Basem maintains a self-improving knowledge base (an Obsidian vault) that is the shared
+source of truth across Cowork, claude.ai, and Claude Code. Read its index at the start
+of work so you have full context on his businesses, shop conventions, and decisions:
+
+@/Users/baseminany/Documents/Basem's Knowledge/Knowledge Base/wiki/index.md
+
+The vault's own operating rules live in its CLAUDE.md
+(/Users/baseminany/Documents/Basem's Knowledge/Knowledge Base/CLAUDE.md). When this
+project's PROJECT_NOTES.md and the vault disagree, the vault's dated notes are usually
+newer — reconcile rather than blindly trust either.
+
 ## Skill routing
 
 When the user's request matches an available skill, invoke it via the Skill tool. When in doubt, invoke the skill.

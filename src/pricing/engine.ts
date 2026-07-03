@@ -37,6 +37,8 @@ export interface PriceResult {
   customerPrice: number; // totalCost + margin
   usesPlaceholders: boolean;
   sheetsByMaterial: { materialId: string; label: string; sheets: number }[];
+  /** Total fractional sheets of material actually consumed (all materials). */
+  sheetsUsed: number;
 }
 
 const SQIN_PER_SQFT = 144;
@@ -68,18 +70,20 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
     );
   }
 
-  // Material is charged by the FRACTION of a sheet actually consumed (parts nest
-  // and share sheets across a batch, and offcuts get reused). We still report the
-  // whole-sheet count for the shop cut list, but the price reflects real usage —
-  // otherwise a small product unfairly carries a full sheet of every material.
+  // Material is billed by the HALF SHEET, rounded up. Products are designed to
+  // nest cleanly into full sheets; when a cut leaves a leftover, that cost is
+  // carried by the order (per Basem: "leftovers are fine, but the customer
+  // carries that cost") — while half-sheet granularity keeps small items from
+  // unfairly paying for a whole sheet of every material they barely touch.
   let fractionalSheets = 0;
   for (const [materialId, areaSqIn] of areaByMaterial) {
     const cost: SheetMaterialCost =
       config.materials[materialId] ?? config.defaultMaterial;
     const usableArea = cost.sheetWidth * cost.sheetHeight * cost.yield;
     const used = areaSqIn / usableArea; // fractional sheets consumed
+    const billed = Math.max(0.5, Math.ceil(used * 2) / 2); // half-sheet minimum billing
     const wholeSheets = Math.max(1, Math.ceil(used)); // for the shop cut list
-    const amount = used * cost.sheetCost; // price by material actually used
+    const amount = billed * cost.sheetCost;
     fractionalSheets += used;
     const label = getMaterial(materialId).label;
     const isPlaceholder = !!cost.placeholder || !config.materials[materialId];
@@ -88,7 +92,7 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
     lines.push({
       key: `mat-${materialId}`,
       label: `Sheet goods — ${label}`,
-      detail: `${(areaSqIn / SQIN_PER_SQFT).toFixed(1)} sqft (${used.toFixed(2)} sheet) × $${cost.sheetCost}/sheet @ ${Math.round(cost.yield * 100)}% yield`,
+      detail: `${(areaSqIn / SQIN_PER_SQFT).toFixed(1)} sqft used → billed ${billed} sheet × $${cost.sheetCost} @ ${Math.round(cost.yield * 100)}% yield`,
       amount,
       placeholder: isPlaceholder,
     });
@@ -219,6 +223,7 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
     customerPrice,
     usesPlaceholders,
     sheetsByMaterial,
+    sheetsUsed: fractionalSheets,
   };
 }
 

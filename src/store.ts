@@ -12,10 +12,10 @@ import { footprint } from './model/roomShapes';
 
 export type ViewMode = 'design' | 'maker';
 export type CameraPreset = 'perspective' | 'front' | 'top';
-export type Step = 'welcome' | 'intake' | 'entry' | 'shop' | 'photoReview' | 'room' | 'openings' | 'pieces' | 'quote';
+export type Step = 'welcome' | 'entry' | 'shop' | 'product' | 'photoReview' | 'room' | 'openings' | 'pieces' | 'quote';
 
-/** Which shop category the shop screen opens on (set by the intake page). */
-export type ShopCategory = 'Kids' | 'Entry' | 'Coffee' | 'Storage' | 'All';
+/** Which shop category the shop screen opens on. */
+export type ShopCategory = 'Kids' | 'Entry' | 'Coffee' | 'Laundry' | 'Storage' | 'All';
 
 export function makerEnabled(): boolean {
   try {
@@ -114,10 +114,12 @@ interface AppState {
   step: Step;
   setStep: (s: Step) => void;
   shopCategory: ShopCategory;
-  /** Open the ready-made shop on a given category (used by the intake page). */
+  /** Open the ready-made shop on a given category. */
   openShop: (cat: ShopCategory) => void;
-  /** Pick a nook type, then go to "fit the space" (ready-made offered there). */
-  chooseNook: (cat: ShopCategory) => void;
+  /** The product shown on the product detail page. */
+  productId: string | null;
+  /** Open a product's detail page (gallery, finishes, size, buy). */
+  openProduct: (id: string) => void;
   setRoomPhoto: (dataUrl: string | null) => void;
   startBlankRoom: () => void;
   startDemoRoom: () => void;
@@ -206,7 +208,8 @@ export const useStore = create<AppState>((set, get) => {
     setStep: (s) => set({ step: s }),
     shopCategory: 'All',
     openShop: (cat) => set({ shopCategory: cat, step: 'shop' }),
-    chooseNook: (cat) => set({ shopCategory: cat, step: 'entry' }),
+    productId: null,
+    openProduct: (id) => set({ productId: id, step: 'product' }),
     setRoomPhoto: (dataUrl) => set({ roomPhoto: dataUrl }),
     startBlankRoom: () => set({ room: BLANK_ROOM, units: [], selectedId: null, step: 'room', view: 'design', cameraPreset: 'perspective' }),
     startDemoRoom: () => set({ room: DEMO_ROOM, units: [], selectedId: null, step: 'room', view: 'design', cameraPreset: 'perspective' }),

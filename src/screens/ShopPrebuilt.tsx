@@ -26,11 +26,12 @@ function money(n: number): string {
   return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 }
 
-const CATS: (PresetCategory | 'All')[] = ['All', 'Kids', 'Entry', 'Coffee', 'Storage'];
+const CATS: (PresetCategory | 'All')[] = ['All', 'Kids', 'Entry', 'Coffee', 'Laundry', 'Storage'];
 
 export default function ShopPrebuilt() {
   const setStep = useStore((s) => s.setStep);
   const orderPreset = useStore((s) => s.orderPreset);
+  const openProduct = useStore((s) => s.openProduct);
   const initialCat = useStore((s) => s.shopCategory);
   const [cat, setCat] = useState<PresetCategory | 'All'>(initialCat);
 
@@ -46,11 +47,8 @@ export default function ShopPrebuilt() {
     try {
       await startCheckout([{ name: spec.name, amount: Math.round(prices[spec.id] * 100), quantity: 1 }], spec.name);
     } catch (e) {
-      if (e instanceof CheckoutUnavailableError) {
-        orderPreset(instantiatePreset(spec), 'quote');
-      } else {
-        orderPreset(instantiatePreset(spec), 'quote');
-      }
+      void (e instanceof CheckoutUnavailableError);
+      orderPreset(instantiatePreset(spec), 'quote');
     } finally {
       setBusyId(null);
     }
@@ -84,7 +82,7 @@ export default function ShopPrebuilt() {
         {/* Product grid */}
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {shown.map((spec) => (
-            <article key={spec.id} className="premium-card flex flex-col overflow-hidden p-0">
+            <article key={spec.id} onClick={() => openProduct(spec.id)} className="premium-card group flex cursor-pointer flex-col overflow-hidden p-0 transition hover:shadow-lift">
               <div className="flex h-44 items-center justify-center overflow-hidden bg-[linear-gradient(160deg,#f4ede0,#e8ddc9)]">
                 <CardImage image={spec.image} alt={spec.name} type={spec.items[0].type} />
               </div>
@@ -104,8 +102,8 @@ export default function ShopPrebuilt() {
                   ))}
                 </ul>
                 <div className="mt-5 flex gap-2 pt-1">
-                  <button onClick={() => buy(spec)} disabled={busyId === spec.id} className="premium-button flex-1 px-4 py-3 text-sm disabled:opacity-60">{busyId === spec.id ? 'Starting…' : 'Buy now'}</button>
-                  <button onClick={() => customize(spec)} className="flex-1 rounded-full border border-brass/40 px-4 py-3 text-sm font-bold text-walnut transition hover:border-walnut hover:bg-walnut hover:text-porcelain">Customize</button>
+                  <button onClick={(e) => { e.stopPropagation(); buy(spec); }} disabled={busyId === spec.id} className="premium-button flex-1 px-4 py-3 text-sm disabled:opacity-60">{busyId === spec.id ? 'Starting…' : 'Buy now'}</button>
+                  <button onClick={(e) => { e.stopPropagation(); customize(spec); }} className="flex-1 rounded-full border border-brass/40 px-4 py-3 text-sm font-bold text-walnut transition hover:border-walnut hover:bg-walnut hover:text-porcelain">Customize</button>
                 </div>
               </div>
             </article>

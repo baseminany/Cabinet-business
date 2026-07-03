@@ -6,6 +6,8 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: { open: true },
+  // Allow access via tunnels (cloudflared/ngrok) when sharing a live preview.
+  preview: { allowedHosts: true },
   // Relative asset paths so the built site works from any host or subfolder
   // (Netlify, Vercel, GitHub Pages, a drag-and-drop deploy, etc.).
   base: './',

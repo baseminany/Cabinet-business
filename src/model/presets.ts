@@ -12,7 +12,7 @@ import { makeUnit } from './catalog';
 import { buildProject } from './buildParts';
 import { priceModel } from '../pricing/engine';
 
-export type PresetCategory = 'Kids' | 'Entry' | 'Coffee' | 'Storage';
+export type PresetCategory = 'Kids' | 'Entry' | 'Coffee' | 'Laundry' | 'Storage';
 
 export interface PresetItem {
   type: UnitType;
@@ -29,6 +29,12 @@ export interface PresetSpec {
   items: PresetItem[];
   /** Optional real product photo (path under /images). Falls back to a sketch. */
   image?: string;
+  /** Extra gallery photos for the product page (finish variants, angles). */
+  images?: string[];
+  /** Customer width customization, bounded so the MAX still cuts from the same
+   *  sheet allowance as the default (never spills into an extra sheet run).
+   *  Customers can size DOWN to the inch freely; price scales either way. */
+  widthRange?: { min: number; max: number };
 }
 
 export const PRESETS: PresetSpec[] = [
@@ -40,6 +46,8 @@ export const PRESETS: PresetSpec[] = [
     highlights: ['30″ wide × 33″ tall — toddler reach', '3 display ledges with safety book rails', 'Natural white oak, rounded edges', 'Cuts from a single plywood sheet'],
     items: [{ type: 'montessori', patch: { overall: { width: 30, height: 33, depth: 9 }, shelvesPerSection: 3, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Montessori Bookshelf' } }],
     image: '/images/kids-montessori-bookshelf.png',
+    images: ['/images/kids-montessori-bookshelf.png', '/images/kids-montessori-bookshelf-sage.png'],
+    widthRange: { min: 24, max: 48 },
   },
   {
     id: 'montessori-tall',
@@ -49,6 +57,7 @@ export const PRESETS: PresetSpec[] = [
     highlights: ['28″ wide × 44″ tall', '4 display ledges', 'Soft white painted finish', 'Anti-tip wall strap included'],
     items: [{ type: 'montessori', patch: { overall: { width: 28, height: 44, depth: 9 }, shelvesPerSection: 4, materials: { carcass: 'sw-alabaster', doors: 'sw-alabaster', back: 'ply-back' }, label: 'Book Tower' } }],
     image: '/images/kids-book-tower.png',
+    widthRange: { min: 24, max: 36 },
   },
   {
     id: 'learning-tower',
@@ -58,6 +67,7 @@ export const PRESETS: PresetSpec[] = [
     highlights: ['Adjustable platform height', 'Enclosed back panel + front rail', 'Solid 3/4″ birch, rounded edges', 'Housed-joint construction with a base stretcher'],
     items: [{ type: 'learning-tower', patch: { overall: { width: 16, height: 36, depth: 18 }, materials: { carcass: 'uv-ply-natural', doors: 'uv-ply-natural', back: 'ply-back' }, label: 'Learning Tower' } }],
     image: '/images/kids-learning-tower.png',
+    widthRange: { min: 15, max: 20 },
   },
   {
     id: 'book-ledges',
@@ -71,6 +81,7 @@ export const PRESETS: PresetSpec[] = [
       { type: 'shelf', patch: { overall: { width: 30, height: 2.5, depth: 5 }, mountHeight: 52, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'white-oak' }, label: 'Book Ledge 3' } },
     ],
     image: '/images/kids-book-ledges.png',
+    widthRange: { min: 18, max: 32 },
   },
   {
     id: 'toy-cubby-bench',
@@ -80,6 +91,7 @@ export const PRESETS: PresetSpec[] = [
     highlights: ['Three open cubbies for baskets', 'Cushion-ready bench top', 'Pre-finished birch — wipes clean', 'One-piece, no doors to slam'],
     items: [{ type: 'base', patch: { overall: { width: 48, height: 18, depth: 15 }, sections: 3, shelvesPerSection: 0, door: 'none', toeKick: { enabled: false, height: 0 }, materials: { carcass: 'uv-ply-natural', doors: 'uv-ply-natural', back: 'ply-back' }, label: 'Cubby Bench' } }],
     image: '/images/kids-cubby-bench.png',
+    widthRange: { min: 30, max: 72 },
   },
   {
     id: 'montessori-play-nook',
@@ -114,6 +126,7 @@ export const PRESETS: PresetSpec[] = [
     highlights: ['30″ wide × 66″ tall × 16″ deep', 'Bench seat + open cubby below', 'Coat hooks + upper basket shelf', 'White oak, ships flat'],
     items: [{ type: 'tall', patch: { overall: { width: 30, height: 66, depth: 16 }, sections: 1, shelvesPerSection: 2, door: 'none', toeKick: { enabled: true, height: 3 }, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Hall Tree' } }],
     image: '/images/product-hall-tree.png',
+    widthRange: { min: 24, max: 36 },
   },
   {
     id: 'coffee-hutch',
@@ -139,6 +152,7 @@ export const PRESETS: PresetSpec[] = [
       { type: 'shelf', patch: { overall: { width: 36, height: 2, depth: 8 }, mountHeight: 58, materials: { carcass: 'walnut', doors: 'walnut', back: 'walnut' }, label: 'Floating Shelf 3' } },
     ],
     image: '/images/product-floating-shelves.png',
+    widthRange: { min: 24, max: 48 },
   },
   {
     id: 'entry-console',
@@ -148,6 +162,7 @@ export const PRESETS: PresetSpec[] = [
     highlights: ['48″ × 32″ tall × 12″ deep — fits tight halls', 'Open lower shelf for baskets', 'White oak, finished all around', 'Wall-anchored for stability'],
     items: [{ type: 'base', patch: { overall: { width: 48, height: 32, depth: 12 }, sections: 1, shelvesPerSection: 1, door: 'none', toeKick: { enabled: false, height: 0 }, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Entry Console' } }],
     image: '/images/product-console.png',
+    widthRange: { min: 30, max: 72 },
   },
   {
     id: 'nightstand',
@@ -157,6 +172,7 @@ export const PRESETS: PresetSpec[] = [
     highlights: ['18″ × 24″ tall × 16″ deep', 'Open shelf — no drawer to stick', 'Walnut or white oak', 'Ships in one box, assembles in minutes'],
     items: [{ type: 'base', patch: { overall: { width: 18, height: 24, depth: 16 }, sections: 1, shelvesPerSection: 1, door: 'none', toeKick: { enabled: false, height: 0 }, materials: { carcass: 'walnut', doors: 'walnut', back: 'ply-back' }, label: 'Nightstand' } }],
     image: '/images/product-nightstand.png',
+    widthRange: { min: 14, max: 30 },
   },
   {
     id: 'coffee-station',
@@ -169,6 +185,7 @@ export const PRESETS: PresetSpec[] = [
       { type: 'shelf', patch: { overall: { width: 36, height: 2, depth: 9 }, mountHeight: 50, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'white-oak' }, label: 'Mug Shelf' } },
     ],
     image: '/images/product-coffee.png',
+    widthRange: { min: 28, max: 48 },
   },
   {
     id: 'coffee-cabinet',
@@ -178,6 +195,7 @@ export const PRESETS: PresetSpec[] = [
     highlights: ['30″ wide × 24″ tall × 12″ deep', 'Two doors, two shelves', 'Soft-close hinges', 'White oak or painted'],
     items: [{ type: 'upper', patch: { overall: { width: 30, height: 24, depth: 12 }, sections: 1, shelvesPerSection: 2, door: 'double', materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Coffee Cabinet' } }],
     image: '/images/product-coffee-cabinet.png',
+    widthRange: { min: 24, max: 36 },
   },
   {
     id: 'shoe-bench',
@@ -187,6 +205,7 @@ export const PRESETS: PresetSpec[] = [
     highlights: ['36″ × 18″ tall × 15″ deep', 'Two open shoe shelves', 'Cushion-ready top', 'White oak — wipes clean'],
     items: [{ type: 'base', patch: { overall: { width: 36, height: 18, depth: 15 }, sections: 1, shelvesPerSection: 2, door: 'none', toeKick: { enabled: false, height: 0 }, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Shoe Bench' } }],
     image: '/images/product-shoe-bench.png',
+    widthRange: { min: 24, max: 48 },
   },
   {
     id: 'media-console',
@@ -196,6 +215,8 @@ export const PRESETS: PresetSpec[] = [
     highlights: ['60″ × 24″ tall × 18″ deep', 'Two door cabinets + open center', 'Cord pass-throughs', 'White oak, ships flat'],
     items: [{ type: 'base', patch: { overall: { width: 60, height: 24, depth: 18 }, sections: 2, shelvesPerSection: 1, door: 'double', toeKick: { enabled: true, height: 3 }, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Media Console' } }],
     image: '/images/product-media-console.png',
+    images: ['/images/product-media-console.png', '/images/product-media-console-walnut.png'],
+    widthRange: { min: 40, max: 94 },
   },
   {
     id: 'bookcase',
@@ -205,6 +226,7 @@ export const PRESETS: PresetSpec[] = [
     highlights: ['24″ × 72″ tall × 12″ deep', 'Five adjustable shelves', 'Walnut or white oak', 'Anti-tip wall strap included'],
     items: [{ type: 'tall', patch: { overall: { width: 24, height: 72, depth: 12 }, sections: 1, shelvesPerSection: 5, door: 'none', toeKick: { enabled: true, height: 3 }, materials: { carcass: 'walnut', doors: 'walnut', back: 'ply-back' }, label: 'Bookcase' } }],
     image: '/images/product-bookcase.png',
+    widthRange: { min: 18, max: 36 },
   },
   {
     id: 'toy-bench',
@@ -214,6 +236,7 @@ export const PRESETS: PresetSpec[] = [
     highlights: ['36″ × 18″ tall × 16″ deep', 'One large open bin', 'Soft-close lid option', 'Soft white painted, rounded edges'],
     items: [{ type: 'base', patch: { overall: { width: 36, height: 18, depth: 16 }, sections: 1, shelvesPerSection: 0, door: 'none', toeKick: { enabled: false, height: 0 }, materials: { carcass: 'sw-alabaster', doors: 'sw-alabaster', back: 'ply-back' }, label: 'Toy Bench' } }],
     image: '/images/product-toy-bench.png',
+    widthRange: { min: 24, max: 48 },
   },
   {
     id: 'step-stool',
@@ -232,6 +255,20 @@ export const PRESETS: PresetSpec[] = [
     highlights: ['54″ bench, cushion-ready top', '3 open cubbies for baskets', 'White oak natural', 'One-piece, ships assembled-ready'],
     items: [{ type: 'base', patch: { overall: { width: 54, height: 18, depth: 16 }, sections: 3, shelvesPerSection: 0, door: 'none', toeKick: { enabled: true, height: 3 }, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Reading Bench' } }],
     image: '/images/product-reading-bench.png',
+    widthRange: { min: 36, max: 94 },
+  },
+  {
+    id: 'laundry-wall',
+    name: 'Laundry Wall Set',
+    category: 'Laundry',
+    blurb: 'A base cabinet with a folding-height top and a two-door wall cabinet above — detergent, baskets, and supplies behind clean fronts.',
+    highlights: ['36″ base + matching wall cabinet', 'Folding-height counter top', 'Durable painted finish — wipes clean', 'Ships flat, clip-together assembly'],
+    items: [
+      { type: 'base', patch: { overall: { width: 36, height: 34.5, depth: 20 }, materials: { carcass: 'sw-pure-white', doors: 'sw-pure-white', back: 'ply-back' }, label: 'Laundry Base' } },
+      { type: 'upper', patch: { overall: { width: 36, height: 30, depth: 12 }, mountHeight: 54, materials: { carcass: 'sw-pure-white', doors: 'sw-pure-white', back: 'ply-back' }, label: 'Laundry Upper' } },
+    ],
+    image: '/images/product-laundry.png',
+    widthRange: { min: 30, max: 48 },
   },
 ];
 

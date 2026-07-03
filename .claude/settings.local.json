@@ -3,7 +3,17 @@
     "allow": [
       "Bash(npm --version)",
       "Read(//usr/local/bin/**)",
-      "Bash(brew --version)"
+      "Bash(brew --version)",
+      "Read(//Users/baseminany/Downloads/**)",
+      "Bash(sips -s format png --resampleHeightWidthMax 2600 'zephyr panel ready.pdf' --out __TRACKED_VAR__/zephyr_big.png)",
+      "Bash(sips -g pixelWidth -g pixelHeight __TRACKED_VAR__/zephyr_big.png)",
+      "Bash(sips /private/tmp/claude-501/-Users-baseminany-Desktop-Cabinet-Business/250e3aa2-ad13-457a-aaf9-bf567f3af798/scratchpad/base.png --cropOffset 1850 1250 -c 750 759 --out /private/tmp/claude-501/-Users-baseminany-Desktop-Cabinet-Business/250e3aa2-ad13-457a-aaf9-bf567f3af798/scratchpad/z_panel.png)",
+      "Bash(sips /private/tmp/claude-501/-Users-baseminany-Desktop-Cabinet-Business/250e3aa2-ad13-457a-aaf9-bf567f3af798/scratchpad/base.png --cropOffset 1850 0 -c 750 1250 --out /private/tmp/claude-501/-Users-baseminany-Desktop-Cabinet-Business/250e3aa2-ad13-457a-aaf9-bf567f3af798/scratchpad/z_specs.png)",
+      "Bash(/usr/bin/python3 - /private/tmp/claude-501/-Users-baseminany-Desktop-Cabinet-Business/250e3aa2-ad13-457a-aaf9-bf567f3af798/scratchpad)",
+      "Bash(/usr/bin/python3 -)",
+      "Bash(ruby -c leanna_coffee_bar_v01.rb)",
+      "Bash(ruby /tmp/mock_run2.rb)",
+      "Bash(cp \"/Users/baseminany/Desktop/Inany LLC Sketchup /leanna_closet_v22.rb\" \"/Users/baseminany/Desktop/Inany LLC Sketchup /leanna_closet_v23.rb\" && echo \"copied v22 -> v23\")"
     ]
   }
 }

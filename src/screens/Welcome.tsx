@@ -20,7 +20,8 @@ const systems = [
 export default function Welcome() {
   const setStep = useStore((s) => s.setStep);
   const openShop = useStore((s) => s.openShop);
-  const go = () => setStep('intake');
+  const openProduct = useStore((s) => s.openProduct);
+  const go = () => setStep('entry');
   const featured = useMemo(() => FEATURED_IDS.map((id) => PRESETS.find((p) => p.id === id)).filter(Boolean) as PresetSpec[], []);
   const prices = useMemo(() => Object.fromEntries(PRESETS.map((p) => [p.id, presetPrice(p)])), []);
   const checkout = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('checkout') : null;
@@ -85,7 +86,7 @@ export default function Welcome() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {featured.map((p) => (
-              <button key={p.id} onClick={() => openShop(p.category)} className="group premium-card overflow-hidden p-0 text-left transition hover:shadow-card active:scale-[0.99]">
+              <button key={p.id} onClick={() => openProduct(p.id)} className="group premium-card overflow-hidden p-0 text-left transition hover:shadow-card active:scale-[0.99]">
                 <div className="flex h-40 items-center justify-center overflow-hidden bg-[linear-gradient(160deg,#f4ede0,#e8ddc9)]">
                   {p.image ? <img src={p.image} alt={p.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" /> : <ProductSketch type={p.items[0].type} />}
                 </div>

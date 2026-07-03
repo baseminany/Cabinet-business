@@ -205,6 +205,30 @@ needs NO runtime AI.
 **AI is back-office only.** Customer-facing AI removed (couldn't run on Netlify). AI is used by the
 owner to generate product renders + cut lists. Site is now fully reliable in production.
 
+## Shop-first restructure (2026-07-03) — THE conversion funnel
+
+The app is now ONE funnel: **Landing → Shop → Product detail page → Buy**, with the room
+planner demoted to a side door ("Design my own" → fit-the-space → planner → save design).
+The intake page was REMOVED (redundant decision layer; the shop's category chips do that job).
+
+**Product detail page (`src/screens/ProductDetail.tsx`)** — clickable from every shop/featured
+card (`store.openProduct(id)`, step `'product'`):
+- Photo gallery (preset `images[]`, falls back to `image`/sketch) + **Live 3D tab** rendering the
+  ACTUAL parametric build at the chosen size (buildParts → CabinetMesh in a mini Canvas).
+- Finish picker (value/premium tiers, 13 finishes) — repriced live.
+- **Made-to-fit width** slider (preset `widthRange {min,max}`) — down to the inch; the MAX is set
+  per product so it still cuts from the same sheet allowance (never spills into an extra sheet).
+  Verified: media console 60″=$1,363 → 90″=$1,903 → walnut $1,990.
+- Buy now (Stripe; falls back to save-design with the EXACT configured units) + assembly story
+  (No screws / wood carries the load / ships flat).
+
+**Pricing**: material now billed by HALF SHEET rounded up (min 0.5) — leftover cost is carried
+per customer per Basem's rule; `sheetsUsed` exposed on PriceResult for the PDP badge.
+
+**Catalog**: added Laundry category + Laundry Wall Set (base + upper, white). Finish-variant
+renders added (media console walnut, montessori sage) as PDP gallery images. 21 products,
+all photographed.
+
 ## Review-response changes (2026-06-24, after external code review)
 
 Done (the agreed launch-hardening items):

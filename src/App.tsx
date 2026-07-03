@@ -1,8 +1,8 @@
 import { useStore, makerEnabled } from './store';
 import Welcome from './screens/Welcome';
 import EntryChoice from './screens/EntryChoice';
-import Intake from './screens/Intake';
 import ShopPrebuilt from './screens/ShopPrebuilt';
+import ProductDetail from './screens/ProductDetail';
 import PhotoRoomReviewStep from './steps/PhotoRoomReviewStep';
 import Wizard from './Wizard';
 import Scene from './scene/Scene';
@@ -31,7 +31,7 @@ function AppInner() {
   }
 
   if (step === 'welcome') return <div className="flex h-full min-h-0 flex-col"><Welcome /></div>;
-  if (step === 'intake') return <div className="flex h-full min-h-0 flex-col"><Intake /></div>;
+  if (step === 'product') return <div className="flex h-full min-h-0 flex-col"><ProductDetail /></div>;
   if (step === 'entry') return <div className="flex h-full min-h-0 flex-col"><EntryChoice /></div>;
   if (step === 'shop') return <div className="flex h-full min-h-0 flex-col"><ShopPrebuilt /></div>;
   if (step === 'photoReview') return (
