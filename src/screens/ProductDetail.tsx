@@ -161,7 +161,7 @@ export default function ProductDetail() {
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             {[
               ['🔗', 'No screws', 'Lamello Clamex clips: align the panels, flip the levers, done. Nothing to strip.'],
-              ['🪵', 'Wood carries the load', 'Shelves and seats sit in routed dados — the connectors just lock the fit.'],
+              ['🪵', 'Wood carries the load', 'Seats and steps sit in routed grooves; cases clip square with connectors — built to be leaned on.'],
               ['📦', 'Ships flat', 'Labeled panels, protected edges, hardware bagged. Assembles with one small tool (included).'],
             ].map(([icon, t, b]) => (
               <div key={t} className="rounded-2xl border border-champagne/35 bg-warmWhite p-4">

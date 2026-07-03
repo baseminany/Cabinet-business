@@ -58,9 +58,11 @@ export function buildParts(unit: Unit): BuiltUnit {
   // CARCASS: 2 sides, top, bottom, back
   // ---------------------------------------------------------------------------
 
-  // Sides — full height, full depth. They house the top/bottom in dados and run
-  // continuous to the floor, so the wood carries the load; Clamex P-14 connectors
-  // clamp the front corners (no screws). Back sits in a groove for squareness.
+  // Sides — full height, full depth, continuous to the floor (compression loads
+  // go straight through the wood). Tiered joinery for TIME efficiency: normal
+  // casework joins with Lamello P-System slots (~15s each, self-aligning — no
+  // dado setup); only people-load surfaces (seats/steps) get a routed dado.
+  // Back sits in a 1/4" groove — one saw pass, keeps the box square.
   for (const side of [-1, 1] as const) {
     parts.push({
       id: id('side'),
@@ -74,7 +76,7 @@ export function buildParts(unit: Unit): BuiltUnit {
       bandedEdges: ['L1'], // front vertical edge shows → banded
       position: { x: side * (W / 2 - T / 2), y: carcassCenterY, z: 0 },
       size3d: { w: T, h: Hc, d: D },
-      notes: 'Dado top + bottom, 1/4" back groove; Clamex P-14 at front corners (no screws).',
+      notes: 'Lamello slots for top/bottom (Tenso shop-side, Clamex customer-side); 1/4" back groove. Add a shallow dado ONLY if the top is a seat.',
     });
   }
 
@@ -92,7 +94,7 @@ export function buildParts(unit: Unit): BuiltUnit {
     bandedEdges: tbBanded,
     position: { x: 0, y: bottomInsideY - T / 2, z: 0 },
     size3d: { w: interiorWidth, h: T, d: D },
-    notes: 'Housed in 3/4" dado in the sides — carries the load in shear.',
+    notes: 'Lamello-joined to the sides (no screws). If used as a seat/step, house it in a shallow dado instead.',
   });
   parts.push({
     id: id('top'),
