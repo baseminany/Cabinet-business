@@ -6,6 +6,12 @@
       "runtimeExecutable": "/Users/baseminany/.local/node/bin/node",
       "runtimeArgs": ["node_modules/vite/bin/vite.js"],
       "port": 5173
+    },
+    {
+      "name": "lifetime-survey",
+      "runtimeExecutable": "/Users/baseminany/.local/node/bin/node",
+      "runtimeArgs": ["/Users/baseminany/Desktop/LifetimeHRT/survey-app/server.js"],
+      "port": 4820
     }
   ]
 }
