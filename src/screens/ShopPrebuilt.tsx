@@ -56,15 +56,15 @@ export default function ShopPrebuilt() {
 
   return (
     <div className="nice-scroll min-h-0 flex-1 overflow-y-auto bg-[linear-gradient(180deg,#fffdf8,#f4eadb)] text-ink">
-      <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-champagne/30 bg-warmWhite/92 px-4 py-3 backdrop-blur sm:px-6">
-        <button onClick={() => setStep('welcome')} className="text-sm font-black uppercase tracking-[0.22em] text-ink">House of Nook</button>
-        <button onClick={() => setStep('entry')} className="rounded-full border border-champagne/45 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted transition hover:border-walnut hover:text-walnut">Design my own →</button>
+      <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-ink/10 bg-warmWhite/95 px-4 py-4 backdrop-blur sm:px-6">
+        <button onClick={() => setStep('welcome')} className="font-display text-[20px] font-medium tracking-tight">House of Nook</button>
+        <button onClick={() => setStep('entry')} className="text-[12px] font-semibold uppercase tracking-[0.14em] text-ink-soft underline decoration-brass/50 underline-offset-4 transition hover:text-ink">Design custom →</button>
       </header>
 
-      <div className="mx-auto max-w-6xl px-6 pb-16 pt-10 sm:px-10">
-        <p className="eyebrow text-brass">Ready-made nooks for every room · built in the USA</p>
-        <h1 className="mt-4 max-w-2xl text-5xl font-semibold leading-[0.95] tracking-[-0.05em] text-ink sm:text-6xl">Pre-built nooks — order, then make them yours.</h1>
-        <p className="mt-5 max-w-xl text-base leading-8 text-ink-soft">Entryways, coffee bars, reading nooks, kids' rooms, and more — real wood, ships flat, assembles in an afternoon. Order a ready-made design as-is, or open it in the planner and change the size, finish, and layout. Every price is a real starting estimate from our shop.</p>
+      <div className="mx-auto max-w-6xl px-6 pb-16 pt-12 sm:px-10">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-brass">The collection · made in Michigan</p>
+        <h1 className="font-display mt-4 max-w-2xl text-[clamp(2.2rem,4.2vw,3.6rem)] font-normal leading-[1.05] text-ink">Every piece, sized to your inch.</h1>
+        <p className="mt-5 max-w-xl text-[15px] leading-8 text-ink-soft">Real hardwood, thirteen finishes, no-tool assembly. Open any piece to size it for your exact wall and watch the price follow.</p>
 
         {/* Category filter */}
         <div className="mt-8 flex flex-wrap gap-2">
@@ -102,8 +102,8 @@ export default function ShopPrebuilt() {
                   ))}
                 </ul>
                 <div className="mt-5 flex gap-2 pt-1">
-                  <button onClick={(e) => { e.stopPropagation(); buy(spec); }} disabled={busyId === spec.id} className="premium-button flex-1 px-4 py-3 text-sm disabled:opacity-60">{busyId === spec.id ? 'Starting…' : 'Buy now'}</button>
-                  <button onClick={(e) => { e.stopPropagation(); customize(spec); }} className="flex-1 rounded-full border border-brass/40 px-4 py-3 text-sm font-bold text-walnut transition hover:border-walnut hover:bg-walnut hover:text-porcelain">Customize</button>
+                  <button onClick={(e) => { e.stopPropagation(); openProduct(spec.id); }} className="flex-1 rounded-sm bg-ink px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.12em] text-warmWhite transition hover:bg-walnut">View & size it</button>
+                  <button onClick={(e) => { e.stopPropagation(); buy(spec); }} disabled={busyId === spec.id} className="flex-1 rounded-sm border border-ink/25 px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.12em] text-ink transition hover:border-ink disabled:opacity-60">{busyId === spec.id ? 'Starting…' : 'Buy now'}</button>
                 </div>
               </div>
             </article>

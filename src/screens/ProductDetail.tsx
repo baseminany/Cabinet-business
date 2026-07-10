@@ -33,13 +33,30 @@ export default function ProductDetail() {
   const spec = PRESETS.find((p) => p.id === productId);
 
   const defaultWidth = spec?.items[0]?.patch?.overall?.width ?? 36;
+  const defaultDepth = spec?.items[0]?.patch?.overall?.depth ?? 12;
+  const defaultHeight = spec?.items[0]?.patch?.overall?.height ?? 30;
   const [width, setWidth] = useState<number | null>(null);
+  const [depth, setDepth] = useState<number | null>(null);
+  const [height, setHeight] = useState<number | null>(null);
   const [finish, setFinish] = useState<MaterialId | null>(null);
   const [view, setView] = useState<'photo' | '3d'>('photo');
   const [imgIdx, setImgIdx] = useState(0);
   const [busy, setBusy] = useState(false);
 
   const curWidth = width ?? defaultWidth;
+  const curDepth = depth ?? defaultDepth;
+  const curHeight = height ?? defaultHeight;
+
+  // Depth/height fine-tuning is offered for SINGLE-piece products (multi-piece
+  // sets share a width but have intentionally different depths/heights).
+  const singlePiece = (spec?.items.length ?? 0) === 1;
+  const firstType = spec?.items[0]?.type;
+  const depthRange = singlePiece
+    ? { min: Math.max(4, Math.round(defaultDepth * 0.7)), max: Math.min(30, Math.round(defaultDepth * 1.4)) }
+    : null;
+  const heightRange = singlePiece && (firstType === 'tall' || firstType === 'montessori')
+    ? { min: Math.max(12, defaultHeight - 8), max: Math.min(84, defaultHeight + 12) }
+    : null;
 
   // Build the REAL units for the current configuration — the same objects the
   // planner, pricing engine, and cut list use. Nothing on this page is a mockup.
@@ -48,11 +65,13 @@ export default function ProductDetail() {
     const us = instantiatePreset(spec);
     for (const u of us) {
       if (spec.widthRange && width != null) u.overall = { ...u.overall, width: curWidth };
+      if (depthRange && depth != null) u.overall = { ...u.overall, depth: curDepth };
+      if (heightRange && height != null) u.overall = { ...u.overall, height: curHeight };
       if (finish) u.materials = { ...u.materials, carcass: finish, doors: finish };
     }
     return us;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [spec, width, finish, curWidth]);
+  }, [spec, width, depth, height, finish, curWidth, curDepth, curHeight]);
 
   const price = useMemo(() => (units.length ? priceModel(buildProject(units)) : null), [units]);
 
@@ -104,14 +123,13 @@ export default function ProductDetail() {
     }
   };
 
-  const customize = () => orderPreset(units, 'pieces');
   const dist = scene3d ? Math.max(scene3d.total, scene3d.topY) * 1.6 + 24 : 120;
 
   return (
-    <div className="nice-scroll min-h-0 flex-1 overflow-y-auto bg-[linear-gradient(180deg,#fffdf8,#f4eadb)] text-ink">
-      <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-champagne/30 bg-warmWhite/92 px-4 py-3 backdrop-blur sm:px-6">
-        <button onClick={() => setStep('welcome')} className="text-sm font-black uppercase tracking-[0.22em] text-ink">House of Nook</button>
-        <button onClick={() => openShop('All')} className="rounded-full border border-champagne/45 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted transition hover:border-walnut hover:text-walnut">← All products</button>
+    <div className="nice-scroll min-h-0 flex-1 overflow-y-auto bg-warmWhite text-ink">
+      <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-ink/10 bg-warmWhite/95 px-4 py-4 backdrop-blur sm:px-6">
+        <button onClick={() => setStep('welcome')} className="font-display text-[20px] font-medium tracking-tight">House of Nook</button>
+        <button onClick={() => openShop('All')} className="text-[12px] font-semibold uppercase tracking-[0.14em] text-ink-soft underline decoration-brass/50 underline-offset-4 transition hover:text-ink">← All products</button>
       </header>
 
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-10 lg:grid-cols-[1.05fr_0.95fr] sm:px-10">
@@ -156,16 +174,15 @@ export default function ProductDetail() {
           </div>
 
           {/* Why this works — the assembly + shipping story */}
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          <div className="mt-8 grid gap-6 border-t border-ink/10 pt-6 sm:grid-cols-3">
             {[
-              ['🔗', 'No screws', 'Lamello Clamex clips: align the panels, flip the levers, done. Nothing to strip.'],
-              ['🪵', 'Wood carries the load', 'Seats and steps sit in routed grooves; cases clip square with connectors — built to be leaned on.'],
-              ['📦', 'Ships flat', 'Labeled panels, protected edges, hardware bagged. Assembles with one small tool (included).'],
-            ].map(([icon, t, b]) => (
-              <div key={t} className="rounded-2xl border border-champagne/35 bg-warmWhite p-4">
-                <div className="text-xl">{icon}</div>
-                <div className="mt-1.5 text-sm font-black tracking-tight text-ink">{t}</div>
-                <p className="mt-1 text-[12px] leading-5 text-ink-muted">{b}</p>
+              ['No screws', 'Lamello connectors: align the panels, flip the levers, done. Nothing to strip.'],
+              ['Wood carries the load', 'Seats and steps sit in routed grooves; cases clip square — built to be leaned on.'],
+              ['Ships flat', 'Labeled panels, protected edges, hardware bagged. One small tool, included.'],
+            ].map(([t, b]) => (
+              <div key={t}>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brass">{t}</div>
+                <p className="mt-1.5 text-[12px] leading-5 text-ink-muted">{b}</p>
               </div>
             ))}
           </div>
@@ -173,8 +190,8 @@ export default function ProductDetail() {
 
         {/* ── Right: configure + buy ── */}
         <div>
-          <span className="rounded-full bg-champagne/30 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-walnut">{spec.category}</span>
-          <h1 className="mt-3 text-4xl font-semibold leading-[1.02] tracking-[-0.04em] text-ink">{spec.name}</h1>
+          <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brass">{spec.category}</span>
+          <h1 className="font-display mt-3 text-[clamp(1.9rem,3vw,2.6rem)] font-normal leading-[1.1] text-ink">{spec.name}</h1>
           <p className="mt-3 text-sm leading-7 text-ink-soft">{spec.blurb}</p>
 
           <ul className="mt-4 space-y-1.5">
@@ -205,51 +222,65 @@ export default function ProductDetail() {
             ))}
           </div>
 
-          {/* Width customization — the sheet-bounded superpower */}
-          {spec.widthRange && (
-            <div className="mt-7 rounded-2xl border border-champagne/35 bg-warmWhite p-4">
-              <div className="flex items-baseline justify-between">
-                <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-ink-muted">Made-to-fit width</h3>
-                <span className="text-sm font-black text-ink">{curWidth}″</span>
-              </div>
-              <input
-                type="range" min={spec.widthRange.min} max={spec.widthRange.max} step={0.25}
-                value={curWidth} onChange={(e) => setWidth(parseFloat(e.target.value))}
-                className="mt-3 w-full accent-[#8a6a3c]"
-              />
-              <div className="mt-1 flex justify-between text-[10px] font-bold text-ink-muted">
-                <span>{spec.widthRange.min}″</span><span>{spec.widthRange.max}″</span>
-              </div>
-              <p className="mt-2 text-[11px] leading-5 text-ink-muted">
-                Sized to the inch for your wall. The max is where this design still cuts cleanly from its plywood sheets — that discipline is what keeps the price honest. Need different depth or height? <button onClick={customize} className="font-bold text-walnut underline-offset-2 hover:underline">Open the full planner →</button>
+          {/* Made-to-fit sizing — all in place, no separate planner */}
+          {(spec.widthRange || depthRange || heightRange) && (
+            <div className="mt-7 border border-ink/10 bg-warmWhite p-5">
+              <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-muted">Made to fit — size it here</h3>
+              {spec.widthRange && (
+                <SizeSlider label="Width" value={curWidth} min={spec.widthRange.min} max={spec.widthRange.max} onChange={setWidth} />
+              )}
+              {depthRange && (
+                <SizeSlider label="Depth" value={curDepth} min={depthRange.min} max={depthRange.max} onChange={setDepth} />
+              )}
+              {heightRange && (
+                <SizeSlider label="Height" value={curHeight} min={heightRange.min} max={heightRange.max} onChange={setHeight} />
+              )}
+              <p className="mt-3 text-[11px] leading-5 text-ink-muted">
+                Sized to the quarter-inch for your exact spot. The limits keep the design cutting cleanly from its material — that's what keeps the price honest.
               </p>
             </div>
           )}
 
           {/* Price + buy */}
           {price && (
-            <div className="mt-7 rounded-3xl border-2 border-walnut/25 bg-warmWhite p-5 shadow-card">
+            <div className="mt-7 border border-ink/15 bg-warmWhite p-5">
               <div className="flex items-end justify-between">
                 <div>
-                  <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-brass">Your configuration</div>
-                  <div className="mt-1 text-4xl font-semibold tracking-[-0.04em] text-ink">{money(price.customerPrice)}</div>
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brass">Your configuration</div>
+                  <div className="font-display mt-1 text-4xl font-normal text-ink">{money(price.customerPrice)}</div>
                 </div>
                 <div className="text-right text-[11px] leading-5 text-ink-muted">
-                  cut from ~{Math.max(0.5, Math.round(price.sheetsUsed * 2) / 2)} sheet{price.sheetsUsed > 0.75 ? 's' : ''}<br />of premium plywood
+                  made to order<br />ships flat-pack
                 </div>
               </div>
-              <button onClick={buy} disabled={busy} className="premium-button mt-4 w-full px-5 py-4 text-base disabled:opacity-60">
+              <button onClick={buy} disabled={busy} className="mt-4 w-full rounded-sm bg-ink px-5 py-4 text-[13px] font-semibold uppercase tracking-[0.14em] text-warmWhite transition hover:bg-walnut disabled:opacity-60">
                 {busy ? 'Starting…' : 'Buy now'}
               </button>
-              <div className="mt-2.5 flex justify-center gap-4 text-[11px] font-semibold text-ink-muted">
-                <button onClick={customize} className="underline-offset-2 hover:text-walnut hover:underline">Customize further</button>
-                <span>·</span>
-                <button onClick={() => orderPreset(units, 'quote')} className="underline-offset-2 hover:text-walnut hover:underline">Save this design</button>
+              <div className="mt-2.5 text-center text-[11px] font-medium text-ink-muted">
+                <button onClick={() => orderPreset(units, 'quote')} className="underline decoration-brass/50 underline-offset-2 hover:text-walnut">Save this design for later</button>
               </div>
             </div>
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+/** Compact labeled slider for in-place made-to-fit sizing. */
+function SizeSlider({ label, value, min, max, onChange }: { label: string; value: number; min: number; max: number; onChange: (n: number) => void }) {
+  return (
+    <div className="mt-4">
+      <div className="flex items-baseline justify-between">
+        <span className="text-[12px] font-medium text-ink-soft">{label}</span>
+        <span className="font-display text-[15px] text-ink">{value}″</span>
+      </div>
+      <input
+        type="range" min={min} max={max} step={0.25} value={value}
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+        className="mt-2 w-full accent-[#8a6a3c]"
+      />
+      <div className="mt-0.5 flex justify-between text-[10px] text-ink-muted"><span>{min}″</span><span>{max}″</span></div>
     </div>
   );
 }

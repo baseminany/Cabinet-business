@@ -205,6 +205,32 @@ needs NO runtime AI.
 **AI is back-office only.** Customer-facing AI removed (couldn't run on Netlify). AI is used by the
 owner to generate product renders + cut lists. Site is now fully reliable in production.
 
+## Editorial redesign + conversion pass (2026-07-08) — "the Thuma standard"
+
+Research-driven redesign (Thuma teardown + luxury-DTC conversion principles). New design rules,
+now LAW for this site: Fraunces serif for every headline; no emoji, no pill-chip rows, no
+comparison tables, no gradient blobs; square-ish corners + thin rules; photography leads; only
+images of products we actually sell; short confident copy.
+
+- **Landing rebuilt**: statement hero → full-bleed product photo w/ museum caption → Shop-by-room
+  photo grid (6 real categories) → featured pieces → craft section → 4-step "how it arrives" →
+  quiet close. REMOVED: IKEA/contractor comparison table, stat row, quote box, chips, emoji, and
+  the unbuildable mudroom built-in image (was over-promising).
+- **PDP**: serif type; in-place sizing — Width + Depth (single-piece products) + Height (standing
+  pieces) sliders, no planner detour ("Customize further" removed); "cut from X sheets" jargon →
+  "made to order · ships flat-pack"; emoji story cards → small-caps craft notes.
+- **Shop**: cards → "View & size it" + "Buy now" (Customize-to-planner removed); planner remains
+  only behind the Custom path. Planner bug fixed: door-finish swatches only when the piece has doors.
+- **Pricing**: smallOrderFactor (0.35 + 0.65×sheets, capped 1) scales labor setup, packaging base,
+  and fixed overhead — small pieces batch, so they stop paying full setup. Floating shelves
+  $334 → $243 (walnut). Card "from" prices now computed with the value-tier finish (honest lowest).
+- Verified: Live 3D functional (real parametric build), gallery images render with fallback.
+
+**Queued next (owner-visible commitments):** photorealism image batch (current renders read
+"AI-clean" — regenerate hero/product shots in editorial-photo style + one detail shot per hero
+product); real photos of Basem's first builds will replace renders as they exist; Stripe key +
+first timed build still the two owner blockers.
+
 ## Catalog expansion (2026-07-03, same day) — accessories + Decor category
 
 Added 9 fast-lane products (all ≤2 shop hrs, most build from OFFCUTS of the bigger SKUs —

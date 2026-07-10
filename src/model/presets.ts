@@ -11,6 +11,7 @@ import type { Unit, UnitType } from './types';
 import { makeUnit } from './catalog';
 import { buildProject } from './buildParts';
 import { priceModel } from '../pricing/engine';
+import { getMaterial, materialTier } from './materials';
 
 export type PresetCategory = 'Kids' | 'Entry' | 'Coffee' | 'Laundry' | 'Storage' | 'Decor';
 
@@ -338,8 +339,16 @@ export function instantiatePreset(spec: PresetSpec): Unit[] {
   });
 }
 
-/** "From" price for a preset, using the same engine as the planner. */
+/** "From" price for a preset — the honest LOWEST configurable price, computed
+ *  with the value-tier finish (pre-finished birch) substituted for premium
+ *  hardwood defaults. The product page shows the live price for the finish the
+ *  customer actually picks. */
 export function presetPrice(spec: PresetSpec): number {
   const units = instantiatePreset(spec);
+  for (const u of units) {
+    if (materialTier(getMaterial(u.materials.carcass)) === 'premium') {
+      u.materials = { ...u.materials, carcass: 'uv-ply-natural', doors: 'uv-ply-natural' };
+    }
+  }
   return priceModel(buildProject(units)).customerPrice;
 }

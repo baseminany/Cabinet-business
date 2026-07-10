@@ -160,12 +160,18 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
   // Hours scale with the real work: a base setup/pack time per order plus time
   // per sheet of material (cut, band, sand, assemble, finish). This makes a
   // 3-module project cost more labor than a single shelf, instead of a flat fee.
-  const laborHours = config.labor.baseHours + config.labor.hoursPerSheet * fractionalSheets;
+  // Small pieces (shelf sets, risers, racks) are cut in BATCHES alongside other
+  // orders, so the per-order setup time amortizes. Scale the fixed setup pieces
+  // (labor base, packaging base, fixed overhead) by job size — a full-sheet job
+  // pays full setup; a quarter-sheet accessory pays about half.
+  const smallOrderFactor = Math.min(1, 0.35 + 0.65 * fractionalSheets);
+
+  const laborHours = config.labor.baseHours * smallOrderFactor + config.labor.hoursPerSheet * fractionalSheets;
   const laborAmount = config.labor.ratePerHour * laborHours;
   lines.push({
     key: 'labor',
     label: 'Labor',
-    detail: `${laborHours.toFixed(1)} hr (${config.labor.baseHours} base + ${config.labor.hoursPerSheet}/sheet × ${fractionalSheets.toFixed(2)}) × $${config.labor.ratePerHour}/hr`,
+    detail: `${laborHours.toFixed(1)} hr (${(config.labor.baseHours * smallOrderFactor).toFixed(1)} setup + ${config.labor.hoursPerSheet}/sheet × ${fractionalSheets.toFixed(2)}) × $${config.labor.ratePerHour}/hr`,
     amount: laborAmount,
     placeholder: !!config.labor.placeholder,
   });
@@ -182,12 +188,13 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
   }
 
   // --- 7) PACKAGING ----------------------------------------------------------
-  // Box, edge/corner protectors, foam, kraft fill, tape, labels.
-  const packagingAmount = config.packaging.fixed + config.packaging.perSheet * fractionalSheets;
+  // Box, edge/corner protectors, foam, kraft fill, tape, labels. Base scales
+  // with job size (small items ship in stock boxes).
+  const packagingAmount = config.packaging.fixed * smallOrderFactor + config.packaging.perSheet * fractionalSheets;
   lines.push({
     key: 'packaging',
     label: 'Packaging & ship prep',
-    detail: `$${config.packaging.fixed} base + $${config.packaging.perSheet}/sheet × ${fractionalSheets.toFixed(2)}`,
+    detail: `$${(config.packaging.fixed * smallOrderFactor).toFixed(0)} base + $${config.packaging.perSheet}/sheet × ${fractionalSheets.toFixed(2)}`,
     amount: packagingAmount,
     placeholder: false,
   });
@@ -197,7 +204,7 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
 
   // --- OVERHEAD --------------------------------------------------------------
   const overheadAmount =
-    config.overhead.fixed + subtotal * (config.overhead.percent / 100);
+    config.overhead.fixed * smallOrderFactor + subtotal * (config.overhead.percent / 100);
   const totalCost = subtotal + overheadAmount;
 
   // --- MARGIN ----------------------------------------------------------------

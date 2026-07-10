@@ -462,7 +462,7 @@ function UnitEditor({ room, onRemove, onDuplicate }: { room: ReturnType<typeof u
 
         <Section title="Finish">
           <MaterialSwatches role={isShelf ? 'shelf' : 'carcass'} label={isShelf ? 'Shelf finish' : 'Body finish'} value={sel.materials.carcass} onChange={(v) => setSelMaterials({ carcass: v })} />
-          {!isShelf && <MaterialSwatches role="door" label="Door / front finish" value={sel.materials.doors} onChange={(v) => setSelMaterials({ doors: v })} />}
+          {sel.door !== 'none' && <MaterialSwatches role="door" label="Door / front finish" value={sel.materials.doors} onChange={(v) => setSelMaterials({ doors: v })} />}
         </Section>
 
         <Section title="Special requests">
