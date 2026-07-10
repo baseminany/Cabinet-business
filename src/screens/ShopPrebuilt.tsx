@@ -17,7 +17,7 @@ function FinishOptions() {
           <span key={m.id} title={m.label} className="-ml-0.5 h-4 w-4 rounded-full border border-black/10 ring-1 ring-white first:ml-0" style={{ background: m.color }} />
         ))}
       </div>
-      <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-ink-muted">{CUSTOMER_FINISHES.length} finishes</span>
+      <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-ink-muted">{CUSTOMER_FINISHES.length} finishes</span>
     </div>
   );
 }
@@ -55,50 +55,54 @@ export default function ShopPrebuilt() {
   };
 
   return (
-    <div className="nice-scroll min-h-0 flex-1 overflow-y-auto bg-[linear-gradient(180deg,#fffdf8,#f4eadb)] text-ink">
-      <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-ink/10 bg-warmWhite/95 px-4 py-4 backdrop-blur sm:px-6">
-        <button onClick={() => setStep('welcome')} className="font-display text-[20px] font-medium tracking-tight">House of Nook</button>
-        <button onClick={() => setStep('entry')} className="text-[12px] font-semibold uppercase tracking-[0.14em] text-ink-soft underline decoration-brass/50 underline-offset-4 transition hover:text-ink">Design custom →</button>
+    <div className="nice-scroll min-h-0 flex-1 overflow-y-auto bg-warmWhite text-ink">
+      <header className="sticky top-0 z-10 border-b border-ink/10 bg-warmWhite/95 backdrop-blur">
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4 sm:px-10">
+          <button onClick={() => setStep('welcome')} className="font-display text-[22px] font-medium tracking-tight">House of Nook</button>
+          <button onClick={() => setStep('entry')} className="text-[13px] font-medium text-ink-soft underline decoration-brass/60 underline-offset-4 transition hover:text-ink">Design something custom</button>
+        </div>
       </header>
 
-      <div className="mx-auto max-w-6xl px-6 pb-16 pt-12 sm:px-10">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-brass">The collection · made in Michigan</p>
+      <div className="mx-auto max-w-[1400px] px-6 pb-20 pt-14 sm:px-10 sm:pt-20">
+        <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-muted">The collection · made in Michigan</p>
         <h1 className="font-display mt-4 max-w-2xl text-[clamp(2.2rem,4.2vw,3.6rem)] font-normal leading-[1.05] text-ink">Every piece, sized to your inch.</h1>
         <p className="mt-5 max-w-xl text-[15px] leading-8 text-ink-soft">Real hardwood, thirteen finishes, no-tool assembly. Open any piece to size it for your exact wall and watch the price follow.</p>
 
-        {/* Category filter */}
-        <div className="mt-8 flex flex-wrap gap-2">
+        {/* Category filter — quiet text tabs on a hairline rule */}
+        <nav className="mt-12 flex flex-wrap gap-x-8 gap-y-3 border-b border-ink/10">
           {CATS.map((c) => (
             <button
               key={c}
               onClick={() => setCat(c)}
-              className={'rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] transition ' + (cat === c ? 'bg-walnut text-porcelain shadow-soft' : 'bg-warmWhite text-ink-muted ring-1 ring-champagne/40 hover:ring-brass/60')}
+              className={
+                'pb-3 text-[12px] font-medium uppercase tracking-[0.16em] transition ' +
+                (cat === c
+                  ? 'border-b border-brass text-ink'
+                  : 'border-b border-transparent text-ink-muted hover:text-ink')
+              }
             >
               {c}
             </button>
           ))}
-        </div>
+        </nav>
 
-        {/* Product grid */}
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Product grid — editorial cards: photo, serif name, thin rules */}
+        <div className="mt-12 grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
           {shown.map((spec) => (
-            <article key={spec.id} onClick={() => openProduct(spec.id)} className="premium-card group flex cursor-pointer flex-col overflow-hidden p-0 transition hover:shadow-lift">
-              <div className="flex h-44 items-center justify-center overflow-hidden bg-[linear-gradient(160deg,#f4ede0,#e8ddc9)]">
+            <article key={spec.id} onClick={() => openProduct(spec.id)} className="group flex cursor-pointer flex-col">
+              <div className="flex aspect-[5/4] items-center justify-center overflow-hidden bg-porcelain">
                 <CardImage image={spec.image} alt={spec.name} type={spec.items[0].type} />
               </div>
-              <div className="flex flex-1 flex-col p-5">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="rounded-full bg-champagne/30 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-walnut">{spec.category}</span>
-                  <span className="text-sm font-black text-ink">{money(prices[spec.id])}<span className="ml-1 text-[10px] font-bold uppercase tracking-wide text-ink-muted">from</span></span>
+              <div className="mt-4 flex flex-1 flex-col">
+                <div className="flex items-baseline justify-between gap-3">
+                  <h2 className="font-display text-[19px] leading-snug text-ink">{spec.name}</h2>
+                  <span className="shrink-0 text-[13px] text-ink-muted">from {money(prices[spec.id])}</span>
                 </div>
-                <h2 className="mt-3 text-xl font-black leading-tight tracking-tight text-ink">{spec.name}</h2>
                 <FinishOptions />
-                <p className="mt-2 text-sm leading-6 text-ink-muted">{spec.blurb}</p>
-                <ul className="mt-3 space-y-1.5">
+                <p className="mt-2.5 text-sm leading-6 text-ink-muted">{spec.blurb}</p>
+                <ul className="mt-3 space-y-1 border-t border-ink/10 pt-3">
                   {spec.highlights.map((h) => (
-                    <li key={h} className="flex gap-2 text-[12px] leading-5 text-ink-soft">
-                      <span className="mt-[3px] h-1.5 w-1.5 shrink-0 rounded-full bg-brass" />{h}
-                    </li>
+                    <li key={h} className="text-[12px] leading-5 text-ink-soft">{h}</li>
                   ))}
                 </ul>
                 <div className="mt-5 flex gap-2 pt-1">
@@ -110,7 +114,7 @@ export default function ShopPrebuilt() {
           ))}
         </div>
 
-        <p className="mt-10 text-center text-xs leading-6 text-ink-muted">Don't see your size? Every design here opens in the planner — change anything, then send it for a quote.</p>
+        <p className="mt-16 border-t border-ink/10 pt-8 text-center text-[13px] leading-6 text-ink-muted">Don't see your size? Every design here opens in the planner — change anything, then send it for a quote.</p>
       </div>
     </div>
   );
