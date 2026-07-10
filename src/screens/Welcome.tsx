@@ -20,7 +20,7 @@ const FEATURED_IDS = ['montessori-bookshelf', 'media-console-open', 'floating-sh
 
 const ROOMS: { img: string; title: string; cat: ShopCategory }[] = [
   { img: 'product-shoe-bench.png', title: 'Entryway', cat: 'Entry' },
-  { img: 'kids-montessori-bookshelf.png', title: 'Kids & Playroom', cat: 'Kids' },
+  { img: 'kids-montessori-bookshelf-sage.png', title: 'Kids & Playroom', cat: 'Kids' },
   { img: 'product-coffee-open.png', title: 'Coffee Corner', cat: 'Coffee' },
   { img: 'product-media-open.png', title: 'Living & Media', cat: 'Storage' },
   { img: 'product-laundry-tower.png', title: 'Laundry', cat: 'Laundry' },
@@ -134,7 +134,7 @@ export default function Welcome() {
             </div>
             <dl className="mt-9 space-y-5 border-t border-ink/10 pt-7">
               {[
-                ['Real hardwood', 'White oak and walnut veneer plywood, matched solid edging. Painted pieces use furniture-grade MDF and Sherwin-Williams color.'],
+                ['Real wood, all the way through', 'White oak and walnut veneer plywood with matched solid edging. Painted pieces are Sherwin-Williams color over birch plywood — never MDF.'],
                 ['Clip-together assembly', 'Align the panels, flip the levers, done. The one small tool you need is in the box.'],
                 ['Made to your inch', 'Nearly every piece can be sized down to the quarter-inch for your exact wall.'],
               ].map(([t, b]) => (

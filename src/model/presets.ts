@@ -198,7 +198,8 @@ export const PRESETS: PresetSpec[] = [
     blurb: 'A low open console for the TV wall — three clean bays for the soundbar, consoles, books, and decor. No doors, no hinges, no fuss.',
     highlights: ['60″ × 20″ tall × 16″ deep', 'Three open bays, cords drop behind', 'White oak or walnut', 'Sized to the inch up to 94″'],
     items: [{ type: 'base', patch: { overall: { width: 60, height: 20, depth: 16 }, sections: 3, shelvesPerSection: 0, door: 'none', toeKick: { enabled: true, height: 3 }, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Media Console' } }],
-    image: '/images/product-media-open.png',
+    image: '/images/product-media-open-oak.png',
+    images: ['/images/product-media-open-oak.png', '/images/product-media-open.png'],
     widthRange: { min: 40, max: 94 },
   },
   {

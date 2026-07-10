@@ -231,6 +231,31 @@ images of products we actually sell; short confident copy.
 product); real photos of Basem's first builds will replace renders as they exist; Stripe key +
 first timed build still the two owner blockers.
 
+## MDF purge + HD imagery + unfnshed teardown (2026-07-10)
+
+- **No MDF anywhere** (Basem's call): every painted finish (`sw-*`, `painted-*`, `paint-custom`)
+  now costs on 3/4" paint-grade birch ply at $120/sheet in pricing.config.ts; the `mdf-3-4`
+  entry is deleted; landing craft copy says "Sherwin-Williams color over birch plywood — never
+  MDF." Painted prices rise honestly vs the old $80 MDF sheet — that's the real cost.
+- **Pixelation root cause + fix**: previous product images were 480×360 element-screenshots of
+  ChatGPT thumbnails, upscaled ~6× by the new full-bleed layout. New pipeline (/tmp/genHD2.cjs):
+  in-page fetch of the generated image → POST to a localhost HTTP receiver (mbrowse `js` caps
+  string returns at 20K chars, so base64-chunk readouts silently truncate — never do that).
+  Native ~1450px files land in public/images/ over the same filenames. First 10 heroes done this
+  batch; ~16 catalog images still 480px, regenerate with the same script pattern.
+- **Finish variety** (Basem: "not everything white oak"): sage montessori bookshelf (now the
+  Kids room tile), painted-warm-white laundry tower, walnut media console with a NEW white-oak
+  variant (`product-media-open-oak.png`, wired as media-console-open's lead image), walnut
+  ledges/floating shelves. Mix on the landing page = oak / sage / walnut / painted white.
+- **unfnshed.com teardown** (competitor, San Diego): unfinished birch-ply furniture $39–$185,
+  friction-fit "2-minute assembly", ships 3–5 days, "trusted in 19,000+ homes", finish
+  visualizer, DIY-finishing content engine. Validates our exact model (ply + no-tool + domestic).
+  Their price weapon = selling UNFINISHED (zero finish labor/materials). PROPOSED, not built:
+  an "Unfinished birch — finish it yourself" cheapest tier (would undercut their range and cut
+  our labor/sheet); needs Basem's call because landing promises "finished by hand". Also worth
+  stealing: quantified assembly claim ("assembles in minutes" → time it on the first build),
+  social-proof line once real customers exist, DIY/finishing content for TikTok.
+
 ## Catalog expansion (2026-07-03, same day) — accessories + Decor category
 
 Added 9 fast-lane products (all ≤2 shop hrs, most build from OFFCUTS of the bigger SKUs —
