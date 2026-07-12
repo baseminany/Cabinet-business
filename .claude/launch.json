@@ -12,6 +12,18 @@
       "runtimeExecutable": "/Users/baseminany/.local/node/bin/node",
       "runtimeArgs": ["/Users/baseminany/Desktop/LifetimeHRT/survey-app/server.js"],
       "port": 4820
+    },
+    {
+      "name": "lifetime-platform",
+      "runtimeExecutable": "/Users/baseminany/.local/node/bin/node",
+      "runtimeArgs": ["/Users/baseminany/Desktop/LifetimeHRT/platform/server.js"],
+      "port": 4830
+    },
+    {
+      "name": "lifetime-voice",
+      "runtimeExecutable": "/Users/baseminany/.local/node/bin/node",
+      "runtimeArgs": ["/Users/baseminany/Desktop/LifetimeHRT/voice-receptionist/server.js"],
+      "port": 4840
     }
   ]
 }
