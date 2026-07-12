@@ -4,8 +4,8 @@ Design v3, locked 2026-07-11. First-ever table build. Bench DROPPED from scope (
 
 ## Spec
 - 66" L × 37" W × 30" H. White oak **8/4 S4S** throughout (1¾" finished). Solid, not ply.
-- Top: edge-glued, grain along length. **Textured/hewn edge on the FRONT long edge ONLY** (one side, not two): jigsaw wave → drawknife/spokeshave or grinder carving disc → sand 80→180.
-- Legs: two slab panels 1¾ × 26 × 28¼, grain vertical, inset 12" from each end (outer face). Each = 3 boards edge-glued.
+- Top: **6 planks @ ~6-3/16" edge-glued** (5 glue joints), grain along length. **Textured/hewn edge on the FRONT long edge ONLY**: jigsaw wave → drawknife/spokeshave or grinder carving disc → sand 80→180. The wave is modeled as real geometry in the front plank (max carve 0.55").
+- Legs: two slab panels 1¾ × 26 × 28¼, grain vertical, inset 12" from each end (outer face). Each = **4 planks @ 6½"** (realistic 8/4 stock width; was "3 boards" earlier — corrected).
 - Beam: 1¾ × 4 × 38½ hidden under top between legs. Knee clearance 24¼" (don't raise beam_h past 4).
 - Glue-ups: track-saw complementary-cut jointing (no jointer); **Tenso P-14 every 6–8" = clampless**; preload clips; stages of 2–3 boards.
 - Finish: Rubio Monocoat Oil Plus 2C "Pure", hand-applied.
@@ -18,8 +18,9 @@ Design v3, locked 2026-07-11. First-ever table build. Bench DROPPED from scope (
 - NOTHING glued or hard-screwed across the top's width — 37" oak moves ~¼–3/8" seasonally.
 
 ## Files
-- `dining_table_v01.rb` — idempotent CONFIG build; verified (ruby -c + mocked run, all checks PASS).
-  Load: `load "/Users/baseminany/Desktop/Cabinet Business/Dining-Table-Sketchup/dining_table_v01.rb"`
+- **`dining_table_v02.rb` — CURRENT.** Planked build (every board = a component, OCL lists real glue-up parts), sculpted hewn front edge, ~69 Tenso pairs counted in report. Verified (ruby -c + mocked run, all PASS). Loading it erases any DT_V* master and rebuilds.
+  Load: `load "/Users/baseminany/Desktop/Cabinet Business/Dining-Table-Sketchup/dining_table_v02.rb"`
+- `dining_table_v01.rb` — superseded (monolithic slabs).
 - OCL: exclude tag `09_Hardware_IGNORE`; material = solid wood; grain follows part length (legs modeled grain-vertical).
 - Buy: ~73 bd-ft 8/4 S4S white oak (56.5 net × 1.30).
 
