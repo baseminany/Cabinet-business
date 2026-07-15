@@ -16,11 +16,11 @@
 // =============================================================================
 
 import Stripe from 'stripe';
-import { PRESETS } from '../../src/model/presets';
+import { PRESETS, launchDecision } from '../../src/model/presets';
 import { configurePreset, type PresetConfig } from '../../src/model/configurePreset';
 import { buildProject } from '../../src/model/buildParts';
 import { priceModel } from '../../src/pricing/engine';
-import { pricing } from '../../src/pricing/pricing.config';
+import { createDigitalBom } from '../../src/model/bom';
 
 export const config = { path: '/api/checkout' };
 
@@ -30,6 +30,7 @@ interface CheckoutBody {
   quantity?: number;
   successUrl?: string;
   cancelUrl?: string;
+  analytics?: { visitorId?: string; sessionId?: string };
 }
 
 export default async (req: Request): Promise<Response> => {
@@ -47,19 +48,24 @@ export default async (req: Request): Promise<Response> => {
 
   const spec = PRESETS.find((p) => p.id === body.presetId);
   if (!spec) return json({ error: 'Unknown product.' }, 400);
+  const launch = launchDecision(spec);
+  if (launch.status !== 'pilot') return json({ error: 'This product is on the first-build list while its safety/compliance file is completed.' }, 409);
   const quantity = Math.max(1, Math.min(10, Math.round(Number(body.quantity) || 1)));
 
   // ── Recompute the price server-side from the canonical model ──
   const units = configurePreset(spec, body.config ?? {});
-  const priced = priceModel(buildProject(units));
+  const built = buildProject(units);
+  const priced = priceModel(built);
+  const bom = createDigitalBom(built);
+  if (bom.fulfillment.lane !== 'parcel-pilot') return json({ error: bom.fulfillment.reasons.join(' ') || 'This size requires a custom shipping quote.' }, 409);
   const unitAmountCents = Math.round(priced.customerPrice * 100);
   if (!Number.isFinite(unitAmountCents) || unitAmountCents < 100) {
     return json({ error: 'Pricing failed.' }, 500);
   }
 
-  // Shipping estimate scales with how much material ships (see pricing.config
-  // `shipping` — a PLACEHOLDER until real packaging/carrier tests replace it).
-  const shipCents = Math.round((pricing.shipping.base + pricing.shipping.perSheet * priced.sheetsUsed * quantity) * 100);
+  // Planning rate from the digital BOM's packed-weight model. It remains a
+  // launch placeholder until the physical pack test supplies carrier rates.
+  const shipCents = Math.round(bom.fulfillment.shippingEstimate * quantity * 100);
 
   const u = units[0];
   const sizeDesc = `${u.overall.width}"W × ${u.overall.depth}"D × ${u.overall.height}"H · ${u.materials.carcass}`;
@@ -98,6 +104,10 @@ export default async (req: Request): Promise<Response> => {
         config: JSON.stringify(body.config ?? {}).slice(0, 480),
         computedPrice: String(priced.customerPrice),
         sheetsUsed: String(priced.sheetsUsed),
+        packedWeightLb: String(bom.fulfillment.packed.weightLb),
+        fulfillmentLane: bom.fulfillment.lane,
+        visitorId: String(body.analytics?.visitorId ?? '').slice(0, 80),
+        sessionId: String(body.analytics?.sessionId ?? '').slice(0, 80),
         quantity: String(quantity),
       },
     });

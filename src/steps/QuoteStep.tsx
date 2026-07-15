@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useStore } from '../store';
 import { buildProject } from '../model/buildParts';
 import { priceModel } from '../pricing/engine';
 import { submitQuote, QuoteUnavailableError } from '../services/quote';
+import { track } from '../services/analytics';
 
 function money(n: number): string { return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }); }
 function round25(n: number): number { return Math.max(0, Math.round(n / 25) * 25); }
@@ -14,6 +15,7 @@ type SubmitState = 'idle' | 'sending' | 'sent' | 'saved' | 'error';
 export default function QuoteStep() {
   const units = useStore((s) => s.units);
   const result = useMemo(() => priceModel(buildProject(units)), [units]);
+  const firstBuild = units.some((u) => u.commerce?.launchStatus === 'compliance-hold');
   const low = round25(result.customerPrice);
   const high = round25(result.customerPrice * 1.22);
 
@@ -23,6 +25,7 @@ export default function QuoteStep() {
   const [notes, setNotes] = useState('');
   const [state, setState] = useState<SubmitState>('idle');
   const [errMsg, setErrMsg] = useState('');
+  useEffect(() => { track('quote_view', { modules: units.length }); }, []);
 
   if (units.length === 0) return <p className="rounded-2xl border border-champagne/30 bg-warmWhite p-5 text-sm text-ink-muted">Add at least one module to see your starting estimate.</p>;
 
@@ -47,6 +50,7 @@ export default function QuoteStep() {
         units,
       });
       setState(res.delivered ? 'sent' : 'saved');
+      track('quote_submitted', { modules: units.length, estimateLow: low, delivered: res.delivered });
     } catch (e) {
       if (e instanceof QuoteUnavailableError) { setState('saved'); return; }
       setErrMsg((e as Error).message || 'Something went wrong.');
@@ -61,9 +65,9 @@ export default function QuoteStep() {
       {/* Price card */}
       <div className="premium-card overflow-hidden p-0">
         <div className="bg-[linear-gradient(135deg,#4b2e20,#211813)] p-6 text-porcelain">
-          <p className="eyebrow text-champagne">Planning estimate</p>
+          <p className="eyebrow text-champagne">{firstBuild ? 'First-build request' : 'Planning estimate'}</p>
           <div className="mt-3 text-5xl font-semibold tracking-[-0.05em] text-warmWhite">{money(low)} <span className="text-2xl text-porcelain/60">– {money(high)}</span></div>
-          <p className="mt-3 text-sm leading-6 text-porcelain/68">Starting range from your current module plan. Final quote follows measurement, build review, crate size, and shipping.</p>
+          <p className="mt-3 text-sm leading-6 text-porcelain/68">{firstBuild ? 'No payment is being accepted yet. This records the configured product while its physical first article and safety file are completed.' : 'Starting range from your current module plan. Final quote follows measurement, build review, crate size, and shipping.'}</p>
         </div>
         <div className="p-6">
           <div className="flex flex-wrap gap-2">
@@ -89,9 +93,9 @@ export default function QuoteStep() {
               </div>
               {state === 'error' && <p className="rounded-xl bg-red-50 px-3 py-2 text-xs font-semibold text-red-600 ring-1 ring-red-200">{errMsg}</p>}
               <button type="submit" disabled={!canSubmit} className="premium-button w-full px-5 py-4 text-base disabled:opacity-50">
-                {state === 'sending' ? 'Saving…' : 'Save my design'}
+                {state === 'sending' ? 'Saving…' : firstBuild ? 'Join the first-build list' : 'Save my design'}
               </button>
-              <p className="text-center text-[11px] leading-5 text-ink-muted">No payment. For larger or fully-custom pieces — saves your design so we can quote it as we launch.</p>
+              <p className="text-center text-[11px] leading-5 text-ink-muted">No payment. {firstBuild ? 'Your configured product and contact details are saved together.' : 'For larger or fully-custom pieces — saves your design so we can quote it as we launch.'}</p>
             </form>
           )}
         </div>

@@ -3,7 +3,7 @@ import type { MaterialId } from '../model/types';
 
 const TIER_LABEL: Record<'value' | 'premium', string> = {
   value: 'Value · pre-finished + painted (ships faster)',
-  premium: 'Premium · hardwood veneer',
+  premium: 'Premium · oak + walnut veneer plywood',
 };
 
 export default function MaterialSwatches({ label, value, onChange, role = 'carcass' }: { label: string; value: MaterialId; onChange: (id: MaterialId) => void; role?: MaterialRole }) {

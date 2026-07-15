@@ -18,6 +18,7 @@
 import type { BuiltUnit } from '../model/types';
 import { getMaterial } from '../model/materials';
 import { pricing, type PricingConfig, type SheetMaterialCost } from './pricing.config';
+import { connectorPairsFor } from '../model/bom';
 
 export interface PriceLine {
   key: string;
@@ -126,11 +127,7 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
   // structure — every panel that joins the carcass at both ends (top, bottom,
   // dividers, toe kicks) takes ~2 connector pairs per end. Adjustable shelves
   // sit on pins (already counted). Calibrate from the first real build.
-  const CONNECTOR_ROLES = new Set(['top', 'bottom', 'divider', 'toekick']);
-  const connectorPairs = unit.parts.reduce(
-    (n, p) => n + (CONNECTOR_ROLES.has(p.role) ? 4 : 0),
-    0
-  );
+  const connectorPairs = connectorPairsFor(unit.parts);
   const hardwareAmount =
     hw.hinges * h.hingeEach +
     hw.shelfPins * h.shelfPinEach +
@@ -144,6 +141,21 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
     detail: `${connectorPairs} Lamello connectors, ${hw.hinges} hinges, ${hw.pulls} pulls, ${hw.shelfPins} shelf pins`,
     amount: hardwareAmount,
     placeholder: !!h.placeholder,
+  });
+
+  const kitAmount = (unit.kitItems ?? []).reduce((n, item) => n + item.quantity * item.unitCost, 0);
+  if (kitAmount > 0) lines.push({
+    key: 'product-kit',
+    label: 'Product hardware & mounting kit',
+    detail: (unit.kitItems ?? []).map((i) => `${i.quantity} ${i.name}`).join(', '),
+    amount: kitAmount,
+    placeholder: (unit.kitItems ?? []).some((i) => i.placeholder),
+  });
+  const assemblyKitAmount = config.assemblyKit.toolEach + config.assemblyKit.instructionSet + unit.parts.length * config.assemblyKit.partLabelEach;
+  lines.push({
+    key: 'assembly-kit', label: 'Assembly tool, instructions & labels',
+    detail: `1 tool, 1 instruction set, ${unit.parts.length} part labels`, amount: assemblyKitAmount,
+    placeholder: !!config.assemblyKit.placeholder,
   });
 
   // --- 4) FINISH -------------------------------------------------------------

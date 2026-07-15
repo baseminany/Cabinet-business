@@ -707,7 +707,8 @@ function buildLearningTower(unit: Unit): BuiltUnit {
  */
 export function buildProject(units: Unit[]): BuiltUnit {
   const parts: Part[] = [];
-  const hardware = { hinges: 0, shelfPins: 0, pulls: 0, drawerSlides: 0 };
+  const hardware = { hinges: 0, shelfPins: 0, pulls: 0, drawerSlides: 0, brackets: 0 };
+  const kitItems = [] as NonNullable<BuiltUnit['kitItems']>;
   let cursorX = 0;
   const GAP = 6;
 
@@ -725,7 +726,9 @@ export function buildProject(units: Unit[]): BuiltUnit {
     hardware.shelfPins += b.hardware.shelfPins;
     hardware.pulls += b.hardware.pulls;
     hardware.drawerSlides += b.hardware.drawerSlides;
+    hardware.brackets += b.hardware.brackets ?? 0;
+    kitItems.push(...(u.kitItems ?? []), ...(b.kitItems ?? []));
     cursorX += u.overall.width + GAP;
   }
-  return { parts, hardware };
+  return { parts, hardware, kitItems };
 }

@@ -8,6 +8,7 @@
 // =============================================================================
 
 export class CheckoutUnavailableError extends Error {}
+import { analyticsContext } from './analytics';
 
 export interface CheckoutRequest {
   presetId: string;
@@ -23,6 +24,7 @@ export async function startCheckout(order: CheckoutRequest): Promise<void> {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         ...order,
+        analytics: analyticsContext(),
         successUrl: `${location.origin}/?checkout=success`,
         cancelUrl: location.href,
       }),

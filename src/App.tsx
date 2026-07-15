@@ -8,12 +8,17 @@ import Wizard from './Wizard';
 import Scene from './scene/Scene';
 import RightPanel from './RightPanel';
 import ErrorBoundary from './components/ErrorBoundary';
+import PolicyPage from './screens/PolicyPage';
+import AnalyticsDashboard from './screens/AnalyticsDashboard';
 
 function AppInner() {
   const view = useStore((s) => s.view);
   const step = useStore((s) => s.step);
   const setView = useStore((s) => s.setView);
   const setStep = useStore((s) => s.setStep);
+  const query = new URLSearchParams(location.search);
+  if (query.get('analytics') === '1') return <AnalyticsDashboard />;
+  if (query.get('page')) return <PolicyPage page={query.get('page')!} />;
 
   if (view === 'maker' && makerEnabled()) {
     return (

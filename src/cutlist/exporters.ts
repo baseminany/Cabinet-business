@@ -4,6 +4,7 @@
 
 import type { BuiltUnit, Unit } from '../model/types';
 import { aggregateParts, bandedLabel, inches } from './aggregate';
+import { createDigitalBom } from '../model/bom';
 
 /** Trigger a browser download of a text file. */
 export function downloadText(filename: string, text: string, mime: string) {
@@ -74,6 +75,7 @@ export function projectJSON(units: Unit[], built: BuiltUnit): string {
     design: units, // the editable design (all units)
     parts: built.parts, // per-instance, with position + size3d for 3D rebuild
     hardware: built.hardware,
+    digitalBom: createDigitalBom(built),
     cutList: aggregateParts(built.parts),
   };
   return JSON.stringify(payload, null, 2);

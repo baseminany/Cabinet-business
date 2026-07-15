@@ -110,6 +110,25 @@ export interface Unit {
   /** Customer special requests for this piece (vent cutouts, wire holes, etc.).
    *  Captured for the House of Nook team to review — not yet modeled in 3D. */
   notes?: string;
+  /** Non-panel items shipped with this unit. These flow into pricing, the BOM,
+   * packed weight, and fulfillment checks. */
+  kitItems?: KitItem[];
+  /** Origin metadata for quote/waitlist routing; never used for geometry. */
+  commerce?: { presetId: string; launchStatus: 'pilot' | 'compliance-hold' | 'oversize-hold' };
+}
+
+export type KitCategory = 'connector' | 'hardware' | 'mounting' | 'packaging' | 'documentation' | 'tool';
+
+export interface KitItem {
+  sku: string;
+  name: string;
+  category: KitCategory;
+  quantity: number;
+  unitCost: number;
+  unitWeightLb: number;
+  notes?: string;
+  /** Estimates stay visible until replaced with an actual supplier invoice. */
+  placeholder?: boolean;
 }
 
 // -----------------------------------------------------------------------------
@@ -182,4 +201,5 @@ export interface HardwareCounts {
 export interface BuiltUnit {
   parts: Part[];
   hardware: HardwareCounts;
+  kitItems?: KitItem[];
 }

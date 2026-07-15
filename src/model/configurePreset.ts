@@ -49,7 +49,7 @@ export function sizeInfoFor(spec: PresetSpec): SizeInfo {
   };
 }
 
-const clamp = (v: number, r: Range) => Math.min(r.max, Math.max(r.min, Math.round(v)));
+const clamp = (v: number, r: Range) => Math.min(r.max, Math.max(r.min, Math.round(v * 4) / 4));
 
 /** Instantiate a preset and apply a customer configuration, clamped to the
  *  product's allowed ranges. Unknown finishes are ignored (default stays). */

@@ -1,9 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useStore } from '../store';
-import { PRESETS, instantiatePreset, presetPrice, type PresetSpec, type PresetCategory } from '../model/presets';
+import { PRESETS, instantiatePreset, presetPrice, launchDecision, type PresetSpec, type PresetCategory } from '../model/presets';
 import { startCheckout, CheckoutUnavailableError } from '../services/checkout';
 import { CUSTOMER_FINISHES } from '../model/materials';
 import type { UnitType } from '../model/types';
+import { useEffect } from 'react';
+import { track } from '../services/analytics';
+import SiteFooter from '../components/SiteFooter';
 
 // A row of finish swatches so every product shows it comes in many colors/woods,
 // not just the one shown in the photo.
@@ -38,11 +41,15 @@ export default function ShopPrebuilt() {
   const shown = useMemo(() => (cat === 'All' ? PRESETS : PRESETS.filter((p) => p.category === cat)), [cat]);
   const prices = useMemo(() => Object.fromEntries(PRESETS.map((p) => [p.id, presetPrice(p)])), []);
   const [busyId, setBusyId] = useState<string | null>(null);
+  useEffect(() => { track('shop_view', { category: cat }); }, []);
 
   const customize = (spec: PresetSpec) => orderPreset(instantiatePreset(spec), 'pieces');
   // Buy now → Stripe Checkout. Until STRIPE_SECRET_KEY is set, fall back to the
   // quote/order-capture flow so the order is still captured (nothing breaks).
   const buy = async (spec: PresetSpec) => {
+    const launch = launchDecision(spec);
+    if (launch.status !== 'pilot') { track('checkout_blocked', { productId: spec.id, reason: launch.status }); orderPreset(instantiatePreset(spec), 'quote'); return; }
+    track('checkout_started', { productId: spec.id });
     setBusyId(spec.id);
     try {
       await startCheckout({ presetId: spec.id, quantity: 1 });
@@ -64,16 +71,16 @@ export default function ShopPrebuilt() {
       </header>
 
       <div className="mx-auto max-w-[1400px] px-6 pb-20 pt-14 sm:px-10 sm:pt-20">
-        <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-muted">The collection · made in Michigan</p>
+        <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-muted">The collection · built in a Michigan workshop</p>
         <h1 className="font-display mt-4 max-w-2xl text-[clamp(2.2rem,4.2vw,3.6rem)] font-normal leading-[1.05] text-ink">Every piece, sized to your inch.</h1>
-        <p className="mt-5 max-w-xl text-[15px] leading-8 text-ink-soft">Real wood, thirteen finishes, no-tool assembly. Open any piece to size it for your exact wall and watch the price follow.</p>
+        <p className="mt-5 max-w-xl text-[15px] leading-8 text-ink-soft">Furniture-grade plywood, thirteen finishes, simple assembly. Open any piece to size it for your exact wall and watch the price follow.</p>
 
         {/* Category filter — quiet text tabs on a hairline rule */}
         <nav className="mt-12 flex flex-wrap gap-x-8 gap-y-3 border-b border-ink/10">
           {CATS.map((c) => (
             <button
               key={c}
-              onClick={() => setCat(c)}
+              onClick={() => { setCat(c); track('category_selected', { category: c }); }}
               className={
                 'pb-3 text-[12px] font-medium uppercase tracking-[0.16em] transition ' +
                 (cat === c
@@ -98,6 +105,7 @@ export default function ShopPrebuilt() {
                   <h2 className="font-display text-[19px] leading-snug text-ink">{spec.name}</h2>
                   <span className="shrink-0 text-[13px] text-ink-muted">from {money(prices[spec.id])}</span>
                 </div>
+                {launchDecision(spec).status !== 'pilot' && <div className="mt-2 text-[10px] font-bold uppercase tracking-[0.12em] text-brass">First-build list · safety review</div>}
                 <FinishOptions />
                 <p className="mt-2.5 text-sm leading-6 text-ink-muted">{spec.blurb}</p>
                 <ul className="mt-3 space-y-1 border-t border-ink/10 pt-3">
@@ -107,7 +115,7 @@ export default function ShopPrebuilt() {
                 </ul>
                 <div className="mt-5 flex gap-2 pt-1">
                   <button onClick={(e) => { e.stopPropagation(); openProduct(spec.id); }} className="flex-1 rounded-sm bg-ink px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.12em] text-warmWhite transition hover:bg-walnut">View & size it</button>
-                  <button onClick={(e) => { e.stopPropagation(); buy(spec); }} disabled={busyId === spec.id} className="flex-1 rounded-sm border border-ink/25 px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.12em] text-ink transition hover:border-ink disabled:opacity-60">{busyId === spec.id ? 'Starting…' : 'Buy now'}</button>
+                  <button onClick={(e) => { e.stopPropagation(); buy(spec); }} disabled={busyId === spec.id} className="flex-1 rounded-sm border border-ink/25 px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.12em] text-ink transition hover:border-ink disabled:opacity-60">{busyId === spec.id ? 'Starting…' : launchDecision(spec).status === 'pilot' ? 'Buy now' : 'First-build list'}</button>
                 </div>
               </div>
             </article>
@@ -116,6 +124,7 @@ export default function ShopPrebuilt() {
 
         <p className="mt-16 border-t border-ink/10 pt-8 text-center text-[13px] leading-6 text-ink-muted">Don't see your size? Every design here opens in the planner — change anything, then send it for a quote.</p>
       </div>
+      <SiteFooter />
     </div>
   );
 }
@@ -127,7 +136,7 @@ export default function ShopPrebuilt() {
 export function CardImage({ image, alt, type }: { image?: string; alt: string; type: UnitType }) {
   const [failed, setFailed] = useState(false);
   if (!image || failed) return <ProductSketch type={type} />;
-  return <img src={image} alt={alt} onError={() => setFailed(true)} className="h-full w-full object-cover" />;
+  return <img src={image} alt={alt} loading="lazy" onError={() => setFailed(true)} className="h-full w-full object-cover" />;
 }
 
 export function ProductSketch({ type }: { type: UnitType }) {

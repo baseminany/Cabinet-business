@@ -42,7 +42,7 @@ export const CUSTOMER_FINISHES = MATERIALS.filter((m) => m.customerFacing !== fa
 export type MaterialTier = 'value' | 'premium';
 
 /** Value = pre-finished birch + painted birch ply (cheaper, faster, ships flat).
- *  Premium = hardwood veneer (white oak, rift oak, walnut) for high-end. */
+ *  Premium = white oak, rift oak, or walnut veneer plywood. */
 export function materialTier(m: MaterialDef): MaterialTier {
   return (m.category === 'White Oak' || m.category === 'Rift White Oak' || m.category === 'Walnut') ? 'premium' : 'value';
 }

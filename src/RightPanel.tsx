@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import CutList from './cutlist/CutList';
 import PriceBreakdown from './pricing/PriceBreakdown';
+import BomPanel from './cutlist/BomPanel';
 
-type Tab = 'price' | 'cutlist';
+type Tab = 'price' | 'cutlist' | 'bom';
 
 export default function RightPanel() {
   const [tab, setTab] = useState<Tab>('price');
@@ -18,9 +19,10 @@ export default function RightPanel() {
         <TabButton active={tab === 'cutlist'} onClick={() => setTab('cutlist')}>
           Cut list
         </TabButton>
+        <TabButton active={tab === 'bom'} onClick={() => setTab('bom')}>Digital BOM</TabButton>
       </div>
       <div className="min-h-0 flex-1">
-        {tab === 'price' ? <PriceBreakdown /> : <CutList />}
+        {tab === 'price' ? <PriceBreakdown /> : tab === 'cutlist' ? <CutList /> : <BomPanel />}
       </div>
     </div>
   );

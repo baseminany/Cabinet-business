@@ -8,14 +8,14 @@ structure changes.
 A **Project** is a `Room` (an editable wall outline) plus a list of **Units**
 (cabinets, shelves…). Each Unit is a typed parametric spec. The pure function
 **`buildParts(unit)`** turns a Unit into exact physical `Part[]`. The whole project
-is turned into parts by **`buildProject(units)`**. Those parts are the single
-source of truth that feeds **three outputs that can never disagree**: the 3D
-preview, the price, and the cut list / shop exports.
+is turned into parts by **`buildProject(units)`**. Those parts plus explicit kit
+items feed the 3D preview, price, cut list, digital BOM, parcel gate, and exports.
 
 ```
 Room + Unit[]  ──►  buildParts/buildProject  ──►  Part[]  ──┬─►  3D preview (r3f)
  (what the user                                             ├─►  price (engine + config)
-  designs)                                                  └─►  cut list · CSV/JSON · SketchUp
+  designs)                                                  ├─►  cut list · CSV/JSON · SketchUp
+                                                            └─►  digital BOM · parcel gate · shipping model
 ```
 
 ## Directory map
@@ -26,6 +26,8 @@ src/
     catalog.ts      product presets (base/upper/tall/shelf…) + construction options
     construction.ts shop construction constants (thicknesses, reveals, hinge rules)
     buildParts.ts   buildParts(unit) + buildProject(units)  ← the heart
+    bom.ts          complete BOM + packed weight/dimensions + parcel gate
+    presets.ts      products, promised kit items, commercial safety gates
     materials.ts    finish look (color/label) for the 3D + labels
     room.ts         Room model (shape, dims, openings) + Placement
     roomShapes.ts   footprint(room) → wall segments (dir/normal/angle)
@@ -71,10 +73,13 @@ rounds **up to whole sheets once**, ×sheet cost. So cost-per-unit falls as unit
 share sheets. Then edge banding, hardware (counted from parts), finish, labor,
 overhead, margin → customer price. Every line is shown; nothing is hidden.
 
+## Checkout, fulfillment, and analytics
+- `/api/checkout` accepts product configuration only, rebuilds and prices it server-side, enforces the product launch gate and parcel gate, and then creates hosted Stripe Checkout. The browser never supplies a price.
+- `/api/stripe-webhook` verifies Stripe signatures, stores completed orders in Netlify Blobs, and emits the paid funnel event.
+- `/api/analytics-event` stores pseudonymous first-party events. `/api/analytics-summary` is protected by `ANALYTICS_DASHBOARD_TOKEN`; `?analytics=1` is the private owner view.
+- `?page=shipping|returns|warranty|privacy|terms|contact` serves launch policy pages.
+
 ## Integration seams (future, keep these clean)
-- **Stripe (Phase 6):** the project already serializes to JSON (`projectJSON`).
-  A backend endpoint takes that + the computed price → creates a Stripe Checkout
-  session. Keep all money math in `pricing/`; the client never sets prices.
 - **AI render (Phase 6):** a deterministic export already exists — model JSON +
   a canvas screenshot (`renderer.domElement.toDataURL()`). A backend job composes
   a prompt from the *measured* inputs (dims, finishes, room, layout) + the

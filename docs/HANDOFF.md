@@ -16,6 +16,18 @@ Primary product lane:
 
 The north star is **garage-buildable, crateable, shippable modules**, not giant full kitchens, massive walk-in pantries, or mansion-scale built-ins. Bunk beds are future-only until safety/compliance review.
 
+## Latest pass — launch operating system
+- Added a digital BOM (`src/model/bom.ts`) covering every panel, Lamello pair, standard hardware, product-specific mounting/hook/rod/anti-tip items, tool, labels, instructions, packaging, estimated kit cost, and modeled weight.
+- Added the BOM to Maker view and JSON exports.
+- Added a conservative parcel pilot gate: modeled closed carton must be no more than 48 inches on the longest side and 50 lb. Product detail shows modeled size/weight/shipping; server checkout independently blocks noncompliant configurations.
+- Added product commercial gates. Children’s products stay visible and collect first-build interest but server checkout is blocked until the product-specific safety/compliance file is complete. See `docs/PRODUCT-SAFETY.md`.
+- Added server-priced Stripe readiness, hosted shipping option, automatic-tax switch, signed webhook order capture, and owner notification support.
+- Added first-party pseudonymous funnel analytics and a token-protected owner dashboard at `?analytics=1`; paid events are written from the verified Stripe webhook.
+- Added shipping, returns, warranty, privacy, terms, and contact pages plus site footers.
+- Replaced broad “real wood”/hardwood messaging with accurate plywood and veneer-plywood language and narrowed origin copy to “built in a Michigan workshop.”
+- Added `docs/LAUNCH-CHECKLIST.md` for the $300–$500/month year-one operating target.
+- Production build and desktop/mobile browser QA pass on July 15, 2026.
+
 ## Latest pass — GPT House of Nook pivot + planner color/UX cleanup
 - Renamed visible brand language from Studio to **House of Nook** across landing, entry, planner shell, maker shell, quote screen, and AI panel.
 - Rewrote the landing page around shippable nook systems instead of full cabinetry categories.

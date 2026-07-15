@@ -9,10 +9,12 @@
 //   · Square-ish corners and thin rules — editorial, not app-like.
 // =============================================================================
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useStore, type ShopCategory } from '../store';
 import Img from '../components/Img';
 import { PRESETS, presetPrice, type PresetSpec } from '../model/presets';
+import { track } from '../services/analytics';
+import SiteFooter from '../components/SiteFooter';
 
 function money(n: number): string { return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }); }
 
@@ -34,6 +36,7 @@ export default function Welcome() {
   const featured = useMemo(() => FEATURED_IDS.map((id) => PRESETS.find((p) => p.id === id)).filter(Boolean) as PresetSpec[], []);
   const prices = useMemo(() => Object.fromEntries(featured.map((p) => [p.id, presetPrice(p)])), [featured]);
   const checkout = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('checkout') : null;
+  useEffect(() => { track('landing_view'); }, []);
 
   return (
     <div className="nice-scroll min-h-0 flex-1 overflow-y-auto bg-warmWhite text-ink">
@@ -61,7 +64,7 @@ export default function Welcome() {
             Furniture that fits the way you live.
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-center text-[15px] leading-7 text-ink-soft">
-            Real-wood pieces for the corners big furniture forgets — sized to your wall
+            Thoughtful plywood furniture for the corners big furniture forgets — sized to your wall
             to the inch, shipped flat, and assembled without a single screw.
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-6">
@@ -69,7 +72,7 @@ export default function Welcome() {
             <button onClick={() => setStep('entry')} className="text-[13px] font-medium text-ink underline decoration-brass/60 underline-offset-4 transition hover:decoration-brass">Design something custom</button>
           </div>
           <p className="mt-10 text-center text-[11px] font-medium uppercase tracking-[0.24em] text-ink-muted">
-            Built in Michigan&ensp;·&ensp;Ships flat&ensp;·&ensp;No-tool assembly&ensp;·&ensp;Real wood
+            Built in a Michigan workshop&ensp;·&ensp;Ships flat&ensp;·&ensp;Simple assembly
           </p>
         </div>
         <figure className="overflow-hidden">
@@ -134,7 +137,7 @@ export default function Welcome() {
             </div>
             <dl className="mt-9 space-y-5 border-t border-ink/10 pt-7">
               {[
-                ['Real wood, all the way through', 'White oak and walnut veneer plywood with matched solid edging. Painted pieces are Sherwin-Williams color over birch plywood — never MDF.'],
+                ['Plywood, chosen on purpose', 'Durable birch plywood, or white oak and walnut veneer plywood for a richer face. Edges are finished cleanly; painted pieces use paint-grade birch plywood.'],
                 ['Clip-together assembly', 'Align the panels, flip the levers, done. The one small tool you need is in the box.'],
                 ['Made to your inch', 'Nearly every piece can be sized down to the quarter-inch for your exact wall.'],
               ].map(([t, b]) => (
@@ -157,7 +160,7 @@ export default function Welcome() {
               ['1', 'Choose your piece', 'Pick a design, your finish, and the exact width for your space.'],
               ['2', 'We build it', 'Cut, banded, and finished by hand, to your measurements.'],
               ['3', 'It ships flat', 'Labeled panels, protected corners, hardware bagged — standard carrier.'],
-              ['4', 'Clip it together', 'Minutes with the included tool. No drill, no screws, no guesswork.'],
+              ['4', 'Clip it together', 'Follow the labeled instructions using the included assembly tool.'],
             ].map(([n, t, b]) => (
               <div key={n}>
                 <div className="font-display text-3xl text-brass">{n}</div>
@@ -176,6 +179,7 @@ export default function Welcome() {
         <button onClick={() => openShop('All')} className="mt-9 rounded-sm bg-ink px-10 py-4 text-[12px] font-semibold uppercase tracking-[0.14em] text-warmWhite transition hover:bg-walnut">Shop the collection</button>
         <p className="mt-16 border-t border-ink/10 pt-8 text-[11px] uppercase tracking-[0.22em] text-ink-muted">House of Nook · Built by hand in Michigan</p>
       </section>
+      <SiteFooter />
     </div>
   );
 }

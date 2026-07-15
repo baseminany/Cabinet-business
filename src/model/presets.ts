@@ -7,7 +7,7 @@
 // the planner uses, so "from $X" is never a made-up number.
 // =============================================================================
 
-import type { Unit, UnitType } from './types';
+import type { KitItem, Unit, UnitType } from './types';
 import { makeUnit } from './catalog';
 import { buildProject } from './buildParts';
 import { priceModel } from '../pricing/engine';
@@ -36,6 +36,58 @@ export interface PresetSpec {
    *  sheet allowance as the default (never spills into an extra sheet run).
    *  Customers can size DOWN to the inch freely; price scales either way. */
   widthRange?: { min: number; max: number };
+  /** Explicit non-panel items promised with this product. */
+  kitItems?: KitItem[];
+}
+
+export type LaunchStatus = 'pilot' | 'compliance-hold' | 'oversize-hold';
+export interface LaunchDecision {
+  status: LaunchStatus;
+  priority: number;
+  label: string;
+  requiredChecks: string[];
+}
+
+/** Commercial gate shared by product pages and server checkout. Children’s
+ * products stay discoverable, but payment cannot be opened until their
+ * product-specific safety file is complete. */
+export function launchDecision(spec: PresetSpec): LaunchDecision {
+  const peopleLoad = ['learning-tower', 'step-stool', 'toy-cubby-bench', 'toy-bench'].includes(spec.id);
+  if (spec.category === 'Kids') return {
+    status: 'compliance-hold',
+    priority: spec.id === 'montessori-bookshelf' ? 1 : spec.id === 'book-ledges' ? 2 : peopleLoad ? 5 : 3,
+    label: 'First-build list · safety review in progress',
+    requiredChecks: [
+      'Applicable CPSC rules identified and documented',
+      'Third-party test plan, CPC, and tracking label completed where required',
+      'Tip-over, entrapment, sharp-edge, finish, and small-parts review signed off',
+      ...(peopleLoad ? ['Physical load, stability, misuse, and fall-hazard test signed off'] : []),
+    ],
+  };
+  return { status: 'pilot', priority: 10, label: 'Pilot-order ready', requiredChecks: ['First article and packaging test signed off'] };
+}
+
+const kit = (sku: string, name: string, category: KitItem['category'], quantity: number, unitCost: number, unitWeightLb: number, notes?: string): KitItem => ({ sku, name, category, quantity, unitCost, unitWeightLb, notes, placeholder: true });
+
+/** Product-specific promise inventory. Generic connectors, instructions,
+ * labels, tool, and packing are added by the BOM engine. */
+function presetKit(spec: PresetSpec): KitItem[] {
+  const mount = (qty = 1) => kit('MOUNT-STUD', 'Stud-mount fastener set', 'mounting', qty, 3.5, 0.35, 'Wall type must be confirmed by customer.');
+  const antiTip = () => kit('SAFETY-ANTITIP', 'Anti-tip restraint kit', 'mounting', 1, 7, 0.35, 'Installation required; instructions and warning label included.');
+  const byId: Record<string, KitItem[]> = {
+    'montessori-bookshelf': [antiTip()],
+    'book-ledges': [mount(3)],
+    'entry-rail-shelf': [mount(), kit('HOOK-BLK', 'Matte-black coat hook', 'hardware', 5, 4, 0.18)],
+    'mail-organizer': [mount(), kit('HOOK-KEY', 'Key hook', 'hardware', 4, 1.25, 0.05)],
+    'mug-rack': [mount(), kit('HOOK-MUG', 'Mug hook', 'hardware', 5, 1.5, 0.05)],
+    'bookcase': [antiTip()],
+    'laundry-tower': [antiTip()],
+    'drying-rail': [mount(), kit('ROD-36', 'Hanging rod and socket set', 'hardware', 1, 22, 2.2)],
+    'wall-boxes': [kit('MOUNT-KEYHOLE', 'Keyhole mounting set', 'mounting', 3, 4, 0.15)],
+    'learning-tower': [kit('FOOT-NONSLIP', 'Non-slip foot', 'hardware', 4, 1.25, 0.04)],
+    'step-stool': [kit('FOOT-NONSLIP', 'Non-slip foot', 'hardware', 4, 1.25, 0.04)],
+  };
+  return [...(spec.kitItems ?? []), ...(byId[spec.id] ?? [])];
 }
 
 export const PRESETS: PresetSpec[] = [
@@ -79,7 +131,7 @@ export const PRESETS: PresetSpec[] = [
     name: 'Toy Cubby Bench',
     category: 'Kids',
     blurb: 'A low three-cubby bench sized for woven baskets — toy storage and a seat in one. Cushion-ready top.',
-    highlights: ['Three open cubbies for baskets', 'Cushion-ready bench top', 'Pre-finished birch — wipes clean', 'One-piece, no doors to slam'],
+    highlights: ['Three open cubbies for baskets', 'Cushion-ready bench top', 'Pre-finished birch — wipes clean', 'Open storage, no doors to slam'],
     items: [{ type: 'base', patch: { overall: { width: 48, height: 18, depth: 15 }, sections: 3, shelvesPerSection: 0, door: 'none', toeKick: { enabled: false, height: 0 }, materials: { carcass: 'uv-ply-natural', doors: 'uv-ply-natural', back: 'ply-back' }, label: 'Cubby Bench' } }],
     image: '/images/kids-cubby-bench.png',
     widthRange: { min: 30, max: 72 },
@@ -89,7 +141,7 @@ export const PRESETS: PresetSpec[] = [
     name: 'Entry Hook Rail + Shelf',
     category: 'Entry',
     blurb: 'A slim wall shelf for keys and a plant, with a row of matte-black hooks below for coats and bags. The one-hour entry upgrade.',
-    highlights: ['36″ oak shelf with a solid front edge', 'Five matte-black hooks (in the hardware bag)', 'Mounts to studs — holds real coats', 'Ships in one small box'],
+    highlights: ['36″ oak-veneer plywood shelf', 'Five matte-black hooks (in the hardware bag)', 'Stud-mount hardware set included', 'Ships in one small box'],
     items: [{ type: 'shelf', patch: { overall: { width: 36, height: 2.5, depth: 6 }, mountHeight: 64, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'white-oak' }, label: 'Entry Rail Shelf' } }],
     image: '/images/product-entry-rail.png',
     widthRange: { min: 24, max: 48 },
@@ -133,7 +185,7 @@ export const PRESETS: PresetSpec[] = [
     name: 'Bedside Nightstand',
     category: 'Storage',
     blurb: 'A compact open nightstand sized for real beds — a shelf for books and a spot on top for a lamp and your phone. Order one or a matching pair.',
-    highlights: ['18″ × 24″ tall × 16″ deep', 'Open shelf — no drawer to stick', 'Walnut or white oak', 'Ships in one box, assembles in minutes'],
+    highlights: ['18″ × 24″ tall × 16″ deep', 'Open shelf — no drawer to stick', 'Walnut or white oak veneer plywood', 'Ships flat with labeled parts'],
     items: [{ type: 'base', patch: { overall: { width: 18, height: 24, depth: 16 }, sections: 1, shelvesPerSection: 1, door: 'none', toeKick: { enabled: false, height: 0 }, materials: { carcass: 'walnut', doors: 'walnut', back: 'ply-back' }, label: 'Nightstand' } }],
     image: '/images/product-nightstand.png',
     widthRange: { min: 14, max: 30 },
@@ -226,7 +278,7 @@ export const PRESETS: PresetSpec[] = [
     id: 'step-stool',
     name: 'Toddler Step Stool',
     category: 'Kids',
-    blurb: 'A sturdy two-step stool so little ones can reach the sink and counter on their own. The easiest add-on gift.',
+    blurb: 'A compact two-step stool concept for little ones to reach the sink and counter with adult supervision. Held for physical safety testing before sale.',
     highlights: ['16″ × 14″ tall × 12″ deep', 'Two steps, rounded edges', 'Pre-finished birch — wipes clean', 'Ships in one small box'],
     items: [{ type: 'base', patch: { overall: { width: 16, height: 14, depth: 12 }, sections: 1, shelvesPerSection: 1, door: 'none', toeKick: { enabled: false, height: 0 }, materials: { carcass: 'uv-ply-natural', doors: 'uv-ply-natural', back: 'ply-back' }, label: 'Step Stool' } }],
     image: '/images/product-step-stool.png',
@@ -236,7 +288,7 @@ export const PRESETS: PresetSpec[] = [
     name: 'Window Reading Bench',
     category: 'Storage',
     blurb: 'A simple cushion-ready bench with cubbies below — perfect under a window or in a hallway nook.',
-    highlights: ['54″ bench, cushion-ready top', '3 open cubbies for baskets', 'White oak natural', 'One-piece, ships assembled-ready'],
+    highlights: ['54″ bench, cushion-ready top', '3 open cubbies for baskets', 'White oak veneer plywood', 'Flat-pack design; shipping quote required'],
     items: [{ type: 'base', patch: { overall: { width: 54, height: 18, depth: 16 }, sections: 3, shelvesPerSection: 0, door: 'none', toeKick: { enabled: true, height: 3 }, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'ply-back' }, label: 'Reading Bench' } }],
     image: '/images/product-reading-bench.png',
     widthRange: { min: 36, max: 94 },
@@ -276,7 +328,7 @@ export const PRESETS: PresetSpec[] = [
     name: 'Drying Rail + Shelf',
     category: 'Laundry',
     blurb: 'A wall shelf with a hanging rod below — air-dry shirts straight from the machine, supplies up top. Saves a drying rack\'s floor space.',
-    highlights: ['36″ shelf + hanging rod below', 'Rod + brackets in the hardware bag', 'Mounts to studs — holds wet laundry', 'White oak, sealed for humidity'],
+    highlights: ['36″ shelf + hanging rod below', 'Rod + brackets in the hardware bag', 'Stud-mount hardware set included', 'Oak-veneer plywood finish'],
     items: [{ type: 'shelf', patch: { overall: { width: 36, height: 2, depth: 10 }, mountHeight: 68, materials: { carcass: 'white-oak', doors: 'white-oak', back: 'white-oak' }, label: 'Drying Rail' } }],
     image: '/images/product-drying-rail.png',
     widthRange: { min: 24, max: 48 },
@@ -323,7 +375,7 @@ export const PRESETS: PresetSpec[] = [
 
 /** Build real Unit objects from a preset spec (fresh ids each call). */
 export function instantiatePreset(spec: PresetSpec): Unit[] {
-  return spec.items.map((item) => {
+  return spec.items.map((item, index) => {
     const u = makeUnit(item.type);
     if (item.patch) {
       const p = item.patch;
@@ -336,6 +388,8 @@ export function instantiatePreset(spec: PresetSpec): Unit[] {
       if (p.mountHeight != null) u.mountHeight = p.mountHeight;
       if (p.label) u.label = p.label;
     }
+    if (index === 0) u.kitItems = presetKit(spec);
+    u.commerce = { presetId: spec.id, launchStatus: launchDecision(spec).status };
     return u;
   });
 }

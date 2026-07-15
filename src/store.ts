@@ -218,7 +218,7 @@ export const useStore = create<AppState>((set, get) => {
     addPresetUnit: (type, width) => addSized(type, width),
     orderPreset: (newUnits, goTo) => set((s) => ({
       room: { ...s.room, enabled: false },
-      units: [...s.units, ...newUnits],
+      units: goTo === 'quote' ? newUnits : [...s.units, ...newUnits],
       selectedId: newUnits[newUnits.length - 1]?.id ?? s.selectedId,
       step: goTo,
       view: 'design',

@@ -57,10 +57,8 @@ export interface PricingConfig {
     placeholder?: boolean;
   };
 
-  /** Outbound shipping charged to the customer at checkout.
-   *  ⚠️ PLACEHOLDER — replace with real carrier quotes after packaging tests
-   *  (UPS dimensional weight + >48" surcharges can dwarf these numbers). */
-  shipping: { base: number; perSheet: number; placeholder?: boolean };
+  /** Items every flat-pack order needs beyond product-specific hardware. */
+  assemblyKit: { toolEach: number; instructionSet: number; partLabelEach: number; placeholder?: boolean };
 
   finish: {
     mode: 'perSqft' | 'perSheet' | 'none';
@@ -169,9 +167,8 @@ export const pricing: PricingConfig = {
     floatingBracketEach: 18, // hidden steel floating-shelf bracket, heavy-duty
   },
 
-  // ⚠️ PLACEHOLDER — outbound shipping charged at checkout. Rough garage-era
-  // guess; replace with real carrier quotes after the first packaging tests.
-  shipping: { base: 35, perSheet: 20, placeholder: true },
+  // Verify against the first purchased tool/print/label batches.
+  assemblyKit: { toolEach: 2.5, instructionSet: 0.75, partLabelEach: 0.08, placeholder: true },
 
   // Finishing MATERIALS only (primer, paint/clear, sandpaper specific to finish).
   // Your finishing TIME is already in the labor line. Prefinished UV ply needs

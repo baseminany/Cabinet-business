@@ -64,6 +64,13 @@ export default async (req: Request): Promise<Response> => {
     try {
       const store = getStore('orders');
       await store.setJSON(`${order.paidAt.slice(0, 10)}/${s.id}.json`, order);
+      const events = getStore('journey-events');
+      await events.setJSON(`${order.paidAt.slice(0, 10)}/${Date.now()}-${s.id}.json`, {
+        event: 'order_completed', occurredAt: order.paidAt,
+        visitorId: s.metadata?.visitorId ?? '', sessionId: s.metadata?.sessionId ?? '',
+        device: 'unknown', source: '', referrer: '', path: '/?checkout=success',
+        properties: { presetId: order.product.presetId, amount: order.amountTotal, quantity: order.product.quantity },
+      });
     } catch (e) {
       console.error('Order blob write failed', e);
     }

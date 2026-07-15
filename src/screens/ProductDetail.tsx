@@ -8,11 +8,11 @@
 // one click away for people who want deeper customization.
 // =============================================================================
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows } from '@react-three/drei';
 import { useStore } from '../store';
-import { PRESETS, instantiatePreset } from '../model/presets';
+import { PRESETS, instantiatePreset, launchDecision } from '../model/presets';
 import { sizeInfoFor } from '../model/configurePreset';
 import { buildParts, buildProject } from '../model/buildParts';
 import { priceModel } from '../pricing/engine';
@@ -21,6 +21,9 @@ import { startCheckout } from '../services/checkout';
 import CabinetMesh from '../scene/CabinetMesh';
 import { ProductSketch, CardImage } from './ShopPrebuilt';
 import type { MaterialId } from '../model/types';
+import { createDigitalBom } from '../model/bom';
+import { track } from '../services/analytics';
+import SiteFooter from '../components/SiteFooter';
 
 function money(n: number): string {
   return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
@@ -70,6 +73,9 @@ export default function ProductDetail() {
   }, [spec, width, depth, height, finish, curWidth, curDepth, curHeight]);
 
   const price = useMemo(() => (units.length ? priceModel(buildProject(units)) : null), [units]);
+  const bom = useMemo(() => units.length ? createDigitalBom(buildProject(units)) : null, [units]);
+  const launch = spec ? launchDecision(spec) : null;
+  useEffect(() => { if (spec) track('product_view', { productId: spec.id, category: spec.category }); }, [spec]);
 
   // Simple centered-row layout for the live 3D preview (studio style).
   const scene3d = useMemo(() => {
@@ -87,7 +93,7 @@ export default function ProductDetail() {
     return { groups, total, topY };
   }, [units]);
 
-  if (!spec) {
+  if (!spec || !launch) {
     return (
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 bg-warmWhite p-10 text-ink">
         <p className="text-lg font-bold">That product wasn't found.</p>
@@ -105,6 +111,11 @@ export default function ProductDetail() {
 
   const buy = async () => {
     if (!price) return;
+    if (launch.status !== 'pilot' || bom?.fulfillment.lane !== 'parcel-pilot') {
+      track('checkout_blocked', { productId: spec.id, reason: launch.status !== 'pilot' ? launch.status : 'oversize' });
+      orderPreset(units, 'quote'); return;
+    }
+    track('checkout_started', { productId: spec.id, price: Math.round(price.customerPrice) });
     setBusy(true);
     try {
       await startCheckout({
@@ -179,7 +190,7 @@ export default function ProductDetail() {
           <div className="mt-8 grid gap-6 border-t border-ink/10 pt-6 sm:grid-cols-3">
             {[
               ['No screws', 'Lamello connectors: align the panels, flip the levers, done. Nothing to strip.'],
-              ['Wood carries the load', 'Seats and steps sit in routed grooves; cases clip square — built to be leaned on.'],
+              ['Purposeful joinery', 'Structural surfaces use routed grooves; case parts align with repeatable connector locations.'],
               ['Ships flat', 'Labeled panels, protected edges, hardware bagged. One small tool, included.'],
             ].map(([t, b]) => (
               <div key={t}>
@@ -210,7 +221,7 @@ export default function ProductDetail() {
               <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-ink-muted">Finish</h3>
               <span className="text-[11px] font-semibold text-ink-soft">{curFinish.label}</span>
             </div>
-            {[['Value · pre-finished + painted', valueFinishes], ['Premium · hardwood veneer', premiumFinishes]].map(([label, list]) => (
+            {[['Value · pre-finished + painted', valueFinishes], ['Premium · oak + walnut veneer plywood', premiumFinishes]].map(([label, list]) => (
               <div key={label as string} className="mt-2.5">
                 <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-brass">{label as string}</div>
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -255,8 +266,13 @@ export default function ProductDetail() {
                   made to order<br />ships flat-pack
                 </div>
               </div>
+              {bom && <div className="mt-4 grid grid-cols-2 gap-3 border-t border-ink/10 pt-4 text-[11px] leading-5 text-ink-muted">
+                <div><b className="text-ink">Modeled parcel</b><br />{bom.fulfillment.packed.length}″ longest · {bom.fulfillment.packed.weightLb} lb</div>
+                <div><b className="text-ink">Shipping</b><br />{bom.fulfillment.lane === 'parcel-pilot' ? `about ${money(bom.fulfillment.shippingEstimate)} ground` : 'manual quote required'}</div>
+              </div>}
+              {(launch.status !== 'pilot' || bom?.fulfillment.lane !== 'parcel-pilot') && <div className="mt-4 border border-brass/35 bg-parchment px-4 py-3 text-[12px] leading-5 text-ink-soft"><b>{launch.label}</b><br />{launch.status !== 'pilot' ? 'We are completing the product-specific safety file and physical first article before accepting payment.' : bom?.fulfillment.reasons.join(' ')}</div>}
               <button onClick={buy} disabled={busy} className="mt-4 w-full rounded-sm bg-ink px-5 py-4 text-[13px] font-semibold uppercase tracking-[0.14em] text-warmWhite transition hover:bg-walnut disabled:opacity-60">
-                {busy ? 'Starting…' : 'Buy now'}
+                {busy ? 'Starting…' : launch.status !== 'pilot' ? 'Join the first-build list' : bom?.fulfillment.lane !== 'parcel-pilot' ? 'Request shipping quote' : 'Buy now'}
               </button>
               <div className="mt-2.5 text-center text-[11px] font-medium text-ink-muted">
                 <button onClick={() => orderPreset(units, 'quote')} className="underline decoration-brass/50 underline-offset-2 hover:text-walnut">Save this design for later</button>
@@ -265,6 +281,7 @@ export default function ProductDetail() {
           )}
         </div>
       </div>
+      <SiteFooter />
     </div>
   );
 }
