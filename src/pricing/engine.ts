@@ -122,15 +122,26 @@ export function priceModel(unit: BuiltUnit, config: PricingConfig = pricing): Pr
   // --- 3) HARDWARE -----------------------------------------------------------
   const hw = unit.hardware;
   const h = config.hardware;
+  // Lamello connectors: buildParts doesn't tally these yet, so ESTIMATE from
+  // structure — every panel that joins the carcass at both ends (top, bottom,
+  // dividers, toe kicks) takes ~2 connector pairs per end. Adjustable shelves
+  // sit on pins (already counted). Calibrate from the first real build.
+  const CONNECTOR_ROLES = new Set(['top', 'bottom', 'divider', 'toekick']);
+  const connectorPairs = unit.parts.reduce(
+    (n, p) => n + (CONNECTOR_ROLES.has(p.role) ? 4 : 0),
+    0
+  );
   const hardwareAmount =
     hw.hinges * h.hingeEach +
     hw.shelfPins * h.shelfPinEach +
     hw.pulls * h.pullEach +
-    hw.drawerSlides * h.drawerSlidePairEach;
+    hw.drawerSlides * h.drawerSlidePairEach +
+    (hw.brackets ?? 0) * h.floatingBracketEach +
+    connectorPairs * h.connectorPairEach;
   lines.push({
     key: 'hardware',
     label: 'Hardware',
-    detail: `${hw.hinges} hinges, ${hw.pulls} pulls, ${hw.shelfPins} shelf pins`,
+    detail: `${connectorPairs} Lamello connectors, ${hw.hinges} hinges, ${hw.pulls} pulls, ${hw.shelfPins} shelf pins`,
     amount: hardwareAmount,
     placeholder: !!h.placeholder,
   });

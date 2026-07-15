@@ -1,23 +1,31 @@
 // =============================================================================
 // CHECKOUT (client adapter) — "Buy now" → Stripe Checkout
 // =============================================================================
-// Posts the order to /api/checkout, which creates a Stripe Checkout session and
-// returns its URL; we redirect the browser there. Throws CheckoutUnavailableError
-// when Stripe isn't configured yet (no STRIPE_SECRET_KEY) so the UI can fall back
-// to the quote/order-capture flow.
+// SECURITY: the client sends only WHAT to buy (preset id + configuration);
+// the server recomputes the price from the canonical model. No price ever
+// travels from the browser. Throws CheckoutUnavailableError when Stripe isn't
+// configured yet (no STRIPE_SECRET_KEY) so the UI falls back to quote capture.
 // =============================================================================
 
 export class CheckoutUnavailableError extends Error {}
 
-export interface CheckoutLineItem { name: string; amount: number /* cents */; quantity: number }
+export interface CheckoutRequest {
+  presetId: string;
+  config?: { width?: number; depth?: number; height?: number; finish?: string };
+  quantity?: number;
+}
 
-export async function startCheckout(items: CheckoutLineItem[], summary?: string): Promise<void> {
+export async function startCheckout(order: CheckoutRequest): Promise<void> {
   let res: Response;
   try {
     res = await fetch('/api/checkout', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ items, summary, successUrl: `${location.origin}/?checkout=success`, cancelUrl: location.href }),
+      body: JSON.stringify({
+        ...order,
+        successUrl: `${location.origin}/?checkout=success`,
+        cancelUrl: location.href,
+      }),
     });
   } catch {
     throw new CheckoutUnavailableError('Checkout not reachable.');

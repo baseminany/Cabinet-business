@@ -45,7 +45,7 @@ export default function ShopPrebuilt() {
   const buy = async (spec: PresetSpec) => {
     setBusyId(spec.id);
     try {
-      await startCheckout([{ name: spec.name, amount: Math.round(prices[spec.id] * 100), quantity: 1 }], spec.name);
+      await startCheckout({ presetId: spec.id, quantity: 1 });
     } catch (e) {
       void (e instanceof CheckoutUnavailableError);
       orderPreset(instantiatePreset(spec), 'quote');
@@ -66,7 +66,7 @@ export default function ShopPrebuilt() {
       <div className="mx-auto max-w-[1400px] px-6 pb-20 pt-14 sm:px-10 sm:pt-20">
         <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-muted">The collection · made in Michigan</p>
         <h1 className="font-display mt-4 max-w-2xl text-[clamp(2.2rem,4.2vw,3.6rem)] font-normal leading-[1.05] text-ink">Every piece, sized to your inch.</h1>
-        <p className="mt-5 max-w-xl text-[15px] leading-8 text-ink-soft">Real hardwood, thirteen finishes, no-tool assembly. Open any piece to size it for your exact wall and watch the price follow.</p>
+        <p className="mt-5 max-w-xl text-[15px] leading-8 text-ink-soft">Real wood, thirteen finishes, no-tool assembly. Open any piece to size it for your exact wall and watch the price follow.</p>
 
         {/* Category filter — quiet text tabs on a hairline rule */}
         <nav className="mt-12 flex flex-wrap gap-x-8 gap-y-3 border-b border-ink/10">

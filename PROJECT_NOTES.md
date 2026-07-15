@@ -231,6 +231,36 @@ images of products we actually sell; short confident copy.
 product); real photos of Basem's first builds will replace renders as they exist; Stripe key +
 first timed build still the two owner blockers.
 
+## ChatGPT council audit — triage + fixes (2026-07-15)
+
+Basem ran an external audit (ChatGPT "council") over the repo + site. Verdict: green-light to
+validate, red-light to quit Amazon or scale ads; recommends focusing on ONE flagship (Mudroom
+Nook 48/60/72") and moving effort from software to physical proof. Full verdict is in the chat;
+the actionable engineering findings were real and are now FIXED:
+
+- **Checkout price tampering (critical)** — the function trusted browser-supplied amounts.
+  Now the client sends only `{presetId, config, quantity}`; the server rebuilds units via the
+  new shared `src/model/configurePreset.ts` (clamps sizes to real ranges, rejects unknown
+  finishes) and recomputes the price with the same engine. PDP sliders use the SAME module,
+  so client and server can never disagree.
+- **Shipping now charged** at checkout: `pricing.shipping` = $35 + $20/sheet (PLACEHOLDER
+  until packaging/carrier tests — UPS >48" surcharges are the open risk). Tax: Stripe
+  automatic tax behind `STRIPE_TAX=1` env (register MI nexus in Stripe dashboard first).
+- **Durable orders**: new `netlify/functions/stripe-webhook.ts` — verifies signature, writes
+  the full order (product, config, price, address) to Netlify Blobs `orders` store, pings
+  QUOTE_WEBHOOK_URL. Needs `STRIPE_WEBHOOK_SECRET` env + webhook endpoint in Stripe dashboard.
+- **BOM honesty**: Lamello connector pairs now priced (~4 pairs per structural panel, $2.20/pr,
+  calibrate from first build); floating-shelf hidden bracket added to HardwareCounts + priced
+  ($18); false claims fixed — tower "adjustable platform" → "built to your counter height",
+  "solid birch" → "birch ply", shelf "solid" → honest profile wording, toy-box lid claim removed.
+- **Claims**: "Real hardwood" → "Real wood" everywhere; art-ledge caption de-solided; footer
+  "Made in Michigan, USA" → "Built by hand in Michigan" (FTC unqualified-origin risk).
+
+Still OPEN from the audit (owner decisions, not code): kids-line safety review (CPSC/CPC +
+liability insurance before selling climb/stand/sleep products), flagship refocus of the
+storefront, real photography + assembly video, the 90-day validation plan (interviews →
+3 timed builds → 10 paid orders). Council's $1M math matches ours: ~$3M+ revenue needed.
+
 ## MDF purge + HD imagery + unfnshed teardown (2026-07-10)
 
 - **No MDF anywhere** (Basem's call): every painted finish (`sw-*`, `painted-*`, `paint-custom`)

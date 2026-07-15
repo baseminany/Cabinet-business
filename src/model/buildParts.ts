@@ -290,7 +290,7 @@ function buildShelf(unit: Unit): BuiltUnit {
     size3d: { w: W, h: Th, d: D },
     notes: 'Hollow torsion-box build at the shop; shown solid here.',
   };
-  return { parts: [part], hardware: { hinges: 0, shelfPins: 0, pulls: 0, drawerSlides: 0 } };
+  return { parts: [part], hardware: { hinges: 0, shelfPins: 0, pulls: 0, drawerSlides: 0, brackets: 1 } };
 }
 
 // =============================================================================

@@ -61,7 +61,7 @@ export default function Welcome() {
             Furniture that fits the way you live.
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-center text-[15px] leading-7 text-ink-soft">
-            Real-hardwood pieces for the corners big furniture forgets — sized to your wall
+            Real-wood pieces for the corners big furniture forgets — sized to your wall
             to the inch, shipped flat, and assembled without a single screw.
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-6">
@@ -69,13 +69,13 @@ export default function Welcome() {
             <button onClick={() => setStep('entry')} className="text-[13px] font-medium text-ink underline decoration-brass/60 underline-offset-4 transition hover:decoration-brass">Design something custom</button>
           </div>
           <p className="mt-10 text-center text-[11px] font-medium uppercase tracking-[0.24em] text-ink-muted">
-            Made in Michigan&ensp;·&ensp;Ships flat&ensp;·&ensp;No-tool assembly&ensp;·&ensp;Real hardwood
+            Built in Michigan&ensp;·&ensp;Ships flat&ensp;·&ensp;No-tool assembly&ensp;·&ensp;Real wood
           </p>
         </div>
         <figure className="overflow-hidden">
           <Img name="product-art-ledges.png" alt="Walnut art ledges styled in a warm living room" className="aspect-[16/8] w-full object-cover" />
         </figure>
-        <p className="border-b border-ink/10 py-3 text-[11px] uppercase tracking-[0.18em] text-ink-muted">The Art Ledge Set · solid walnut</p>
+        <p className="border-b border-ink/10 py-3 text-[11px] uppercase tracking-[0.18em] text-ink-muted">The Art Ledge Set · walnut</p>
       </section>
 
       {/* ── Shop by room ── */}
@@ -174,7 +174,7 @@ export default function Welcome() {
         <h2 className="font-display mx-auto max-w-2xl text-[clamp(2rem,4vw,3.4rem)] font-normal leading-[1.1]">Start with one corner.</h2>
         <p className="mx-auto mt-4 max-w-md text-[15px] leading-7 text-ink-soft">A shelf, a bench, a bookcase for small hands — every calm home starts somewhere.</p>
         <button onClick={() => openShop('All')} className="mt-9 rounded-sm bg-ink px-10 py-4 text-[12px] font-semibold uppercase tracking-[0.14em] text-warmWhite transition hover:bg-walnut">Shop the collection</button>
-        <p className="mt-16 border-t border-ink/10 pt-8 text-[11px] uppercase tracking-[0.22em] text-ink-muted">House of Nook · Made in Michigan, USA</p>
+        <p className="mt-16 border-t border-ink/10 pt-8 text-[11px] uppercase tracking-[0.22em] text-ink-muted">House of Nook · Built by hand in Michigan</p>
       </section>
     </div>
   );

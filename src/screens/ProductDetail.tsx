@@ -13,6 +13,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows } from '@react-three/drei';
 import { useStore } from '../store';
 import { PRESETS, instantiatePreset } from '../model/presets';
+import { sizeInfoFor } from '../model/configurePreset';
 import { buildParts, buildProject } from '../model/buildParts';
 import { priceModel } from '../pricing/engine';
 import { materialsFor, materialTier, getMaterial } from '../model/materials';
@@ -32,9 +33,10 @@ export default function ProductDetail() {
   const orderPreset = useStore((s) => s.orderPreset);
   const spec = PRESETS.find((p) => p.id === productId);
 
-  const defaultWidth = spec?.items[0]?.patch?.overall?.width ?? 36;
-  const defaultDepth = spec?.items[0]?.patch?.overall?.depth ?? 12;
-  const defaultHeight = spec?.items[0]?.patch?.overall?.height ?? 30;
+  const sizeInfo = spec ? sizeInfoFor(spec) : null;
+  const defaultWidth = sizeInfo?.defaults.width ?? 36;
+  const defaultDepth = sizeInfo?.defaults.depth ?? 12;
+  const defaultHeight = sizeInfo?.defaults.height ?? 30;
   const [width, setWidth] = useState<number | null>(null);
   const [depth, setDepth] = useState<number | null>(null);
   const [height, setHeight] = useState<number | null>(null);
@@ -47,16 +49,10 @@ export default function ProductDetail() {
   const curDepth = depth ?? defaultDepth;
   const curHeight = height ?? defaultHeight;
 
-  // Depth/height fine-tuning is offered for SINGLE-piece products (multi-piece
-  // sets share a width but have intentionally different depths/heights).
-  const singlePiece = (spec?.items.length ?? 0) === 1;
-  const firstType = spec?.items[0]?.type;
-  const depthRange = singlePiece
-    ? { min: Math.max(4, Math.round(defaultDepth * 0.7)), max: Math.min(30, Math.round(defaultDepth * 1.4)) }
-    : null;
-  const heightRange = singlePiece && (firstType === 'tall' || firstType === 'montessori')
-    ? { min: Math.max(12, defaultHeight - 8), max: Math.min(84, defaultHeight + 12) }
-    : null;
+  // Size ranges come from the SAME module the checkout server uses, so the
+  // sliders here and the server's clamping can never disagree.
+  const depthRange = sizeInfo?.depthRange ?? null;
+  const heightRange = sizeInfo?.heightRange ?? null;
 
   // Build the REAL units for the current configuration — the same objects the
   // planner, pricing engine, and cut list use. Nothing on this page is a mockup.
@@ -111,10 +107,16 @@ export default function ProductDetail() {
     if (!price) return;
     setBusy(true);
     try {
-      await startCheckout(
-        [{ name: `${spec.name} — ${Math.round(curWidth)}″ · ${curFinish.label}`, amount: Math.round(price.customerPrice * 100), quantity: 1 }],
-        spec.name
-      );
+      await startCheckout({
+        presetId: spec.id,
+        config: {
+          width: width ?? undefined,
+          depth: depth ?? undefined,
+          height: height ?? undefined,
+          finish: finish ?? undefined,
+        },
+        quantity: 1,
+      });
     } catch {
       // Stripe not configured (or failed) → capture the configured order as a saved design.
       orderPreset(units, 'quote');

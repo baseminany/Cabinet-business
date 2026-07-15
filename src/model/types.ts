@@ -174,6 +174,8 @@ export interface HardwareCounts {
   shelfPins: number;
   pulls: number;
   drawerSlides: number; // always 0 in v1 (no drawers yet), kept for the future
+  /** Hidden steel floating-shelf brackets (one per floating shelf). */
+  brackets?: number;
 }
 
 /** The full computed output of the model — parts + hardware. */
